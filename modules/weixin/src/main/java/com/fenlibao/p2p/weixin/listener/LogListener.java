@@ -2,11 +2,9 @@ package com.fenlibao.p2p.weixin.listener;
 
 import com.fenlibao.p2p.weixin.domain.*;
 import com.fenlibao.p2p.weixin.event.LogEvent;
+import com.fenlibao.p2p.weixin.message.Poi;
 import com.fenlibao.p2p.weixin.persistence.LogMapper;
-import com.fenlibao.p2p.weixin.service.FansService;
-import com.fenlibao.p2p.weixin.service.QrcodeService;
-import com.fenlibao.p2p.weixin.service.TicketService;
-import com.fenlibao.p2p.weixin.service.TokenService;
+import com.fenlibao.p2p.weixin.service.*;
 import com.fenlibao.p2p.weixin.variable.WeiXinThing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -34,6 +32,9 @@ public class LogListener implements ApplicationListener<LogEvent> {
 
     @Autowired
     private QrcodeService qrcodeService;
+
+    @Autowired
+    private BusinessService businessService;
 
     @Override
     public void onApplicationEvent(LogEvent event) {
@@ -72,6 +73,12 @@ public class LogListener implements ApplicationListener<LogEvent> {
                 qrcode.setId(this.getUUID());
                 qrcode.setLogId(log.getId());
                 this.qrcodeService.insertSelective(qrcode);
+            }
+        } else if(thingName.equals(WeiXinThing.HTTP_POI.toString())) {
+            Poi poi = (Poi)returnValue;
+            if(poi.getBusiness() != null && poi.getBusiness().getBaseInfo() != null) {
+                Business business = poi.getBusiness().getBaseInfo();
+                this.businessService.saveOrUpdateByPoiId(business);
             }
         }
     }

@@ -138,13 +138,46 @@ CREATE TABLE `weixin_ticket` (
 
 CREATE TABLE `weixin_msg` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `app_id` varchar(50) DEFAULT NULL COMMENT '应用appiid',
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '消息时间',
-  `from_user` varchar(50) DEFAULT NULL COMMENT '发送人',
-  `to_user` varchar(50) DEFAULT NULL COMMENT '接收人',
-  `type` varchar(50) DEFAULT NULL COMMENT '接收/发送消息 enum("receive","send")',
-  `format` varchar(50) DEFAULT NULL COMMENT '消息格式,enum("json","xml")',
+  `app_id` varchar(64) DEFAULT NULL COMMENT 'appID（应用ID）',
+  `to_user_name` varchar(64) DEFAULT NULL COMMENT '接收方帐号（收到的OpenID）',
+  `from_user_name` varchar(64) DEFAULT NULL COMMENT '发送方帐号（一个OpenID）',
+  `create_time` bigint(20) DEFAULT NULL COMMENT '消息创建时间 （整型）',
+  `msg_id` varchar(64) DEFAULT NULL COMMENT '消息id，64位整型',
+  `msg_type` varchar(64) DEFAULT NULL COMMENT '消息类型，event',
+  `event` varchar(64) DEFAULT NULL COMMENT '事件类型',
+  `type` varchar(30) DEFAULT NULL COMMENT '消息类型',
+  `format` varchar(30) DEFAULT NULL COMMENT '消息内容格式',
   `content` text COMMENT '消息内容',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='微信消息';
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='微信交互的消息记录';
+
+-- 门店信息
+CREATE TABLE `weixin_business` (
+  `id` varchar(50) NOT NULL,
+  `business_name` varchar(30) DEFAULT NULL COMMENT '门店名称（仅为商户名，如：国美、麦当劳，不应包含地区、地址、分店名等信息，错误示例：北京国美）',
+  `branch_name` varchar(100) DEFAULT NULL COMMENT '分店名称（不应包含地区信息，不应与门店名有重复，错误示例：北京王府井店）',
+  `province` varchar(50) DEFAULT NULL COMMENT '门店所在的省份（直辖市填城市名,如：北京市）',
+  `city` varchar(50) DEFAULT NULL COMMENT '门店所在的城市',
+  `district` varchar(100) DEFAULT NULL COMMENT '门店所在地区',
+  `address` varchar(300) DEFAULT NULL COMMENT '门店所在的详细街道地址（不要填写省市信息）',
+  `telephone` varchar(300) DEFAULT NULL COMMENT '门店的电话（纯数字，区号、分机号均由“-”隔开）',
+  `categories` varchar(300) DEFAULT NULL COMMENT '门店的类型（不同级分类用“,”隔开，如：美食，川菜，火锅。详细分类参见附件：微信门店类目表）',
+  `offset_type` varchar(300) DEFAULT NULL COMMENT '坐标类型，1 为火星坐标（目前只能选1）',
+  `longitude` varchar(10) DEFAULT NULL COMMENT '门店所在地理位置的经度',
+  `latitude` varchar(10) DEFAULT NULL COMMENT '门店所在地理位置的纬度（经纬度均为火星坐标，最好选用腾讯地图标记的坐标）',
+  `photo_list` text COMMENT '图片列表，url 形式，可以有多张图片，尺寸为\r\n            640*340px。必须为上一接口生成的url。图片内容不允许与门店不相关，不允许为二维码、员工合照（或模特肖像）、营业执照、无门店正门的街景、地图截图、公交地铁站牌、菜单截图等',
+  `special` varchar(100) DEFAULT NULL COMMENT '特色服务，如免费wifi，免费停车，送货上门等商户能提供的特色功能或服务',
+  `open_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '营业时间，24 小时制表示，用“-”连接，如 8:00-20:00',
+  `avg_price` double DEFAULT NULL COMMENT '人均价格，大于0 的整数',
+  `sid` varchar(50) DEFAULT NULL COMMENT '商户自己的id，用于后续审核通过收到poi_id 的通知时，做对应关系。请商户自己保证唯一识别性',
+  `poi_id` varchar(50) DEFAULT NULL COMMENT '微信的门店ID，微信内门店唯一标示ID',
+  `introduction` varchar(300) DEFAULT NULL COMMENT '商户简介，主要介绍商户信息等',
+  `recommend` varchar(300) DEFAULT NULL COMMENT '推荐品，餐厅可为推荐菜；酒店为推荐套房；景点为推荐游玩景点等，针对自己行业的推荐内容',
+  `available_state` int(11) DEFAULT NULL COMMENT '门店是否可用状态。1 表示系统错误、2 表示审核中、3 审核通过、4 审核驳回。当该字段为1、2、4 状态时，poi_id 为空',
+  `update_status` int(11) DEFAULT NULL COMMENT '扩展字段是否正在更新中。1 表示扩展字段正在更新中，尚未生效，不允许再次更新； 0 表示扩展字段没有在更新中或更新已生效，可以再次更新',
+  `careate_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='门店信息';
+
+
 

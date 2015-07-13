@@ -1,9 +1,10 @@
 package com.fenlibao.p2p.zhaopin.weixin;
 
+import com.fenlibao.p2p.weixin.defines.Event;
+import com.fenlibao.p2p.weixin.defines.MsgType;
 import com.fenlibao.p2p.weixin.domain.Fans;
-import com.fenlibao.p2p.weixin.message.Message;
 import com.fenlibao.p2p.weixin.message.Item;
-import com.fenlibao.p2p.weixin.message.MsgType;
+import com.fenlibao.p2p.weixin.message.Message;
 import com.fenlibao.p2p.weixin.service.Constants;
 import com.fenlibao.p2p.weixin.service.MessageHandler;
 import com.fenlibao.p2p.weixin.service.WxApi;
@@ -39,8 +40,8 @@ public class WeixinMessageHandler implements MessageHandler,Constants {
          * 用户已关注时,事件KEY值，是一个32位无符号整数，即创建二维码时的二维码scene_id
          */
         String sceneStr = eventKey;
-        if (sceneStr.startsWith(MsgType.Event.EVENT_KEY_QRSCENE) && event.equals(MsgType.Event.EVENT_SUBSCRIBE)) {
-            sceneStr = sceneStr.substring(MsgType.Event.EVENT_KEY_QRSCENE.length());
+        if (sceneStr.startsWith(Event.EVENT_KEY_QRSCENE.toString()) && event.equals(Event.EVENT_SUBSCRIBE.toString())) {
+            sceneStr = sceneStr.substring(Event.EVENT_KEY_QRSCENE.toString().length());
         }
         int sceneId = Integer.parseInt(sceneStr);
         Channel channel = this.channelService.selectBySceneId(sceneId);
@@ -59,7 +60,7 @@ public class WeixinMessageHandler implements MessageHandler,Constants {
         result.setFromUserName(message.getToUserName());
         result.setToUserName(message.getFromUserName());
         result.setCreateTime(System.currentTimeMillis());
-        result.setMsgType(MsgType.MESSAGETYPE_NEWS);
+        result.setMsgType(MsgType.MESSAGETYPE_NEWS.toString());
 
         Item item = new Item();
         item.setTitle(channel.getName());

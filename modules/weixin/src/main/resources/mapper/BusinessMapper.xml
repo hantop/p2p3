@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fenlibao.p2p.weixin.persistence.BusinessMapper" >
+  <resultMap id="BaseResultMap" type="com.fenlibao.p2p.weixin.domain.Business" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="business_name" property="businessName" jdbcType="VARCHAR" />
+    <result column="branch_name" property="branchName" jdbcType="VARCHAR" />
+    <result column="province" property="province" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="district" property="district" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="telephone" property="telephone" jdbcType="VARCHAR" />
+    <result column="categories" property="categories" jdbcType="VARCHAR" />
+    <result column="offset_type" property="offsetType" jdbcType="VARCHAR" />
+    <result column="longitude" property="longitude" jdbcType="VARCHAR" />
+    <result column="latitude" property="latitude" jdbcType="VARCHAR" />
+    <result column="special" property="special" jdbcType="VARCHAR" />
+    <result column="open_time" property="openTime" jdbcType="TIMESTAMP" />
+    <result column="avg_price" property="avgPrice" jdbcType="DOUBLE" />
+    <result column="sid" property="sid" jdbcType="VARCHAR" />
+    <result column="poi_id" property="poiId" jdbcType="VARCHAR" />
+    <result column="introduction" property="introduction" jdbcType="VARCHAR" />
+    <result column="recommend" property="recommend" jdbcType="VARCHAR" />
+    <result column="available_state" property="availableState" jdbcType="INTEGER" />
+    <result column="update_status" property="updateStatus" jdbcType="INTEGER" />
+    <result column="careate_time" property="careateTime" jdbcType="TIMESTAMP" />
+    <result column="photo_list" property="photoList" jdbcType="LONGVARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, business_name, branch_name, province, city, district, address, telephone, categories,
+    offset_type, longitude, latitude, special, open_time, avg_price, sid, poi_id, introduction,
+    recommend, available_state, update_status, careate_time,photo_list
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from weixin_business
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByPoiId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from weixin_business
+    where poi_id = #{poiId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from weixin_business
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.fenlibao.p2p.weixin.domain.Business" >
+    <selectKey resultType="java.lang.String" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into weixin_business (business_name, branch_name, province,
+    city, district, address,
+    telephone, categories, offset_type,
+    longitude, latitude, special,
+    open_time, avg_price, sid,
+    poi_id, introduction, recommend,
+    available_state, update_status, careate_time,
+    photo_list)
+    values (#{businessName,jdbcType=VARCHAR}, #{branchName,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR},
+    #{city,jdbcType=VARCHAR}, #{district,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
+    #{telephone,jdbcType=VARCHAR}, #{categories,jdbcType=VARCHAR}, #{offsetType,jdbcType=VARCHAR},
+    #{longitude,jdbcType=VARCHAR}, #{latitude,jdbcType=VARCHAR}, #{special,jdbcType=VARCHAR},
+    #{openTime,jdbcType=TIMESTAMP}, #{avgPrice,jdbcType=DOUBLE}, #{sid,jdbcType=VARCHAR},
+    #{poiId,jdbcType=VARCHAR}, #{introduction,jdbcType=VARCHAR}, #{recommend,jdbcType=VARCHAR},
+    #{availableState,jdbcType=INTEGER}, #{updateStatus,jdbcType=INTEGER}, #{careateTime,jdbcType=TIMESTAMP},
+    #{photoList,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.fenlibao.p2p.weixin.domain.Business" >
+    <selectKey resultType="java.lang.String" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into weixin_business
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="businessName != null" >
+        business_name,
+      </if>
+      <if test="branchName != null" >
+        branch_name,
+      </if>
+      <if test="province != null" >
+        province,
+      </if>
+      <if test="city != null" >
+        city,
+      </if>
+      <if test="district != null" >
+        district,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="telephone != null" >
+        telephone,
+      </if>
+      <if test="categories != null" >
+        categories,
+      </if>
+      <if test="offsetType != null" >
+        offset_type,
+      </if>
+      <if test="longitude != null" >
+        longitude,
+      </if>
+      <if test="latitude != null" >
+        latitude,
+      </if>
+      <if test="special != null" >
+        special,
+      </if>
+      <if test="openTime != null" >
+        open_time,
+      </if>
+      <if test="avgPrice != null" >
+        avg_price,
+      </if>
+      <if test="sid != null" >
+        sid,
+      </if>
+      <if test="poiId != null" >
+        poi_id,
+      </if>
+      <if test="introduction != null" >
+        introduction,
+      </if>
+      <if test="recommend != null" >
+        recommend,
+      </if>
+      <if test="availableState != null" >
+        available_state,
+      </if>
+      <if test="updateStatus != null" >
+        update_status,
+      </if>
+      <if test="careateTime != null" >
+        careate_time,
+      </if>
+      <if test="photoList != null" >
+        photo_list,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="businessName != null" >
+        #{businessName,jdbcType=VARCHAR},
+      </if>
+      <if test="branchName != null" >
+        #{branchName,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="district != null" >
+        #{district,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null" >
+        #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="categories != null" >
+        #{categories,jdbcType=VARCHAR},
+      </if>
+      <if test="offsetType != null" >
+        #{offsetType,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null" >
+        #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null" >
+        #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="special != null" >
+        #{special,jdbcType=VARCHAR},
+      </if>
+      <if test="openTime != null" >
+        #{openTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="avgPrice != null" >
+        #{avgPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="sid != null" >
+        #{sid,jdbcType=VARCHAR},
+      </if>
+      <if test="poiId != null" >
+        #{poiId,jdbcType=VARCHAR},
+      </if>
+      <if test="introduction != null" >
+        #{introduction,jdbcType=VARCHAR},
+      </if>
+      <if test="recommend != null" >
+        #{recommend,jdbcType=VARCHAR},
+      </if>
+      <if test="availableState != null" >
+        #{availableState,jdbcType=INTEGER},
+      </if>
+      <if test="updateStatus != null" >
+        #{updateStatus,jdbcType=INTEGER},
+      </if>
+      <if test="careateTime != null" >
+        #{careateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="photoList != null" >
+        #{photoList,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fenlibao.p2p.weixin.domain.Business" >
+    update weixin_business
+    <set >
+      <if test="businessName != null" >
+        business_name = #{businessName,jdbcType=VARCHAR},
+      </if>
+      <if test="branchName != null" >
+        branch_name = #{branchName,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="district != null" >
+        district = #{district,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null" >
+        telephone = #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="categories != null" >
+        categories = #{categories,jdbcType=VARCHAR},
+      </if>
+      <if test="offsetType != null" >
+        offset_type = #{offsetType,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null" >
+        longitude = #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null" >
+        latitude = #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="special != null" >
+        special = #{special,jdbcType=VARCHAR},
+      </if>
+      <if test="openTime != null" >
+        open_time = #{openTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="avgPrice != null" >
+        avg_price = #{avgPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="sid != null" >
+        sid = #{sid,jdbcType=VARCHAR},
+      </if>
+      <if test="poiId != null" >
+        poi_id = #{poiId,jdbcType=VARCHAR},
+      </if>
+      <if test="introduction != null" >
+        introduction = #{introduction,jdbcType=VARCHAR},
+      </if>
+      <if test="recommend != null" >
+        recommend = #{recommend,jdbcType=VARCHAR},
+      </if>
+      <if test="availableState != null" >
+        available_state = #{availableState,jdbcType=INTEGER},
+      </if>
+      <if test="updateStatus != null" >
+        update_status = #{updateStatus,jdbcType=INTEGER},
+      </if>
+      <if test="careateTime != null" >
+        careate_time = #{careateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="photoList != null" >
+        photo_list = #{photoList,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateByPrimaryPoiSelective" parameterType="com.fenlibao.p2p.weixin.domain.Business" >
+    update weixin_business
+    <set >
+      <if test="businessName != null" >
+        business_name = #{businessName,jdbcType=VARCHAR},
+      </if>
+      <if test="branchName != null" >
+        branch_name = #{branchName,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="district != null" >
+        district = #{district,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null" >
+        telephone = #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="categories != null" >
+        categories = #{categories,jdbcType=VARCHAR},
+      </if>
+      <if test="offsetType != null" >
+        offset_type = #{offsetType,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null" >
+        longitude = #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null" >
+        latitude = #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="special != null" >
+        special = #{special,jdbcType=VARCHAR},
+      </if>
+      <if test="openTime != null" >
+        open_time = #{openTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="avgPrice != null" >
+        avg_price = #{avgPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="sid != null" >
+        sid = #{sid,jdbcType=VARCHAR},
+      </if>
+      <if test="introduction != null" >
+        introduction = #{introduction,jdbcType=VARCHAR},
+      </if>
+      <if test="recommend != null" >
+        recommend = #{recommend,jdbcType=VARCHAR},
+      </if>
+      <if test="availableState != null" >
+        available_state = #{availableState,jdbcType=INTEGER},
+      </if>
+      <if test="updateStatus != null" >
+        update_status = #{updateStatus,jdbcType=INTEGER},
+      </if>
+      <if test="careateTime != null" >
+        careate_time = #{careateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="photoList != null" >
+        photo_list = #{photoList,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where poi_id = #{poiId,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="com.fenlibao.p2p.weixin.domain.Business" >
+    update weixin_business
+    set business_name = #{businessName,jdbcType=VARCHAR},
+      branch_name = #{branchName,jdbcType=VARCHAR},
+      province = #{province,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      district = #{district,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      telephone = #{telephone,jdbcType=VARCHAR},
+      categories = #{categories,jdbcType=VARCHAR},
+      offset_type = #{offsetType,jdbcType=VARCHAR},
+      longitude = #{longitude,jdbcType=VARCHAR},
+      latitude = #{latitude,jdbcType=VARCHAR},
+      special = #{special,jdbcType=VARCHAR},
+      open_time = #{openTime,jdbcType=TIMESTAMP},
+      avg_price = #{avgPrice,jdbcType=DOUBLE},
+      sid = #{sid,jdbcType=VARCHAR},
+      poi_id = #{poiId,jdbcType=VARCHAR},
+      introduction = #{introduction,jdbcType=VARCHAR},
+      recommend = #{recommend,jdbcType=VARCHAR},
+      available_state = #{availableState,jdbcType=INTEGER},
+      update_status = #{updateStatus,jdbcType=INTEGER},
+      careate_time = #{careateTime,jdbcType=TIMESTAMP},
+      photo_list = #{photoList,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

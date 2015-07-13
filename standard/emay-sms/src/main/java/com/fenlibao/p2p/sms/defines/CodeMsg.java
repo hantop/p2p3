@@ -87,7 +87,7 @@ public enum CodeMsg {
 
     public static CodeMsg handCode(Object code) {
         if(code instanceof Integer) {
-            int returnCode = (int)code;
+            int returnCode = Integer.parseInt(code.toString());
             for(CodeMsg codeMsg : values()) {
                 if(returnCode == codeMsg.getErrorcode()) {
                     return codeMsg;

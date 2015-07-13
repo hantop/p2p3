@@ -77,7 +77,7 @@ public class Message extends WxApiMsg implements Serializable {
 
     /**
      * 语音消息
-     * <p>
+     * <p/>
      * <xml>
      * <ToUserName><![CDATA[toUser]]></ToUserName>
      * <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -92,7 +92,7 @@ public class Message extends WxApiMsg implements Serializable {
     private String format;//语音格式，如amr，speex等
     /**
      * 视频消息
-     * <p>
+     * <p/>
      * <xml>
      * <ToUserName><![CDATA[toUser]]></ToUserName>
      * <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -108,7 +108,7 @@ public class Message extends WxApiMsg implements Serializable {
 
     /**
      * 地理位置消息
-     * <p>
+     * <p/>
      * <xml>
      * <ToUserName><![CDATA[toUser]]></ToUserName>
      * <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -132,7 +132,7 @@ public class Message extends WxApiMsg implements Serializable {
 
     /**
      * 链接消息
-     * <p>
+     * <p/>
      * <xml>
      * <ToUserName><![CDATA[toUser]]></ToUserName>
      * <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -155,17 +155,17 @@ public class Message extends WxApiMsg implements Serializable {
     //接收事件推送
     /**
      * 关注/取消关注事件
-     * <p>
+     * <p/>
      * 用户在关注与取消关注公众号时，微信会把这个事件推送到开发者填写的URL。方便开发者给用户下发欢迎消息或者做帐号的解绑。
-     * <p>
+     * <p/>
      * 微信服务器在五秒内收不到响应会断掉连接，并且重新发起请求，总共重试三次
-     * <p>
+     * <p/>
      * 关于重试的消息排重，推荐使用FromUserName + CreateTime 排重。
-     * <p>
+     * <p/>
      * 假如服务器无法保证在五秒内处理并回复，可以直接回复空串，微信服务器不会对此作任何处理，并且不会发起重试。
-     * <p>
+     * <p/>
      * 推送XML数据包示例：
-     * <p>
+     * <p/>
      * <xml>
      * <ToUserName><![CDATA[toUser]]></ToUserName>
      * <FromUserName><![CDATA[FromUser]]></FromUserName>
@@ -179,15 +179,15 @@ public class Message extends WxApiMsg implements Serializable {
 
     /**
      * 扫描带参数二维码事件
-     * <p>
+     * <p/>
      * 用户扫描带场景值二维码时，可能推送以下两种事件：
-     * <p>
+     * <p/>
      * 如果用户还未关注公众号，则用户可以关注公众号，关注后微信会将带场景值关注事件推送给开发者。
      * 如果用户已经关注公众号，则微信会将带场景值扫描事件推送给开发者。
      * 1. 用户未关注时，进行关注后的事件推送
-     * <p>
+     * <p/>
      * 推送XML数据包示例：
-     * <p>
+     * <p/>
      * <xml><ToUserName><![CDATA[toUser]]></ToUserName>
      * <FromUserName><![CDATA[FromUser]]></FromUserName>
      * <CreateTime>123456789</CreateTime>
@@ -197,9 +197,9 @@ public class Message extends WxApiMsg implements Serializable {
      * <Ticket><![CDATA[TICKET]]></Ticket>
      * </xml>
      * 2. 用户已关注时的事件推送
-     * <p>
+     * <p/>
      * 推送XML数据包示例：
-     * <p>
+     * <p/>
      * <xml>
      * <ToUserName><![CDATA[toUser]]></ToUserName>
      * <FromUserName><![CDATA[FromUser]]></FromUserName>
@@ -224,11 +224,11 @@ public class Message extends WxApiMsg implements Serializable {
     /**
      * 接收语音识别结果
      * 开通语音识别功能，用户每次发送语音给公众号时，微信会在推送的语音消息XML数据包中，增加一个Recongnition字段。
-     * <p>
+     * <p/>
      * 注：由于客户端缓存，开发者开启或者关闭语音识别功能，对新关注者立刻生效，对已关注用户需要24小时生效。开发者可以重新关注此帐号进行测试。
-     * <p>
+     * <p/>
      * 开启语音识别后的语音XML数据包如下：
-     * <p>
+     * <p/>
      * <xml>
      * <ToUserName><![CDATA[toUser]]></ToUserName>
      * <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -247,7 +247,7 @@ public class Message extends WxApiMsg implements Serializable {
     ////////////////////////////////////////////////////////////////响应//////////////////////////////////////////////////////////////
     /**
      * 回复图片消息
-     * <p>
+     * <p/>
      * <xml>
      * <ToUserName><![CDATA[toUser]]></ToUserName>
      * <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -263,7 +263,7 @@ public class Message extends WxApiMsg implements Serializable {
 
     /**
      * 回复语音消息
-     * <p>
+     * <p/>
      * <xml>
      * <ToUserName><![CDATA[toUser]]></ToUserName>
      * <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -279,7 +279,7 @@ public class Message extends WxApiMsg implements Serializable {
 
     /**
      * 回复视频消息
-     * <p>
+     * <p/>
      * <xml>
      * <ToUserName><![CDATA[toUser]]></ToUserName>
      * <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -316,7 +316,7 @@ public class Message extends WxApiMsg implements Serializable {
 
     /**
      * 回复图文消息
-     * <p>
+     * <p/>
      * <xml>
      * <ToUserName><![CDATA[toUser]]></ToUserName>
      * <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -344,6 +344,31 @@ public class Message extends WxApiMsg implements Serializable {
 
     @XStreamAlias("ArticleCount")
     private int articleCount;//	图文消息个数，限制为10条以内
+
+    /**
+     * <xml>
+     * <ToUserName><![CDATA[toUser]]></ToUserName>
+     * <FromUserName><![CDATA[fromUser]]></FromUserName>
+     * <CreateTime>1408622107</CreateTime>
+     * <MsgType><![CDATA[event]]></MsgType>
+     * <Event><![CDATA[poi_check_notify]]></Event>
+     * <UniqId><![CDATA[123adb]]></UniqId>
+     * <PoiId><![CDATA[123123]]></PoiId>
+     * <Result><![CDATA[fail]]></Result>
+     * <Msg><![CDATA[xxxxxx]]></Msg>
+     * </xml>
+     */
+    @XStreamAlias("UniqId")
+    private String uniqId;//商户自己内部ID，即字段中的sid
+
+    @XStreamAlias("PoiId")
+    private String poiId;//微信的门店ID，微信内门店唯一标示ID
+
+    @XStreamAlias("Result")
+    private String result;//审核结果，成功succ 或失败fail
+
+    @XStreamAlias("Msg")
+    private String msg;//成功的通知信息，或审核失败的驳回理由
 
     public void addItem(Item item) {
         this.articles.add(item);
@@ -604,5 +629,37 @@ public class Message extends WxApiMsg implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getUniqId() {
+        return uniqId;
+    }
+
+    public void setUniqId(String uniqId) {
+        this.uniqId = uniqId;
+    }
+
+    public String getPoiId() {
+        return poiId;
+    }
+
+    public void setPoiId(String poiId) {
+        this.poiId = poiId;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 }

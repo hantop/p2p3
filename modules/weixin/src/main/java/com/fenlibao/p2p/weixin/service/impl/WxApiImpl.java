@@ -2,15 +2,13 @@ package com.fenlibao.p2p.weixin.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.fenlibao.p2p.weixin.config.WeixinConfig;
-import com.fenlibao.p2p.weixin.defines.CodeMsg;
-import com.fenlibao.p2p.weixin.defines.MsgDefines;
-import com.fenlibao.p2p.weixin.defines.OauthDefines;
+import com.fenlibao.p2p.weixin.defines.*;
 import com.fenlibao.p2p.weixin.domain.*;
 import com.fenlibao.p2p.weixin.event.FansEvent;
 import com.fenlibao.p2p.weixin.event.MsgEvent;
+import com.fenlibao.p2p.weixin.event.PoiCheckEvent;
 import com.fenlibao.p2p.weixin.message.Message;
 import com.fenlibao.p2p.weixin.exception.WeixinException;
-import com.fenlibao.p2p.weixin.message.MsgType;
 import com.fenlibao.p2p.weixin.message.req.ReqTicket;
 import com.fenlibao.p2p.weixin.message.template.TemplateMsg;
 import com.fenlibao.p2p.weixin.proxy.WeixinProxy;
@@ -81,16 +79,16 @@ public class WxApiImpl implements WxApi {
 
     /**
      * 在开发者首次提交验证申请时，微信服务器将发送GET请求到填写的URL上，并且带上四个参数（signature、timestamp、nonce、echostr），开发者通过对签名（即signature）的效验，来判断此条消息的真实性。
-     * <p>
+     * <p/>
      * 此后，每次开发者接收用户消息的时候，微信也都会带上前面三个参数（signature、timestamp、nonce）访问开发者设置的URL，开发者依然通过对签名的效验判断此条消息的真实性。效验方式与首次提交验证申请一致。
-     * <p>
+     * <p/>
      * 参数	描述
      * signature	微信加密签名，signature结合了开发者填写的token参数和请求中的timestamp参数、nonce参数。
      * timestamp	时间戳
      * nonce	随机数
      * echostr	随机字符串
      * 开发者通过检验signature对请求进行校验（下面有校验方式）。若确认此次GET请求来自微信服务器，请原样返回echostr参数内容，则接入生效，成为开发者成功，否则接入失败。
-     * <p>
+     * <p/>
      * 加密/校验流程如下：
      * 1. 将token、timestamp、nonce三个参数进行字典序排序
      * 2. 将三个参数字符串拼接成一个字符串进行sha1加密
@@ -234,7 +232,7 @@ public class WxApiImpl implements WxApi {
     @Override
     public Serializable process(String reqMsg, String host) {
         Message message = (Message) xStream.fromXML(reqMsg);
-        publisher.publishEvent(new MsgEvent(this,message,this.weixinConfig.getAppId(),MsgDefines.RECEIVE,reqMsg));
+        publisher.publishEvent(new MsgEvent(this, message, this.weixinConfig.getAppId(), MsgDefines.RECEIVE, reqMsg));
         Serializable result = process(message, host);
         return result;
     }
@@ -247,46 +245,49 @@ public class WxApiImpl implements WxApi {
 
     private Serializable process(Message message, String host) {
         Message respMsg = null;
-        if (message.getMsgType().equals(MsgType.MESSAGETYPE_TEXT)) {
+        if (message.getMsgType().equals(MsgType.MESSAGETYPE_TEXT.toString())) {
             //图文消息
-        } else if (message.getMsgType().equals(MsgType.MESSAGETYPE_IMAGE)) {
+        } else if (message.getMsgType().equals(MsgType.MESSAGETYPE_IMAGE.toString())) {
             //图片消息
-        } else if (message.getMsgType().equals(MsgType.MESSAGETYPE_VOICE)) {
+        } else if (message.getMsgType().equals(MsgType.MESSAGETYPE_VOICE.toString())) {
             //语音消息
-        } else if (message.getMsgType().equals(MsgType.MESSAGETYPE_VIDEO)) {
+        } else if (message.getMsgType().equals(MsgType.MESSAGETYPE_VIDEO.toString())) {
             //视频消息
-        } else if (message.getMsgType().equals(MsgType.MESSAGETYPE_SHORTVIDEO)) {
+        } else if (message.getMsgType().equals(MsgType.MESSAGETYPE_SHORTVIDEO.toString())) {
             //小视频消息
-        } else if (message.getMsgType().equals(MsgType.MESSAGETYPE_LOCATION)) {
+        } else if (message.getMsgType().equals(MsgType.MESSAGETYPE_LOCATION.toString())) {
             //地理位置消息
-        } else if (message.getMsgType().equals(MsgType.MESSAGETYPE_LINK)) {
+        } else if (message.getMsgType().equals(MsgType.MESSAGETYPE_LINK.toString())) {
             //链接消息
-        } else if (message.getMsgType().equals(MsgType.MESSAGETYPE_EVENT)) {
+        } else if (message.getMsgType().equals(MsgType.MESSAGETYPE_EVENT.toString())) {
             //事件推送
             if (message.getEvent() != null) {
                 String event = message.getEvent();
                 String eventKey = message.getEventKey();
-                if ((event.equals(MsgType.Event.EVENT_SCAN)) || (eventKey.startsWith(MsgType.Event.EVENT_KEY_QRSCENE) && event.equals(MsgType.Event.EVENT_SUBSCRIBE))) {
+                if ((event.equals(Event.EVENT_SCAN.toString())) || (eventKey.startsWith(Event.EVENT_KEY_QRSCENE.toString()) && event.equals(Event.EVENT_SUBSCRIBE.toString()))) {
                     /**用户扫描事件*/
                     respMsg = this.messageHandler.scanEvent(message, this, host);
-                } else if (event.equals(MsgType.Event.EVENT_SUBSCRIBE)) {
+                } else if (event.equals(Event.EVENT_SUBSCRIBE.toString())) {
                     /**用户关注事件*/
-                } else if (event.equals(MsgType.Event.EVENT_UNSUBSCRIBE)) {
+                } else if (event.equals(Event.EVENT_UNSUBSCRIBE.toString())) {
                     /**用户取消关注事件*/
-                } else if (event.equals(MsgType.Event.EVENT_LOCATION)) {
+                } else if (event.equals(Event.EVENT_LOCATION.toString())) {
                     /**上报地理位置事件*/
-                } else if (event.equals(MsgType.Event.EVENT_CLICK)) {
+                } else if (event.equals(Event.EVENT_CLICK)) {
                     /**用户点击自定义菜单后，微信会把点击事件推送给开发者，请注意，点击菜单弹出子菜单，不会产生上报。*/
-                } else if (event.equals(MsgType.Event.EVENT_VIEW)) {
+                } else if (event.equals(Event.EVENT_VIEW.toString())) {
                     /**点击菜单跳转链接时的事件推送*/
+                } else if (event.equals(Event.EVENT_POI_CHECK_NOTIFY.toString())) {
+                    /**审核事件推送*/
+                    publisher.publishEvent(new PoiCheckEvent(this,message));
                 }
             }
         }
         String openId = message.getFromUserName();
-        this.publisher.publishEvent(new FansEvent(this,openId));
+        this.publisher.publishEvent(new FansEvent(this, openId));
         String xml = xStream.toXML(respMsg);
         if (respMsg != null) {
-            publisher.publishEvent(new MsgEvent(this,respMsg,this.weixinConfig.getAppId(),MsgDefines.SEND,xml));
+            publisher.publishEvent(new MsgEvent(this, respMsg, this.weixinConfig.getAppId(), MsgDefines.SEND, xml));
         }
         return xml;
     }

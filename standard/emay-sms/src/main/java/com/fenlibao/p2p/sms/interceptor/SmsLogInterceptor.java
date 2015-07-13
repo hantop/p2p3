@@ -71,7 +71,7 @@ public class SmsLogInterceptor {
         Method targetMethod = methodSignature.getMethod();
         Class<?> returnType = targetMethod.getReturnType();
         String thingName = methodSignature.getName();
-        Thing thing = targetMethod.getDeclaredAnnotation(Thing.class);
+        Thing thing = targetMethod.getAnnotation(Thing.class);
         if(thing != null) {
             thingName = thing.value().toString();
         }

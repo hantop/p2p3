@@ -1,12 +1,14 @@
 package com.fenlibao.p2p.weixin.proxy.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.fenlibao.p2p.common.http.HttpClientUtil;
 import com.fenlibao.p2p.weixin.config.WeixinConfig;
 import com.fenlibao.p2p.weixin.domain.*;
 import com.fenlibao.p2p.weixin.exception.WeixinException;
 import com.fenlibao.p2p.weixin.message.Message;
+import com.fenlibao.p2p.weixin.message.Poi;
 import com.fenlibao.p2p.weixin.message.req.ReqTicket;
 import com.fenlibao.p2p.weixin.proxy.WeixinProxy;
 import com.fenlibao.p2p.weixin.service.TicketService;
@@ -20,6 +22,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 /**
  * Created by Administrator on 2015/6/10.
@@ -182,6 +185,18 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
         byte[] bytes = HttpClientUtil.httpPost(templateUrl,templateMsg);
         Message message = JSON.parseObject(bytes, Message.class);
         return message;
+    }
+
+    @Override
+    public Poi httpPoi(String poiId) {
+        Assert.isNull(poiId, "获取门店的poi_id不能为空");
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("poi_id",poiId);
+        String req = jsonObject.toJSONString();
+        String poiUrl = String.format(POI, this.weixinProxy.httpToken().getAccessToken());
+        byte[] bytes = HttpClientUtil.httpPost(poiUrl, req);
+        Poi poi = JSON.parseObject(bytes, Poi.class);
+        return poi;
     }
 
     @Override

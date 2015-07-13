@@ -69,7 +69,7 @@ public class WeixinInterceptor {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method targetMethod = methodSignature.getMethod();
         String thingName = methodSignature.getName();
-        Thing thing = targetMethod.getDeclaredAnnotation(Thing.class);
+        Thing thing = targetMethod.getAnnotation(Thing.class);
         if(thing != null) {
             thingName = thing.value().toString();
         }

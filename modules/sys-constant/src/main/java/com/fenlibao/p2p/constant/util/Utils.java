@@ -34,7 +34,7 @@ public final class Utils {
 
         Field[] fields = target.getClass().getDeclaredFields();
         for (Field field : fields) {
-            PropMap propMap = field.getDeclaredAnnotation(PropMap.class);
+            PropMap propMap = field.getAnnotation(PropMap.class);
             String targetKey = field.getName();
             if (propMap != null && !"".equals(propMap.value())) {
                 targetKey = propMap.value();

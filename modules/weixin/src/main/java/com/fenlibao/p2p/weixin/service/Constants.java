@@ -43,6 +43,8 @@ public interface Constants {
 
     String TEMPLATE = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s";//发送模板消息
 
+    String POI = "http://api.weixin.qq.com/cgi-bin/poi/getpoi?access_token=%s";//查询门店信息
+
     //微信token
     enum TokeyType {
 

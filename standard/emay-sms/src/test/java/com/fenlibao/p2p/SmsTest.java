@@ -28,14 +28,14 @@ import java.util.Map;
 //@SpringApplicationConfiguration(classes = SimpleApplication.class)
 public class SmsTest {
 
-//    private XStream xStream = new XStream();
-//
-//
-//    @Before
-//    public void before() {
-//        xStream.autodetectAnnotations(true);
-//        xStream.processAnnotations(Message.class);
-//    }
+    private XStream xStream = new XStream();
+
+
+    @Before
+    public void before() {
+        xStream.autodetectAnnotations(true);
+        xStream.processAnnotations(Message.class);
+    }
 //
 //    @Autowired
 //    private SmsApi smsApi;
@@ -119,7 +119,7 @@ public class SmsTest {
 //        Message result = restTemplate.postForObject(url, entity, Message.class);
 //        System.out.println(JSON.toJSON(result));
 //    }
-//
+
 //    @Test
 //    public void sendMsgTestXml() {
 //        HttpHeaders headers = new HttpHeaders();

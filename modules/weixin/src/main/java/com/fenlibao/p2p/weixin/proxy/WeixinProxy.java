@@ -1,10 +1,12 @@
 package com.fenlibao.p2p.weixin.proxy;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.fenlibao.p2p.weixin.annotation.Thing;
 import com.fenlibao.p2p.weixin.domain.*;
 import com.fenlibao.p2p.weixin.exception.WeixinException;
 import com.fenlibao.p2p.weixin.message.Message;
+import com.fenlibao.p2p.weixin.message.Poi;
 import com.fenlibao.p2p.weixin.message.req.ReqTicket;
 import com.fenlibao.p2p.weixin.service.Constants;
 import com.fenlibao.p2p.weixin.variable.WeiXinThing;
@@ -17,12 +19,14 @@ public interface WeixinProxy extends Constants {
 
     /**
      * tokey令牌
+     *
      * @return
      */
     String getTokenKey();
 
     /**
      * 获取token，内部自己维护token信息
+     *
      * @return
      */
     @Thing(WeiXinThing.HTTP_TOKEN)
@@ -30,6 +34,7 @@ public interface WeixinProxy extends Constants {
 
     /**
      * 根据url获取用户信息
+     *
      * @param url
      * @return
      */
@@ -38,6 +43,7 @@ public interface WeixinProxy extends Constants {
 
     /**
      * 换二维码的ticket
+     *
      * @param reqTicket
      * @return
      */
@@ -47,6 +53,7 @@ public interface WeixinProxy extends Constants {
 
     /**
      * jsapi_ticket
+     *
      * @return
      */
     @Thing(WeiXinThing.HTTP_TICKET)
@@ -54,6 +61,7 @@ public interface WeixinProxy extends Constants {
 
     /**
      * 网页授权获取用户信息
+     *
      * @param code
      * @return
      */
@@ -62,6 +70,7 @@ public interface WeixinProxy extends Constants {
 
     /**
      * 获取二维码
+     *
      * @param reqTicket
      * @return
      * @throws WeixinException
@@ -71,9 +80,23 @@ public interface WeixinProxy extends Constants {
 
     /**
      * 发送模板消息
+     *
      * @param templateMsg
      * @return
      */
     @Thing(WeiXinThing.HTTP_TEMPLATE_MSG)
     Message httpTemplateMsg(String templateMsg);
+
+
+    /**
+     * POST数据示例
+     * {
+     * "poi_id":"271262077"
+     * }
+     *  获取门店信息
+     * @param poiId
+     * @return
+     */
+    @Thing(WeiXinThing.HTTP_POI)
+    Poi httpPoi(String poiId);
 }
