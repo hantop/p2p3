@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/common" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules/mybatis-config" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules/spring-security" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules/sys-constant" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules/weixin" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/standard" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/standard/emay-sms" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/standard/zhaopin" charset="UTF-8" />
+    <file url="PROJECT" charset="UTF-8" />
+  </component>
+</project>

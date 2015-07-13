@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fenlibao.p2p.weixin.persistence.LogMapper" >
+  <resultMap id="BaseResultMap" type="com.fenlibao.p2p.weixin.domain.Log" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="app_id" property="appId" jdbcType="VARCHAR" />
+    <result column="target" property="target" jdbcType="VARCHAR" />
+    <result column="invoke" property="invoke" jdbcType="VARCHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="err_msg" property="errMsg" jdbcType="VARCHAR" />
+    <result column="thing" property="thing" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="argus" property="argus" jdbcType="LONGVARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, app_id, target, invoke, code, err_msg, thing, create_time,argus
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from weixin_log
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from weixin_log
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.fenlibao.p2p.weixin.domain.Log" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into weixin_log (app_id, target, invoke, 
+      code, err_msg, thing, 
+      create_time, argus)
+    values (#{appId,jdbcType=VARCHAR}, #{target,jdbcType=VARCHAR}, #{invoke,jdbcType=VARCHAR}, 
+      #{code,jdbcType=VARCHAR}, #{errMsg,jdbcType=VARCHAR}, #{thing,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{argus,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.fenlibao.p2p.weixin.domain.Log" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into weixin_log
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="appId != null" >
+        app_id,
+      </if>
+      <if test="target != null" >
+        target,
+      </if>
+      <if test="invoke != null" >
+        invoke,
+      </if>
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="errMsg != null" >
+        err_msg,
+      </if>
+      <if test="thing != null" >
+        thing,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="argus != null" >
+        argus,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="appId != null" >
+        #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="target != null" >
+        #{target,jdbcType=VARCHAR},
+      </if>
+      <if test="invoke != null" >
+        #{invoke,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="errMsg != null" >
+        #{errMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="thing != null" >
+        #{thing,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="argus != null" >
+        #{argus,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fenlibao.p2p.weixin.domain.Log" >
+    update weixin_log
+    <set >
+      <if test="appId != null" >
+        app_id = #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="target != null" >
+        target = #{target,jdbcType=VARCHAR},
+      </if>
+      <if test="invoke != null" >
+        invoke = #{invoke,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="errMsg != null" >
+        err_msg = #{errMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="thing != null" >
+        thing = #{thing,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="argus != null" >
+        argus = #{argus,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="com.fenlibao.p2p.weixin.domain.Log" >
+    update weixin_log
+    set app_id = #{appId,jdbcType=VARCHAR},
+      target = #{target,jdbcType=VARCHAR},
+      invoke = #{invoke,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR},
+      err_msg = #{errMsg,jdbcType=VARCHAR},
+      thing = #{thing,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      argus = #{argus,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head lang="en">
+    <meta charset="UTF-8"/>
+    <title>用户登录</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" th:href="@{/css/login.css}" href="../../css/bootstrap.min.css"/>
+    <script type="application/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <style type="text/css">
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        body {
+            font-family: 'Arial Normal', 'Arial';
+            font-size: 14px;
+        }
+
+        .clear {
+            clear: both;
+        }
+
+        a {
+            text-decoration: none;
+        }
+    </style>
+    <script type="text/javascript">
+        jQuery(function () {
+            $(".wrapper").height($(window).height());
+
+        });
+    </script>
+</head>
+<body>
+<div class="wrapper">
+    <div class="alpha"></div>
+    <div class="mainBox">
+        <h4>哎呀呀集团微信招聘管理平台登录</h4>
+        <div th:if="${param.error != null}">
+            <div class="code" style="display: block">用户名或密码错误</div>
+        </div>
+        <div th:if="${param.logout != null}">
+            <div class="code" style="display: block">注销成功</div>
+        </div>
+        <form method="post" action="/login_check">
+            <input type="hidden"
+                   th:name="${_csrf.parameterName}"
+                   th:value="${_csrf.token}"/>
+
+            <div class="left">
+                <div><span>用户名:</span><input type="text" name="username" value="" placeholder="用户名"/></div>
+                <div><span>密码:</span><input type="password" name="password" value="" placeholder="密码"/></div>
+                <div><a href="/register">注册</a></div>
+                <div class="right">
+                    <button type="submit" style="background: none;border: none;"><img
+                            src="/images/login.png"/></button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

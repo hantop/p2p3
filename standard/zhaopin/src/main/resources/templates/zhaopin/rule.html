@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <title>推广设置</title>
+</head>
+<body>
+<div layout:fragment="content" class="container">
+    <div class="pull-right">
+        <a href="#" data-toggle="modal" data-target=".module-insert">添加规则</a>
+        <div class="modal fade module-insert" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <input type="hidden" th:value="${page.page}" name="page"/>
+                        <input type="hidden" th:value="${page.size}" name="size"/>
+                        <h4 class="modal-title">推荐管理</h4>
+                    </div>
+                    <div class="modal-body" style="height:300px;">
+                        <form class="form-horizontal"  action="insert" method="post">
+                            <input type="hidden"
+                                   th:name="${_csrf.parameterName}"
+                                   th:value="${_csrf.token}"/>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">规则名称</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" placeholder="规则名称" name="name"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">推荐点击佣金</label>
+                                <div class="col-sm-8">
+                                    <input type="number" class="form-control" placeholder="推荐点击佣金" name="recommendSuccess"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">试用成功佣金</label>
+                                <div class="col-sm-8">
+                                    <input type="number" class="form-control" placeholder="试用成功佣金" name="trialSuccess"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">转正成功佣金</label>
+                                <div class="col-sm-8">
+                                    <input type="number" class="form-control" placeholder="转正成功佣金" name="positiveSuccess"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-offset-4 col-sm-8">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                    <button type="submit" class="btn btn-primary">确认</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="table table-hover">
+        <tr class="article">
+            <th>序号</th>
+            <th>规则名称</th>
+            <th>佣金方案</th>
+            <th></th>
+            <th class="handle">操作</th>
+        </tr>
+        <tr th:each="rule,ruleStat : ${page.content}">
+            <td th:text="${ruleStat.index + 1}">1</td>
+            <td th:text="${rule.name}">
+                July 11, 2012 2:17:16 PM CDT
+            </td>
+            <td>
+                <span th:text="${rule.recommendSuccess}"></span><br/>
+                <span th:text="${rule.trialSuccess}"></span><br/>
+                <span th:text="${rule.positiveSuccess}"></span><br/>
+            </td>
+            <td th:switch="${rule.status == null ? false : rule.status}">
+                <span th:case="true">使用中</span>
+                <span th:case="false">已停用</span>
+            </td>
+            <td th:switch="${rule.status == null ? false : rule.status}">
+                <div th:case="true" th:href="@{'updateStatus/'+${rule.id}}">
+                    <a href="#" data-toggle="modal" th:attr="data-target='.module-disable' + ${rule.id}">停用</a>
+                    <div th:class="'modal fade module-disable' + ${rule.id}" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <p>你确定停用该推广规则吗？&hellip;</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <form th:attr="action='updateStatus/'+${rule.id} + '?status=false'" method="post">
+                                        <input type="hidden"
+                                               th:name="${_csrf.parameterName}"
+                                               th:value="${_csrf.token}"/>
+                                        <input type="hidden" th:value="${page.page}" name="page"/>
+                                        <input type="hidden" th:value="${page.size}" name="size"/>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                        <button type="submit" class="btn btn-primary">确认</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <span th:case="false">
+                    <a href="#" data-toggle="modal" th:attr="data-target='.module-enable' + ${rule.id}">启用</a><br/>
+                    <a href="#" data-toggle="modal" th:attr="data-target='.module-update' + ${rule.id}">修改</a><br/>
+                    <a href="#" data-toggle="modal" th:attr="data-target='.module-delete' + ${rule.id}">删除</a><br/>
+                    <div th:class="'modal fade module-enable' + ${rule.id}" tabindex="-1" role="dialog" aria-hidden="true">
+                         <div class="modal-dialog">
+                             <div class="modal-content">
+                                 <div class="modal-body">
+                                     <p>你确定启用该推广规则吗？&hellip;</p>
+                                 </div>
+                                 <div class="modal-footer">
+                                     <form th:attr="action='updateStatus/'+${rule.id} + '?status=true'" method="post">
+                                         <input type="hidden"
+                                                th:name="${_csrf.parameterName}"
+                                                th:value="${_csrf.token}"/>
+                                         <input type="hidden" th:value="${page.page}" name="page"/>
+                                         <input type="hidden" th:value="${page.size}" name="size"/>
+                                         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                         <button type="submit" class="btn btn-primary">确认</button>
+                                     </form>
+                                 </div>
+                             </div>
+                         </div>
+                    </div>
+                    <div th:class="'modal fade module-update' + ${rule.id}" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title">推荐管理</h4>
+                                </div>
+                                <div class="modal-body" style="height:300px;">
+                                    <form class="form-horizontal"  th:attr="action='update/'+${rule.id}" method="post" enctype="multipart/form-data">
+                                        <input type="hidden"
+                                               th:name="${_csrf.parameterName}"
+                                               th:value="${_csrf.token}"/>
+                                        <input type="hidden" th:value="${page.page}" name="page"/>
+                                        <input type="hidden" th:value="${page.size}" name="size"/>
+                                        <input type="hidden" name="id" th:value="${rule.id}"/>
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">规则名称</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control" placeholder="规则名称" th:value="${rule.name}" name="name"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">推荐点击佣金</label>
+                                            <div class="col-sm-8">
+                                                <input type="number" class="form-control" placeholder="推荐点击佣金" th:value="${rule.recommendSuccess}" name="recommendSuccess"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">试用成功佣金</label>
+                                            <div class="col-sm-8">
+                                                <input type="number" class="form-control" placeholder="试用成功佣金" th:value="${rule.trialSuccess}" name="trialSuccess"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">转正成功佣金</label>
+                                            <div class="col-sm-8">
+                                                <input type="number" class="form-control" placeholder="转正成功佣金" th:value="${rule.positiveSuccess}" name="positiveSuccess"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-4 col-sm-8">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                                <button type="submit" class="btn btn-primary">确认</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:class="'modal fade module-delete' + ${rule.id}" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <p>你确定删除该推广规则吗？&hellip;</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <form th:attr="action='delete/'+${rule.id}" method="post">
+                                        <input type="hidden"
+                                               th:name="${_csrf.parameterName}"
+                                               th:value="${_csrf.token}"/>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                        <button type="submit" class="btn btn-primary">确认</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5" class="text-center">
+                <ul id="pagination-demo" class="pagination-sm"></ul>
+            </td>
+        </tr>
+    </table>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fenlibao.p2p.weixin.persistence.QrcodeMapper" >
+  <resultMap id="BaseResultMap" type="com.fenlibao.p2p.weixin.domain.Qrcode" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="scene_name" property="sceneName" jdbcType="VARCHAR" />
+    <result column="action_name" property="actionName" jdbcType="VARCHAR" />
+    <result column="ticket_id" property="ticketId" jdbcType="VARCHAR" />
+    <result column="scene_id" property="sceneId" jdbcType="INTEGER" />
+    <result column="scene_str" property="sceneStr" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="BIGINT" />
+    <result column="suffix" property="suffix" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="enable" property="enable" jdbcType="BIT" />
+    <result column="log_id" property="logId" jdbcType="BIGINT" />
+    <result column="bytes" property="bytes" jdbcType="LONGVARBINARY" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, scene_name, action_name, ticket_id, scene_id, scene_str, create_time, suffix,
+    name, enable, log_id,bytes
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from weixin_qrcode
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectLimitSceneBySceneStr" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from weixin_qrcode
+    where
+    id = (SELECT MAX(id) FROM weixin_qrcode WHERE scene_str = #{0} and scene_name=#{1})
+  </select>
+
+  <select id="selectLimitSceneBySceneId" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from weixin_qrcode
+    where
+    id = (SELECT MAX(id) FROM weixin_qrcode WHERE scene_id = #{0} and scene_name=#{1} )
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from weixin_qrcode
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.fenlibao.p2p.weixin.domain.Qrcode" >
+    <selectKey resultType="java.lang.String" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into weixin_qrcode (scene_name, action_name, ticket_id,
+    scene_id, scene_str, create_time,
+    suffix, name, enable, log_id,
+    bytes)
+    values (#{sceneName,jdbcType=VARCHAR}, #{actionName,jdbcType=VARCHAR}, #{ticketId,jdbcType=VARCHAR},
+    #{sceneId,jdbcType=INTEGER}, #{sceneStr,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+    #{suffix,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{enable,jdbcType=BIT}, #{logId,jdbcType=BIGINT},
+    #{bytes,jdbcType=LONGVARBINARY})
+  </insert>
+  <insert id="insertSelective" parameterType="com.fenlibao.p2p.weixin.domain.Qrcode" >
+
+    insert into weixin_qrcode
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="sceneName != null" >
+        scene_name,
+      </if>
+      <if test="actionName != null" >
+        action_name,
+      </if>
+      <if test="ticketId != null" >
+        ticket_id,
+      </if>
+      <if test="sceneId != null" >
+        scene_id,
+      </if>
+      <if test="sceneStr != null" >
+        scene_str,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="suffix != null" >
+        suffix,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="enable != null" >
+        enable,
+      </if>
+      <if test="logId != null" >
+        log_id,
+      </if>
+      <if test="bytes != null" >
+        bytes,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneName != null" >
+        #{sceneName,jdbcType=VARCHAR},
+      </if>
+      <if test="actionName != null" >
+        #{actionName,jdbcType=VARCHAR},
+      </if>
+      <if test="ticketId != null" >
+        #{ticketId,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null" >
+        #{sceneId,jdbcType=INTEGER},
+      </if>
+      <if test="sceneStr != null" >
+        #{sceneStr,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="suffix != null" >
+        #{suffix,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="enable != null" >
+        #{enable,jdbcType=BIT},
+      </if>
+      <if test="logId != null" >
+        #{logId,jdbcType=BIGINT},
+      </if>
+      <if test="bytes != null" >
+        #{bytes,jdbcType=LONGVARBINARY},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fenlibao.p2p.weixin.domain.Qrcode" >
+    update weixin_qrcode
+    <set >
+      <if test="sceneName != null" >
+        scene_name = #{sceneName,jdbcType=VARCHAR},
+      </if>
+      <if test="actionName != null" >
+        action_name = #{actionName,jdbcType=VARCHAR},
+      </if>
+      <if test="ticketId != null" >
+        ticket_id = #{ticketId,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null" >
+        scene_id = #{sceneId,jdbcType=INTEGER},
+      </if>
+      <if test="sceneStr != null" >
+        scene_str = #{sceneStr,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="suffix != null" >
+        suffix = #{suffix,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="enable != null" >
+        enable = #{enable,jdbcType=BIT},
+      </if>
+      <if test="logId != null" >
+        log_id = #{logId,jdbcType=BIGINT},
+      </if>
+      <if test="bytes != null" >
+        bytes = #{bytes,jdbcType=LONGVARBINARY},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="com.fenlibao.p2p.weixin.domain.Qrcode" >
+   update weixin_qrcode
+    set scene_name = #{sceneName,jdbcType=VARCHAR},
+    action_name = #{actionName,jdbcType=VARCHAR},
+    ticket_id = #{ticketId,jdbcType=VARCHAR},
+    scene_id = #{sceneId,jdbcType=INTEGER},
+    scene_str = #{sceneStr,jdbcType=VARCHAR},
+    create_time = #{createTime,jdbcType=TIMESTAMP},
+    suffix = #{suffix,jdbcType=VARCHAR},
+    name = #{name,jdbcType=VARCHAR},
+    enable = #{enable,jdbcType=BIT},
+    log_id = #{logId,jdbcType=BIGINT},
+    bytes = #{bytes,jdbcType=LONGVARBINARY}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

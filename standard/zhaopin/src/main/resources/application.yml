@@ -1,0 +1,33 @@
+spring:
+  mongodb:
+    basepackage: com.fenlibao.pms.*.domain
+    host: localhost
+    port: 27017
+  datasource:
+    url: jdbc:mysql://localhost/pms1
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+  mybatis:
+    mapper-location: classpath*:mapper/*.xml
+    config-location: classpath:mybatis-config.xml
+  thymeleaf:
+    cache: false
+
+
+---
+server:
+  port: 8080
+  tomcat:
+    access_log_enabled: true
+    basedir: target/tomcat
+---
+flyway:
+  check-location: true
+  locations: classpath:db/migration
+  enabled: true
+  encoding: utf-8
+  sql-migration-prefix: V
+  sql-migration-suffix: .sql
+
+

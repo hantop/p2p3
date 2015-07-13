@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/standard/emay-sms/emay-sms.iml" filepath="$PROJECT_DIR$/standard/emay-sms/emay-sms.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/modules.iml" filepath="$PROJECT_DIR$/modules/modules.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/mybatis-config/mybatis-config.iml" filepath="$PROJECT_DIR$/modules/mybatis-config/mybatis-config.iml" />
+      <module fileurl="file://$PROJECT_DIR$/p2p.iml" filepath="$PROJECT_DIR$/p2p.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/spring-security/spring-security.iml" filepath="$PROJECT_DIR$/modules/spring-security/spring-security.iml" />
+      <module fileurl="file://$PROJECT_DIR$/standard/standard.iml" filepath="$PROJECT_DIR$/standard/standard.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/sys-constant/sys-constant.iml" filepath="$PROJECT_DIR$/modules/sys-constant/sys-constant.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/weixin/weixin.iml" filepath="$PROJECT_DIR$/modules/weixin/weixin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/standard/zhaopin/zhaopin.iml" filepath="$PROJECT_DIR$/standard/zhaopin/zhaopin.iml" />
+    </modules>
+  </component>
+</project>

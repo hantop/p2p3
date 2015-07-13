@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fenlibao.p2p.zhaopin.persistence.RelationshipMapper" >
+  <resultMap id="BaseResultMap" type="com.fenlibao.p2p.zhaopin.domain.Relationship" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="from_user_openid" property="fromUserOpenid" jdbcType="VARCHAR" />
+    <result column="from_user_name" property="fromUserName" jdbcType="VARCHAR" />
+    <result column="from_user_name_phone" property="fromUserNamePhone" jdbcType="VARCHAR" />
+    <result column="to_user_openid" property="toUserOpenid" jdbcType="VARCHAR" />
+    <result column="to_user_name" property="toUserName" jdbcType="VARCHAR" />
+    <result column="to_user_name_phone" property="toUserNamePhone" jdbcType="VARCHAR" />
+    <result column="try_status" property="tryStatus" jdbcType="BIT" />
+    <result column="positive_status" property="positiveStatus" jdbcType="BIT" />
+    <result column="trial_price" property="trialPrice" jdbcType="DOUBLE" />
+    <result column="positive_price" property="positivePrice" jdbcType="DOUBLE" />
+    <result column="browse_time" property="browseTime" jdbcType="TIMESTAMP" />
+    <result column="file_name" property="fileName" jdbcType="VARCHAR" />
+    <result column="suffix" property="suffix" jdbcType="VARCHAR" />
+    <result column="resume" property="resume" jdbcType="LONGVARBINARY" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, from_user_openid, from_user_name, from_user_name_phone, to_user_openid, to_user_name, 
+    to_user_name_phone, try_status, positive_status, trial_price, positive_price, browse_time, 
+    file_name, suffix,resume,resume
+  </sql>
+
+  <resultMap id="RelationResultMap" type="com.fenlibao.p2p.zhaopin.domain.Relationship" extends="BaseResultMap">
+    <association property="fromUser" javaType="com.fenlibao.p2p.weixin.domain.Fans" columnPrefix="fromfans_" resultMap="com.fenlibao.p2p.weixin.persistence.FansMapper.BaseResultMap"/>
+    <association property="toUser" javaType="com.fenlibao.p2p.weixin.domain.Fans" columnPrefix="tofans_" resultMap="com.fenlibao.p2p.weixin.persistence.FansMapper.BaseResultMap"/>
+  </resultMap>
+
+  <select id="selectByFromUserAndToUser" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from zhaopin_relationship
+    where from_user_openid = #{0} and to_user_openid = #{1}
+  </select>
+
+  <select id="findPage" resultMap="RelationResultMap" parameterType="com.fenlibao.p2p.common.page.Page">
+    SELECT
+      relationship.id,
+      relationship.from_user_openid,
+      relationship.from_user_name,
+      relationship.from_user_name_phone,
+      relationship.to_user_openid,
+      relationship.to_user_name,
+      relationship.to_user_name_phone,
+      relationship.try_status,
+      relationship.positive_status,
+      relationship.trial_price,
+      relationship.positive_price,
+      relationship.browse_time,
+      relationship.resume,
+      relationship.file_name,
+      relationship.suffix,
+      tofans.id tofans_id,
+      tofans.subscribe tofans_subscribe,
+      tofans.openid tofans_openid,
+      tofans.nickname tofans_nickname,
+      tofans.sex tofans_sex,
+      tofans.city tofans_city,
+      tofans.country tofans_country,
+      tofans.province tofans_province,
+      tofans.language tofans_language,
+      tofans.headimgurl tofans_headimgurl,
+      tofans.subscribe_time tofans_subscribe_time,
+      tofans.unionid tofans_unionid,
+      tofans.remark tofans_remark,
+      tofans.groupid tofans_groupid,
+      tofans.privilege tofans_privilege,
+      fromfans.id fromfans_id,
+      fromfans.subscribe fromfans_subscribe,
+      fromfans.openid fromfans_openid,
+      fromfans.nickname fromfans_nickname,
+      fromfans.sex fromfans_sex,
+      fromfans.city fromfans_city,
+      fromfans.country fromfans_country,
+      fromfans.province fromfans_province,
+      fromfans.language fromfans_language,
+      fromfans.headimgurl fromfans_headimgurl,
+      fromfans.subscribe_time fromfans_subscribe_time,
+      fromfans.unionid fromfans_unionid,
+      fromfans.remark fromfans_remark,
+      fromfans.groupid fromfans_groupid,
+      fromfans.privilege fromfans_privilege
+    FROM
+      zhaopin_relationship relationship
+    JOIN weixin_fans tofans ON (relationship.to_user_openid = tofans.openid)
+    JOIN weixin_fans fromfans ON (relationship.from_user_openid = fromfans.openid)
+    <where>
+      <if test="condition.text != null">
+        tofans.nickname  like CONCAT('%','${condition.text}','%' )
+        OR
+        fromfans.nickname  like CONCAT('%','${condition.text}','%' )
+        OR
+        relationship.from_user_name_phone  like CONCAT('%','${condition.text}','%' )
+        OR
+        relationship.to_user_name_phone  like CONCAT('%','${condition.text}','%' )
+      </if>
+    </where>
+  </select>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from zhaopin_relationship
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from zhaopin_relationship
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.fenlibao.p2p.zhaopin.domain.Relationship" useGeneratedKeys="true" keyProperty="id">
+    insert into zhaopin_relationship (id, from_user_openid, from_user_name, 
+      from_user_name_phone, to_user_openid, to_user_name, 
+      to_user_name_phone, try_status, positive_status, 
+      trial_price, positive_price, browse_time, 
+      file_name, suffix, resume
+      )
+    values (#{id,jdbcType=BIGINT}, #{fromUserOpenid,jdbcType=VARCHAR}, #{fromUserName,jdbcType=VARCHAR}, 
+      #{fromUserNamePhone,jdbcType=VARCHAR}, #{toUserOpenid,jdbcType=VARCHAR}, #{toUserName,jdbcType=VARCHAR}, 
+      #{toUserNamePhone,jdbcType=VARCHAR}, #{tryStatus,jdbcType=BIT}, #{positiveStatus,jdbcType=BIT}, 
+      #{trialPrice,jdbcType=DOUBLE}, #{positivePrice,jdbcType=DOUBLE}, #{browseTime,jdbcType=TIMESTAMP}, 
+      #{fileName,jdbcType=VARCHAR}, #{suffix,jdbcType=VARCHAR}, #{resume,jdbcType=LONGVARBINARY}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.fenlibao.p2p.zhaopin.domain.Relationship" useGeneratedKeys="true" keyProperty="id">
+    insert into zhaopin_relationship
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="fromUserOpenid != null" >
+        from_user_openid,
+      </if>
+      <if test="fromUserName != null" >
+        from_user_name,
+      </if>
+      <if test="fromUserNamePhone != null" >
+        from_user_name_phone,
+      </if>
+      <if test="toUserOpenid != null" >
+        to_user_openid,
+      </if>
+      <if test="toUserName != null" >
+        to_user_name,
+      </if>
+      <if test="toUserNamePhone != null" >
+        to_user_name_phone,
+      </if>
+      <if test="tryStatus != null" >
+        try_status,
+      </if>
+      <if test="positiveStatus != null" >
+        positive_status,
+      </if>
+      <if test="trialPrice != null" >
+        trial_price,
+      </if>
+      <if test="positivePrice != null" >
+        positive_price,
+      </if>
+      <if test="browseTime != null" >
+        browse_time,
+      </if>
+      <if test="fileName != null" >
+        file_name,
+      </if>
+      <if test="suffix != null" >
+        suffix,
+      </if>
+      <if test="resume != null" >
+        resume,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="fromUserOpenid != null" >
+        #{fromUserOpenid,jdbcType=VARCHAR},
+      </if>
+      <if test="fromUserName != null" >
+        #{fromUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="fromUserNamePhone != null" >
+        #{fromUserNamePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="toUserOpenid != null" >
+        #{toUserOpenid,jdbcType=VARCHAR},
+      </if>
+      <if test="toUserName != null" >
+        #{toUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="toUserNamePhone != null" >
+        #{toUserNamePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="tryStatus != null" >
+        #{tryStatus,jdbcType=BIT},
+      </if>
+      <if test="positiveStatus != null" >
+        #{positiveStatus,jdbcType=BIT},
+      </if>
+      <if test="trialPrice != null" >
+        #{trialPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="positivePrice != null" >
+        #{positivePrice,jdbcType=DOUBLE},
+      </if>
+      <if test="browseTime != null" >
+        #{browseTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fileName != null" >
+        #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="suffix != null" >
+        #{suffix,jdbcType=VARCHAR},
+      </if>
+      <if test="resume != null" >
+        #{resume,jdbcType=LONGVARBINARY},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fenlibao.p2p.zhaopin.domain.Relationship" >
+    update zhaopin_relationship
+    <set >
+      <if test="fromUserOpenid != null" >
+        from_user_openid = #{fromUserOpenid,jdbcType=VARCHAR},
+      </if>
+      <if test="fromUserName != null" >
+        from_user_name = #{fromUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="fromUserNamePhone != null" >
+        from_user_name_phone = #{fromUserNamePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="toUserOpenid != null" >
+        to_user_openid = #{toUserOpenid,jdbcType=VARCHAR},
+      </if>
+      <if test="toUserName != null" >
+        to_user_name = #{toUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="toUserNamePhone != null" >
+        to_user_name_phone = #{toUserNamePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="tryStatus != null" >
+        try_status = #{tryStatus,jdbcType=BIT},
+      </if>
+      <if test="positiveStatus != null" >
+        positive_status = #{positiveStatus,jdbcType=BIT},
+      </if>
+      <if test="trialPrice != null" >
+        trial_price = #{trialPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="positivePrice != null" >
+        positive_price = #{positivePrice,jdbcType=DOUBLE},
+      </if>
+      <if test="browseTime != null" >
+        browse_time = #{browseTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fileName != null" >
+        file_name = #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="suffix != null" >
+        suffix = #{suffix,jdbcType=VARCHAR},
+      </if>
+      <if test="resume != null" >
+        resume = #{resume,jdbcType=LONGVARBINARY},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.fenlibao.p2p.zhaopin.domain.Relationship" >
+    update zhaopin_relationship
+    set from_user_openid = #{fromUserOpenid,jdbcType=VARCHAR},
+      from_user_name = #{fromUserName,jdbcType=VARCHAR},
+      from_user_name_phone = #{fromUserNamePhone,jdbcType=VARCHAR},
+      to_user_openid = #{toUserOpenid,jdbcType=VARCHAR},
+      to_user_name = #{toUserName,jdbcType=VARCHAR},
+      to_user_name_phone = #{toUserNamePhone,jdbcType=VARCHAR},
+      try_status = #{tryStatus,jdbcType=BIT},
+      positive_status = #{positiveStatus,jdbcType=BIT},
+      trial_price = #{trialPrice,jdbcType=DOUBLE},
+      positive_price = #{positivePrice,jdbcType=DOUBLE},
+      browse_time = #{browseTime,jdbcType=TIMESTAMP},
+      file_name = #{fileName,jdbcType=VARCHAR},
+      suffix = #{suffix,jdbcType=VARCHAR},
+      resume = #{resume,jdbcType=LONGVARBINARY}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fenlibao.p2p.zhaopin.domain.Relationship" >
+    update zhaopin_relationship
+    set from_user_openid = #{fromUserOpenid,jdbcType=VARCHAR},
+      from_user_name = #{fromUserName,jdbcType=VARCHAR},
+      from_user_name_phone = #{fromUserNamePhone,jdbcType=VARCHAR},
+      to_user_openid = #{toUserOpenid,jdbcType=VARCHAR},
+      to_user_name = #{toUserName,jdbcType=VARCHAR},
+      to_user_name_phone = #{toUserNamePhone,jdbcType=VARCHAR},
+      try_status = #{tryStatus,jdbcType=BIT},
+      positive_status = #{positiveStatus,jdbcType=BIT},
+      trial_price = #{trialPrice,jdbcType=DOUBLE},
+      positive_price = #{positivePrice,jdbcType=DOUBLE},
+      browse_time = #{browseTime,jdbcType=TIMESTAMP},
+      file_name = #{fileName,jdbcType=VARCHAR},
+      suffix = #{suffix,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

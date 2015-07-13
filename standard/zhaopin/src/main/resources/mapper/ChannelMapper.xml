@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fenlibao.p2p.zhaopin.persistence.ChannelMapper" >
+  <resultMap id="BaseResultMap" type="com.fenlibao.p2p.zhaopin.domain.Channel" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="rule_id" property="ruleId" jdbcType="BIGINT" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="scene_id" property="sceneId" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="BIT" />
+    <result column="del" property="del" jdbcType="BIT" />
+  </resultMap>
+  <resultMap id="AssociationResultMap" type="com.fenlibao.p2p.zhaopin.domain.Channel" extends="BaseResultMap">
+    <result column="rule_id_" property="ruleId" jdbcType="BIGINT" />
+    <association property="rule" javaType="com.fenlibao.p2p.zhaopin.domain.Rule" columnPrefix="rule_" resultMap="com.fenlibao.p2p.zhaopin.persistence.RuleMapper.BaseResultMap"/>
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, name, rule_id, url, scene_id, status, del
+  </sql>
+  <select id="findPage" resultMap="AssociationResultMap" parameterType="com.fenlibao.p2p.common.page.Page">
+    SELECT
+    channel.id,
+    channel.name,
+    channel.rule_id rule_id_,
+    channel.url,
+    channel.scene_id,
+    channel.status,
+    channel.del,
+    rule.id rule_id,
+    rule.operator  rule_operator,
+    rule.name  rule_name,
+    rule.recommend_success  rule_recommend_success,
+    rule.trial_success  rule_trial_success,
+    rule.positive_success rule_positive_success,
+    rule.status  rule_status,
+    rule.create_time rule_create_time,
+    rule.del  rule_del
+    FROM
+    zhaopin_channel channel
+    JOIN zhaopin_rule rule ON (rule.id = channel.rule_id)
+    WHERE (channel.del = 0 OR  channel.del is NULL) or  (rule.del = 0 OR rule.del is NULL)
+  </select>
+  <select id="selectByPrimaryKey" resultMap="AssociationResultMap" parameterType="java.lang.Long" >
+  select
+  <include refid="Base_Column_List" />
+  from zhaopin_channel
+  where id = #{id,jdbcType=BIGINT}
+</select>
+
+  <select id="selectBySceneId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from zhaopin_channel
+    where id = (SELECT MAX(id) FROM zhaopin_channel WHERE scene_id = #{sceneId,jdbcType=INTEGER})
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from zhaopin_channel
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.fenlibao.p2p.zhaopin.domain.Channel" useGeneratedKeys="true" keyProperty="id">
+    insert into zhaopin_channel (id, name, rule_id, 
+      url, scene_id, status, del
+      )
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{ruleId,jdbcType=BIGINT}, 
+      #{url,jdbcType=VARCHAR}, #{sceneId,jdbcType=INTEGER}, #{status,jdbcType=BIT}, #{del,jdbcType=BIT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.fenlibao.p2p.zhaopin.domain.Channel" useGeneratedKeys="true" keyProperty="id">
+    insert into zhaopin_channel
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="ruleId != null" >
+        rule_id,
+      </if>
+      <if test="url != null" >
+        url,
+      </if>
+      <if test="sceneId != null" >
+        scene_id,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="del != null" >
+        del,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleId != null" >
+        #{ruleId,jdbcType=BIGINT},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null" >
+        #{sceneId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="del != null" >
+        #{del,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fenlibao.p2p.zhaopin.domain.Channel" >
+    update zhaopin_channel
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleId != null" >
+        rule_id = #{ruleId,jdbcType=BIGINT},
+      </if>
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null" >
+        scene_id = #{sceneId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="del != null" >
+        del = #{del,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fenlibao.p2p.zhaopin.domain.Channel" >
+    update zhaopin_channel
+    set name = #{name,jdbcType=VARCHAR},
+      rule_id = #{ruleId,jdbcType=BIGINT},
+      url = #{url,jdbcType=VARCHAR},
+      scene_id = #{sceneId,jdbcType=INTEGER},
+      status = #{status,jdbcType=BIT},
+      del = #{del,jdbcType=BIT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

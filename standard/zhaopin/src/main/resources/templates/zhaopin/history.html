@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="layout">
+<head lang="en">
+    <meta charset="UTF-8"/>
+    <title>推荐费发放记录</title>
+</head>
+<body>
+<div layout:fragment="content" class="container">
+    <table class="table table-hover row">
+        <tr class="article">
+            <th>头像</th>
+            <th>微信</th>
+            <th>姓名</th>
+            <th>手机号</th>
+            <th>微信</th>
+            <th>推广人</th>
+            <th>手机号</th>
+            <th>发放金额</th>
+            <th>时间</th>
+            <th>发放人</th>
+        </tr>
+        <tr th:each="item,itemStat : ${page.content}">
+            <td><img width="40px" height="40px" th:src="${item.relationship.toUser.headimgurl}"/></td>
+            <td th:text="${item.relationship.toUser.nickname}"></td>
+            <td th:text="${item.relationship.toUserName}"></td>
+            <td th:text="${item.relationship.toUserNamePhone}"></td>
+            <td th:text="${item.relationship.fromUser.nickname}"></td>
+            <td th:text="${item.relationship.fromUserName}"></td>
+            <td th:text="${item.relationship.fromUserNamePhone}"></td>
+            <td th:text="${item.providePrice}"></td>
+            <td>
+                <span th:text="${item.provideTime}"></span>
+            </td>
+            <td th:text="${item.operator}"></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fenlibao.p2p.weixin.persistence.MsgMapper" >
+  <resultMap id="BaseResultMap" type="com.fenlibao.p2p.weixin.domain.Msg" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="app_id" property="appId" jdbcType="VARCHAR" />
+    <result column="to_user_name" property="toUserName" jdbcType="VARCHAR" />
+    <result column="from_user_name" property="fromUserName" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="BIGINT" />
+    <result column="msg_id" property="msgId" jdbcType="VARCHAR" />
+    <result column="msg_type" property="msgType" jdbcType="VARCHAR" />
+    <result column="event" property="event" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="format" property="format" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, app_id, to_user_name, from_user_name, create_time, msg_id, msg_type, event, type,
+    format,content
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from weixin_msg
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from weixin_msg
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.fenlibao.p2p.weixin.domain.Msg" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into weixin_msg (app_id, to_user_name, from_user_name, 
+      create_time, msg_id, msg_type, 
+      event, type, format, 
+      content)
+    values (#{appId,jdbcType=VARCHAR}, #{toUserName,jdbcType=VARCHAR}, #{fromUserName,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=BIGINT}, #{msgId,jdbcType=VARCHAR}, #{msgType,jdbcType=VARCHAR}, 
+      #{event,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{format,jdbcType=VARCHAR}, 
+      #{content,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.fenlibao.p2p.weixin.domain.Msg" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into weixin_msg
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="appId != null" >
+        app_id,
+      </if>
+      <if test="toUserName != null" >
+        to_user_name,
+      </if>
+      <if test="fromUserName != null" >
+        from_user_name,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="msgId != null" >
+        msg_id,
+      </if>
+      <if test="msgType != null" >
+        msg_type,
+      </if>
+      <if test="event != null" >
+        event,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="format != null" >
+        format,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="appId != null" >
+        #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="toUserName != null" >
+        #{toUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="fromUserName != null" >
+        #{fromUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=BIGINT},
+      </if>
+      <if test="msgId != null" >
+        #{msgId,jdbcType=VARCHAR},
+      </if>
+      <if test="msgType != null" >
+        #{msgType,jdbcType=VARCHAR},
+      </if>
+      <if test="event != null" >
+        #{event,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="format != null" >
+        #{format,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fenlibao.p2p.weixin.domain.Msg" >
+    update weixin_msg
+    <set >
+      <if test="appId != null" >
+        app_id = #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="toUserName != null" >
+        to_user_name = #{toUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="fromUserName != null" >
+        from_user_name = #{fromUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=BIGINT},
+      </if>
+      <if test="msgId != null" >
+        msg_id = #{msgId,jdbcType=VARCHAR},
+      </if>
+      <if test="msgType != null" >
+        msg_type = #{msgType,jdbcType=VARCHAR},
+      </if>
+      <if test="event != null" >
+        event = #{event,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="format != null" >
+        format = #{format,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="com.fenlibao.p2p.weixin.domain.Msg" >
+    update weixin_msg
+    set app_id = #{appId,jdbcType=VARCHAR},
+      to_user_name = #{toUserName,jdbcType=VARCHAR},
+      from_user_name = #{fromUserName,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=BIGINT},
+      msg_id = #{msgId,jdbcType=VARCHAR},
+      msg_type = #{msgType,jdbcType=VARCHAR},
+      event = #{event,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      format = #{format,jdbcType=VARCHAR},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,126 @@
+.wrapper {
+	width:100%;
+	height:100%;
+	background:url(/images/bg.jpg) no-repeat center top;
+	position:relative;
+}
+input{
+	outline:medium;
+}
+
+.mainBox {
+	width:430px;
+	position:absolute;
+	left:50%;
+	top:50%;
+	margin:-220px 0 0 -300px;
+	padding:80px;
+	border-radius:7px;
+}
+.alpha {
+	width:430px;
+	height:180px;
+	position:absolute;
+	left:50%;
+	top:50%;
+	margin:-220px 0 0 -300px;
+	background:#333;
+	padding:80px;
+	border-radius:7px;
+	filter:alpha(opacity=50);
+	-moz-opacity:0.5;
+	opacity:0.5;
+}
+
+
+.mainBox h4 {
+	font-size:18px;
+	color:#fff;
+	font-weight:normal;
+	margin-bottom:35px;
+	text-align:center;
+}
+.left {
+	position:relative;
+}
+
+
+.left span {
+	line-height:50px;
+	height:50px;
+	width:50px;
+	color:#fff;
+	text-align:right;
+	display:inline-block;
+	margin-right:10px;
+}
+
+.left a {
+	color:#5282a6;
+	margin-left:60px;
+	line-height:30px;
+	font-size:12px;
+}
+
+.left input {
+	height:39px;
+	border:1px solid #232323;
+	color:#fff;
+	background:#2a2a2a;
+	border-radius:7px;
+	width:306px;
+	padding-left:9px;
+
+}
+/*.left input:focus {*/
+	/*progid:DXImageTransform.Microsoft.MotionBlur(strength=13, direction=310);*/
+	/*progid:DXImageTransform.Microsoft.Blur(pixelradius=5);*/
+	/*progid:DXImageTransform.Microsoft.Wheel(duration=4);*/
+	/*-webkit-filter: drop-shadow(0 1px 5px rgba(255,255,255,.9));*/
+	/*-moz-filter: drop-shadow(0 1px 5px rgba(255,255,255,.9));*/
+	/*-ms-filter: drop-shadow(0 1px 5px rgba(255,255,255,.9));*/
+	/*-o-filter: drop-shadow(0 1px 5px rgba(255,255,255,.9));*/
+	/*filter: drop-shadow(0 1px 5px rgba(255,255,255,.9));*/
+/*}*/
+
+
+.right {
+	position:absolute;
+	top:16px;
+	right:22px;
+}
+
+.code {
+	border:1px solid #ff8e8e;
+	width:301px;
+	color:#666;
+	padding:7px;
+	margin-left:60px;
+	margin-bottom:5px;
+	background:#fff2f2;
+	display:none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

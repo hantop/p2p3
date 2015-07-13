@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fenlibao.p2p.zhaopin.persistence.RelationshipHistoryMapper" >
+  <resultMap id="BaseResultMap" type="com.fenlibao.p2p.zhaopin.domain.RelationshipHistory" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="relationship_id" property="relationshipId" jdbcType="BIGINT" />
+    <result column="provide" property="provide" jdbcType="BIT" />
+    <result column="provide_time" property="provideTime" jdbcType="TIMESTAMP" />
+    <result column="operator" property="operator" jdbcType="VARCHAR" />
+    <result column="provide_price" property="providePrice" jdbcType="DOUBLE" />
+  </resultMap>
+  <resultMap id="AssociationResultMap" type="com.fenlibao.p2p.zhaopin.domain.RelationshipHistory" extends="BaseResultMap">
+    <association property="relationship" columnPrefix="rship_"
+                 javaType="com.fenlibao.p2p.zhaopin.domain.Relationship"
+                 resultMap="com.fenlibao.p2p.zhaopin.persistence.RelationshipMapper.RelationResultMap">
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, relationship_id, provide, provide_time, operator, provide_price
+  </sql>
+  <select id="findPage" resultMap="AssociationResultMap" parameterType="com.fenlibao.p2p.common.page.Page">
+    SELECT
+    history.id,
+    history.relationship_id,
+    history.provide,
+    history.provide_time,
+    history.operator,
+    history.provide_price,
+    rship.id rship_id,
+    rship.from_user_openid rship_from_user_openid,
+    rship.from_user_name rship_from_user_name,
+    rship.from_user_name_phone rship_from_user_name_phone,
+    rship.to_user_openid rship_to_user_openid,
+    rship.to_user_name rship_to_user_name,
+    rship.to_user_name_phone rship_to_user_name_phone,
+    rship.try_status rship_try_status,
+    rship.positive_status rship_positive_status,
+    rship.trial_price rship_trial_price,
+    rship.positive_price rship_positive_price,
+    rship.browse_time rship_browse_time,
+    rship.resume rship_resume,
+    rship.file_name rship_file_name,
+    rship.suffix rship_suffix,
+    tofans.id rship_tofans_id,
+    tofans.subscribe rship_tofans_subscribe,
+    tofans.openid rship_tofans_openid,
+    tofans.nickname rship_tofans_nickname,
+    tofans.sex rship_tofans_sex,
+    tofans.city rship_tofans_city,
+    tofans.country rship_tofans_country,
+    tofans.province rship_tofans_province,
+    tofans.language rship_tofans_language,
+    tofans.headimgurl rship_tofans_headimgurl,
+    tofans.subscribe_time rship_tofans_subscribe_time,
+    tofans.unionid rship_tofans_unionid,
+    tofans.remark rship_tofans_remark,
+    tofans.groupid rship_tofans_groupid,
+    tofans.privilege rship_tofans_privilege,
+    fromfans.id rship_fromfans_id,
+    fromfans.subscribe rship_fromfans_subscribe,
+    fromfans.openid rship_fromfans_openid,
+    fromfans.nickname rship_fromfans_nickname,
+    fromfans.sex rship_fromfans_sex,
+    fromfans.city rship_fromfans_city,
+    fromfans.country rship_fromfans_country,
+    fromfans.province rship_fromfans_province,
+    fromfans.language rship_fromfans_language,
+    fromfans.headimgurl rship_fromfans_headimgurl,
+    fromfans.subscribe_time rship_fromfans_subscribe_time,
+    fromfans.unionid rship_fromfans_unionid,
+    fromfans.remark rship_fromfans_remark,
+    fromfans.groupid rship_fromfans_groupid,
+    fromfans.privilege rship_fromfans_privilege
+    FROM
+    zhaopin_relationship_history as history
+    JOIN zhaopin_relationship rship ON(rship.id = history.relationship_id)
+    JOIN weixin_fans tofans ON (rship.to_user_openid = tofans.openid)
+    JOIN weixin_fans fromfans ON (rship.from_user_openid = fromfans.openid)
+  </select>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from zhaopin_relationship_history
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from zhaopin_relationship_history
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.fenlibao.p2p.zhaopin.domain.RelationshipHistory" useGeneratedKeys="true" keyProperty="id">
+    insert into zhaopin_relationship_history (id, relationship_id, provide, 
+      provide_time, operator, provide_price
+      )
+    values (#{id,jdbcType=BIGINT}, #{relationshipId,jdbcType=BIGINT}, #{provide,jdbcType=BIT}, 
+      #{provideTime,jdbcType=TIMESTAMP}, #{operator,jdbcType=VARCHAR}, #{providePrice,jdbcType=DOUBLE}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.fenlibao.p2p.zhaopin.domain.RelationshipHistory" useGeneratedKeys="true" keyProperty="id">
+    insert into zhaopin_relationship_history
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="relationshipId != null" >
+        relationship_id,
+      </if>
+      <if test="provide != null" >
+        provide,
+      </if>
+      <if test="provideTime != null" >
+        provide_time,
+      </if>
+      <if test="operator != null" >
+        operator,
+      </if>
+      <if test="providePrice != null" >
+        provide_price,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="relationshipId != null" >
+        #{relationshipId,jdbcType=BIGINT},
+      </if>
+      <if test="provide != null" >
+        #{provide,jdbcType=BIT},
+      </if>
+      <if test="provideTime != null" >
+        #{provideTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operator != null" >
+        #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="providePrice != null" >
+        #{providePrice,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fenlibao.p2p.zhaopin.domain.RelationshipHistory" >
+    update zhaopin_relationship_history
+    <set >
+      <if test="relationshipId != null" >
+        relationship_id = #{relationshipId,jdbcType=BIGINT},
+      </if>
+      <if test="provide != null" >
+        provide = #{provide,jdbcType=BIT},
+      </if>
+      <if test="provideTime != null" >
+        provide_time = #{provideTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operator != null" >
+        operator = #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="providePrice != null" >
+        provide_price = #{providePrice,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fenlibao.p2p.zhaopin.domain.RelationshipHistory" >
+    update zhaopin_relationship_history
+    set relationship_id = #{relationshipId,jdbcType=BIGINT},
+      provide = #{provide,jdbcType=BIT},
+      provide_time = #{provideTime,jdbcType=TIMESTAMP},
+      operator = #{operator,jdbcType=VARCHAR},
+      provide_price = #{providePrice,jdbcType=DOUBLE}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="layout">
+<head lang="en">
+    <meta charset="UTF-8"/>
+    <title>通道管理</title>
+</head>
+<body>
+<div layout:fragment="content" class="container">
+   <div class="row" style="margin: 10px 0px 20px 0px;">
+       <form class="form-inline" role="form" action="insert" method="post">
+           <input type="hidden"
+                  th:name="${_csrf.parameterName}"
+                  th:value="${_csrf.token}"/>
+           <div class="form-group col-md-3 col-md-offset-1">
+               <input type="text" name="name" required="required" class="form-control" style="width:100%;" placeholder="输入投放渠道名称"/>
+           </div>
+           <div class="form-group col-md-2 text-center">
+               <select class="form-control" min="0" name="ruleId">
+                   <option value="-1">选择推广规则</option>
+                   <option th:each="rule,ruleStat : ${rules}" th:value="${rule.id}" th:text="${rule.name}"></option>
+               </select>
+           </div>
+           <div class="form-group col-md-3">
+               <input type="url" name="url" required="required" class="form-control" style="width:100%;" placeholder="输入投放简历url"/>
+           </div>
+           <button type="submit" class="btn btn-primary">添加投放渠道</button>
+       </form>
+   </div>
+    <table class="table table-hover row">
+        <tr>
+            <th>序号</th>
+            <th>投放渠道规则</th>
+            <th>规则</th>
+            <th>扫描量</th>
+            <th>转发量</th>
+            <th>阅读量</th>
+            <th>状态</th>
+            <th colspan="2" style="text-align: center">操作</th>
+        </tr>
+        <tr th:each="item,itemStat : ${page.content}">
+            <td th:text="${itemStat.index + 1}">序号</td>
+            <td th:text="${item.name}">投放渠道规则</td>
+            <td th:text="${item.rule.name}">规则</td>
+            <td th:text="${item.scan}">扫描量</td>
+            <td>转发量</td>
+            <td th:text="${item.view}">阅读量</td>
+            <td>状态</td>
+            <td th:switch="${(item.rule.status == null ? false : item.rule.status) and (item.status == null ? false : item.status)}" style="text-align: center">
+                <span th:case="true">
+                    <a th:href="@{'download/' + ${item.id}}">投放</a>
+                </span>
+                <a th:case="false" th:href="@{'delete/' + ${item.id}}">删除</a>
+            </td>
+            <!--<td th:switch="${item.rule.status} ? true and ${item.status} ? true" style="text-align: center">
+                <span th:case="true">
+                    <a th:href="@{'download/' + ${item.id}}">投放</a>
+                </span>
+                <a th:case="false" th:href="@{'delete/' + ${item.id}}">删除</a>
+            </td>-->
+            <td style="text-align: center" th:switch="${item.rule.status == null ? false : item.rule.status}">
+                <a th:case="true" th:href="@{'updateStatus/' + ${item.id}}" th:text="${(item.status == null ? false : item.status) ?  '停用' : '启用'}">停用</a>
+                <span th:case="false">不启用</span>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="9" class="text-center">
+                <ul id="pagination-demo" class="pagination-sm"></ul>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

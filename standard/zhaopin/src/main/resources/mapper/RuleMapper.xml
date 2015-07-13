@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fenlibao.p2p.zhaopin.persistence.RuleMapper" >
+  <resultMap id="BaseResultMap" type="com.fenlibao.p2p.zhaopin.domain.Rule" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="operator" property="operator" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="recommend_success" property="recommendSuccess" jdbcType="DOUBLE" />
+    <result column="trial_success" property="trialSuccess" jdbcType="DOUBLE" />
+    <result column="positive_success" property="positiveSuccess" jdbcType="DOUBLE" />
+    <result column="status" property="status" jdbcType="BIT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="del" property="del" jdbcType="BIT" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, operator, name, recommend_success, trial_success, positive_success, status, create_time, 
+    del
+  </sql>
+  <select id="findPage" resultMap="BaseResultMap" parameterType="com.fenlibao.p2p.common.page.Page">
+    select
+    <include refid="Base_Column_List" />
+    from zhaopin_rule
+    <where>
+      del = 0 OR  del is NULL
+    </where>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from zhaopin_rule
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="findAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from zhaopin_rule
+    WHERE del=0 OR  del is NULL
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from zhaopin_rule
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.fenlibao.p2p.zhaopin.domain.Rule" useGeneratedKeys="true" keyProperty="id">
+    insert into zhaopin_rule (id, operator, name, 
+      recommend_success, trial_success, positive_success, 
+      status, create_time, del)
+    values (#{id,jdbcType=BIGINT}, #{operator,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{recommendSuccess,jdbcType=DOUBLE}, #{trialSuccess,jdbcType=DOUBLE}, #{positiveSuccess,jdbcType=DOUBLE}, 
+      #{status,jdbcType=BIT}, #{createTime,jdbcType=TIMESTAMP}, #{del,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.fenlibao.p2p.zhaopin.domain.Rule" useGeneratedKeys="true" keyProperty="id">
+    insert into zhaopin_rule
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="operator != null" >
+        operator,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="recommendSuccess != null" >
+        recommend_success,
+      </if>
+      <if test="trialSuccess != null" >
+        trial_success,
+      </if>
+      <if test="positiveSuccess != null" >
+        positive_success,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="del != null" >
+        del,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="operator != null" >
+        #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="recommendSuccess != null" >
+        #{recommendSuccess,jdbcType=DOUBLE},
+      </if>
+      <if test="trialSuccess != null" >
+        #{trialSuccess,jdbcType=DOUBLE},
+      </if>
+      <if test="positiveSuccess != null" >
+        #{positiveSuccess,jdbcType=DOUBLE},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="del != null" >
+        #{del,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fenlibao.p2p.zhaopin.domain.Rule" >
+    update zhaopin_rule
+    <set >
+      <if test="operator != null" >
+        operator = #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="recommendSuccess != null" >
+        recommend_success = #{recommendSuccess,jdbcType=DOUBLE},
+      </if>
+      <if test="trialSuccess != null" >
+        trial_success = #{trialSuccess,jdbcType=DOUBLE},
+      </if>
+      <if test="positiveSuccess != null" >
+        positive_success = #{positiveSuccess,jdbcType=DOUBLE},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="del != null" >
+        del = #{del,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fenlibao.p2p.zhaopin.domain.Rule" >
+    update zhaopin_rule
+    set operator = #{operator,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      recommend_success = #{recommendSuccess,jdbcType=DOUBLE},
+      trial_success = #{trialSuccess,jdbcType=DOUBLE},
+      positive_success = #{positiveSuccess,jdbcType=DOUBLE},
+      status = #{status,jdbcType=BIT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      del = #{del,jdbcType=BIT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
