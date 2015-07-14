@@ -2,7 +2,6 @@ package com.fenlibao.p2p.weixin.controller;
 
 import com.fenlibao.p2p.weixin.defines.CodeMsg;
 import com.fenlibao.p2p.weixin.defines.OauthDefines;
-import com.fenlibao.p2p.weixin.message.Message;
 import com.fenlibao.p2p.weixin.service.Constants;
 import com.fenlibao.p2p.weixin.service.WxApi;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.net.URLDecoder;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -86,7 +84,7 @@ public class WinxinController {
 //            String replace = "fromUserName" + Constants.assignment + oauthDefines.getTarget().toString() + Constants.separator;
             String replace = Constants.FROM_USER_NAME + Constants.assignment + oauthDefines.getTarget().toString() + Constants.separator;
             String newState = matcher.replaceAll(replace);
-            String host = request.getScheme() + "://" + request.getServerName() + WxApi.TOW_LEVEL_DOMAIN;
+            String host = request.getScheme() + "://" + request.getServerName() + WxApi.TOW_LEVEL_DOMAIN_URL;
             String redirectUrl = String.format(host, "zhaopin/zhaopin");
             redirectUrl = wxApi.generateOauth2Url(redirectUrl, newState);
             modelAndView.addObject("link", redirectUrl);

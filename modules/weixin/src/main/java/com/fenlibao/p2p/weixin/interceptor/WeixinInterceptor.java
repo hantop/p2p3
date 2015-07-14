@@ -7,9 +7,7 @@ import com.fenlibao.p2p.weixin.defines.CodeMsg;
 import com.fenlibao.p2p.weixin.domain.Log;
 import com.fenlibao.p2p.weixin.event.LogEvent;
 import com.fenlibao.p2p.weixin.exception.WeixinException;
-import com.fenlibao.p2p.weixin.message.WxApiMsg;
-import com.fenlibao.p2p.weixin.persistence.LogMapper;
-import com.fenlibao.p2p.weixin.service.Constants;
+import com.fenlibao.p2p.weixin.message.WxMsg;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -82,8 +80,8 @@ public class WeixinInterceptor {
         try {
             //执行目标方法
             returnValue = joinPoint.proceed(args);
-            if (returnValue instanceof WxApiMsg) {
-                WxApiMsg message = (WxApiMsg) returnValue;
+            if (returnValue instanceof WxMsg) {
+                WxMsg message = (WxMsg) returnValue;
                 CodeMsg codeMsg = handleException(message);
                 Log log = new Log(weixinConfig.getAppId(),target.getClass().getName(),signature, JSON.toJSONString(args),String.valueOf(codeMsg.getErrorcode()),codeMsg.getErrmsg(),thingName);
                 publisher.publishEvent(new LogEvent(this,log,returnValue));
@@ -115,10 +113,10 @@ public class WeixinInterceptor {
         throw ex;
     }
 
-    private CodeMsg handleException(WxApiMsg wxApiMsg) throws WeixinException {
+    private CodeMsg handleException(WxMsg wxMsg) throws WeixinException {
         CodeMsg[] values = CodeMsg.values();
         for (CodeMsg status : values) {
-            int errcode = wxApiMsg.getErrcode();
+            int errcode = wxMsg.getErrcode();
             if (errcode != 0 && status.getErrorcode() == errcode) {
                 if (log.isErrorEnabled()) {
                     log.error("微信错误消息：" + status.getErrmsg());

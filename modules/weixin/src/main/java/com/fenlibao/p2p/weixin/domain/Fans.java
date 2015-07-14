@@ -2,11 +2,11 @@ package com.fenlibao.p2p.weixin.domain;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fenlibao.p2p.weixin.message.WxApiMsg;
+import com.fenlibao.p2p.weixin.message.WxMsg;
 
 import java.sql.Timestamp;
 
-public class Fans extends WxApiMsg{
+public class Fans extends WxMsg {
 
     @JsonProperty("subscribe")
     @JSONField(name = "subscribe")

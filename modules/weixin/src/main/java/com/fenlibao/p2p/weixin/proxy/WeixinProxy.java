@@ -1,13 +1,17 @@
 package com.fenlibao.p2p.weixin.proxy;
 
 
-import com.alibaba.fastjson.JSONObject;
 import com.fenlibao.p2p.weixin.annotation.Thing;
-import com.fenlibao.p2p.weixin.domain.*;
+import com.fenlibao.p2p.weixin.domain.Fans;
+import com.fenlibao.p2p.weixin.domain.Qrcode;
+import com.fenlibao.p2p.weixin.domain.Ticket;
+import com.fenlibao.p2p.weixin.domain.Token;
 import com.fenlibao.p2p.weixin.exception.WeixinException;
 import com.fenlibao.p2p.weixin.message.Message;
 import com.fenlibao.p2p.weixin.message.Poi;
+import com.fenlibao.p2p.weixin.message.WxMsg;
 import com.fenlibao.p2p.weixin.message.req.ReqTicket;
+import com.fenlibao.p2p.weixin.message.req.White;
 import com.fenlibao.p2p.weixin.service.Constants;
 import com.fenlibao.p2p.weixin.variable.WeiXinThing;
 
@@ -93,10 +97,68 @@ public interface WeixinProxy extends Constants {
      * {
      * "poi_id":"271262077"
      * }
-     *  获取门店信息
+     * 获取门店信息
+     *
      * @param poiId
      * @return
      */
     @Thing(WeiXinThing.HTTP_POI)
     Poi httpPoi(String poiId);
+
+    /**
+     * 设置测试白名单
+     * 1.同时支持“openid”、“username”两种字段设置白名单，总数上限为10个。
+     * 2.设置测试白名单接口为全量设置，即测试名单发生变化时需调用该接口重新传入所有测试人员的ID.
+     * 参数说明
+     * <p/>
+     * 参数	是否必须	说明
+     * access_token	是	调用接口凭证
+     * POST数据	是	Json数据
+     * {
+     * "openid": [
+     * "o1Pj9jmZvwSyyyyyyBa4aULW2mA",
+     * "o1Pj9jmZvxxxxxxxxxULW2mA"
+     * ],
+     * "username": [
+     * "afdvvf",
+     * "abcd"
+     * ]
+     * }
+     * 参数名	必填	类型	示例值	描述
+     * openid	否	string(20)	o1Pj9jmZvwSyyyyyyBa4aULW2mA	测试的openid列表。
+     * username	否	string（32）	eddy	测试的微信号列表。
+     * {
+     * "errcode":0,
+     * "errmsg":"ok"
+     * }
+     * errcode	错误码，0为正常。
+     * errmsg	错误信息。
+     *
+     * @param white
+     * @return
+     */
+    WxMsg testwhitelist(White white);
+
+
+    /**
+     * 核销卡券
+     * 线下核销
+     * 核销Code接口
+     * 消耗code接口是核销卡券的唯一接口，仅支持核销有效期内的卡券，否则会返回错误码invalid time。
+     * 自定义Code码（use_custom_code为true）的优惠券，在code被核销时，必须调用此接口。用于将用户客户端的code状态变更。自定义code的卡券调用接口时， post数据中需包含card_id，非自定义code不需上报。
+     *
+     * @param message
+     * @return
+     */
+    Message consume(Message message);
+
+    /**
+     * code解码接口支持两种场景： 1.商家获取choos_card_info后，将card_id和encrypt_code字段通过解码接口，获取真实code。 2.卡券内跳转外链的签名中会对code进行加密处理，通过调用解码接口获取真实code。
+     *
+     * @param message
+     * @return
+     */
+    Message encryptCode(Message message);
+
+
 }

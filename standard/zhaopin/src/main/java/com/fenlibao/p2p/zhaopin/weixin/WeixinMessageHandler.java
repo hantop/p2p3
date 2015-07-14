@@ -49,7 +49,7 @@ public class WeixinMessageHandler implements MessageHandler,Constants {
         String fromUserName = message.getFromUserName();
         String url = channel.getUrl();
 
-        host = host + WxApi.TOW_LEVEL_DOMAIN;
+        host = host + WxApi.TOW_LEVEL_DOMAIN_URL;
 
         String redirectUrl = String.format(host, "zhaopin/zhaopin");
 //        String state = "fromUserName" + Constants.assignment + fromUserName + Constants.separator +"id" + Constants.assignment + channel.getId() + Constants.separator + "redirect" + Constants.assignment + url;

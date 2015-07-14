@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Created by Administrator on 2015/7/13.
  */
-public class Poi extends WxApiMsg {
+public class Poi extends WxMsg {
 
     @JsonProperty("business")
     @JSONField(name = "business")

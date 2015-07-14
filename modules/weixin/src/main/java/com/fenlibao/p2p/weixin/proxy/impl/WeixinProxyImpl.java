@@ -9,7 +9,9 @@ import com.fenlibao.p2p.weixin.domain.*;
 import com.fenlibao.p2p.weixin.exception.WeixinException;
 import com.fenlibao.p2p.weixin.message.Message;
 import com.fenlibao.p2p.weixin.message.Poi;
+import com.fenlibao.p2p.weixin.message.WxMsg;
 import com.fenlibao.p2p.weixin.message.req.ReqTicket;
+import com.fenlibao.p2p.weixin.message.req.White;
 import com.fenlibao.p2p.weixin.proxy.WeixinProxy;
 import com.fenlibao.p2p.weixin.service.TicketService;
 import com.fenlibao.p2p.weixin.service.TokenService;
@@ -49,7 +51,10 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        Token token = weixinProxy.httpToken();
+        //防止重复执行。
+        if (event.getApplicationContext().getParent() == null) {
+            this.token = weixinProxy.httpToken();
+        }
     }
 
     @Override
@@ -80,7 +85,7 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
                 return token;
             }
         }
-        String tokenUrl = String.format(TOKEN, weixinConfig.getAppId(), weixinConfig.getAppSecret());
+        String tokenUrl = String.format(TOKEN_URL, weixinConfig.getAppId(), weixinConfig.getAppSecret());
         this.token = httpToken(tokenUrl, tokenType);
 
         return this.token;
@@ -132,7 +137,7 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
                 return ticket;
             }
         }
-        String ticketUrl = String.format(JSAPI_TICKET, this.weixinProxy.httpToken().getAccessToken());
+        String ticketUrl = String.format(JSAPI_TICKET_URL, this.weixinProxy.httpToken().getAccessToken());
         byte[] bytes = HttpClientUtil.httpGet(ticketUrl);
         this.ticket = JSON.parseObject(bytes, Ticket.class);
         ticket.setType(TicketType.JSAPI_TICKET);
@@ -143,7 +148,7 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
     @Override
     public Token httpToken(String code) throws WeixinException {
         //获取access_token
-        String oauth2TokenUrl = String.format(OAUTH2_TOKEN, weixinConfig.getAppId(), weixinConfig.getAppSecret(), code);
+        String oauth2TokenUrl = String.format(OAUTH2_TOKEN_URL, weixinConfig.getAppId(), weixinConfig.getAppSecret(), code);
         //网页的access_token
         Token oauth2Token = httpToken(oauth2TokenUrl, TokeyType.OAUTH2_ACCESS_TOKEN);
 
@@ -164,7 +169,7 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
         String actionName = reqTicket.getActionName();
 
         Ticket ticket = weixinProxy.httpTicket(reqTicket);//通过参数获取ticket
-        String qrcodeUrl = String.format(QRCODE, ticket.getTicket());
+        String qrcodeUrl = String.format(QRCODE_URL, ticket.getTicket());
         byte[] results = HttpClientUtil.httpGet(qrcodeUrl);
         Qrcode qrcode = new Qrcode();
         qrcode.setTicketId(ticket.getId());
@@ -181,7 +186,7 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
     @Override
     public Message httpTemplateMsg(String templateMsg) {
         Token token = this.weixinProxy.httpToken();
-        String templateUrl = String.format(TEMPLATE,token.getAccessToken());
+        String templateUrl = String.format(TEMPLATE_URL,token.getAccessToken());
         byte[] bytes = HttpClientUtil.httpPost(templateUrl,templateMsg);
         Message message = JSON.parseObject(bytes, Message.class);
         return message;
@@ -193,11 +198,43 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("poi_id",poiId);
         String req = jsonObject.toJSONString();
-        String poiUrl = String.format(POI, this.weixinProxy.httpToken().getAccessToken());
+        String poiUrl = String.format(POI_URL, this.weixinProxy.httpToken().getAccessToken());
         byte[] bytes = HttpClientUtil.httpPost(poiUrl, req);
         Poi poi = JSON.parseObject(bytes, Poi.class);
         return poi;
     }
+
+    @Override
+    public WxMsg testwhitelist(White white) {
+        String jsonString = JSON.toJSONString(white);
+        String cardWhiteListUrl = String.format(CARD_TESTWHITELIST_URL,this.weixinProxy.httpToken().getAccessToken());
+        byte[] bytes = HttpClientUtil.httpPost(cardWhiteListUrl,jsonString);
+        return JSON.parseObject(bytes,WxMsg.class);
+    }
+
+    @Override
+    public Message consume(Message message) {
+        String code = message.getCode();
+        Assert.isNull(code,"核销的code不能为空");
+        String jsonString = JSON.toJSONString(message);
+        String token = this.weixinProxy.httpToken().getAccessToken();
+        String consumeUrl = String.format(CONSUME_URL,token);
+        byte[] bytes = HttpClientUtil.httpPost(consumeUrl,jsonString);
+        return JSON.parseObject(bytes,Message.class);
+    }
+
+    @Override
+    public Message encryptCode(Message message) {
+        String encryptCode = message.getEncryptCode();
+        Assert.isNull(encryptCode,"待解码的encryptCode不能为空");
+        String jsonString = JSON.toJSONString(message);
+        String token = this.weixinProxy.httpToken().getAccessToken();
+        String decryptUrl = String.format(DECRYPT_URL, token);
+        byte[] bytes = HttpClientUtil.httpPost(decryptUrl, jsonString);
+        return JSON.parseObject(bytes,Message.class);
+    }
+
+
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

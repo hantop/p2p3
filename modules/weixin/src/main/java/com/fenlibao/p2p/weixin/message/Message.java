@@ -2,18 +2,17 @@ package com.fenlibao.p2p.weixin.message;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fenlibao.p2p.weixin.message.*;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.springframework.util.Assert;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Administrator on 2015/5/25.
  */
 @XStreamAlias("xml")
-public class Message extends WxApiMsg implements Serializable {
+public class Message extends WxMsg implements Serializable {
 
     // -------------------------------------------------------------通用信息----------------------------------------------------
     // 接收方帐号（收到的OpenID）
@@ -370,6 +369,58 @@ public class Message extends WxApiMsg implements Serializable {
     @XStreamAlias("Msg")
     private String msg;//成功的通知信息，或审核失败的驳回理由
 
+    /**
+     * 审核事件推送
+     * 生成的卡券通过审核时，微信会把这个事件推送到开发者填写的URL。
+     * <xml> <ToUserName><![CDATA[toUser]]></ToUserName>
+     * <FromUserName><![CDATA[FromUser]]></FromUserName>
+     * <CreateTime>123456789</CreateTime>
+     * <MsgType><![CDATA[event]]></MsgType>
+     * <Event><![CDATA[card_pass_check]]></Event>  //不通过为card_not_pass_check
+     * <CardId><![CDATA[cardid]]></CardId>
+     * </xml>
+     * ToUserName	开发者微信号
+     * FromUserName	发送方帐号（一个OpenID）
+     * CreateTime	消息创建时间 （整型）
+     * MsgType	消息类型，event
+     * Event	事件类型，card_pass_check(卡券通过审核)、card_not_pass_check（卡券未通过审核）
+     * CardId	卡券ID
+     */
+    @XStreamAlias("CardId")
+    private String cardId;//卡券ID
+
+    @JsonProperty("code")
+    @JSONField(name = "code")
+    private String code;
+
+    @JsonProperty("card")
+    @JSONField(name = "card")
+    @XStreamAlias("Card")
+    public Map<String, Object> card;
+
+    @XStreamAlias("IsGiveByFriend")
+    private String giveByFriend;//是否为转赠，1代表是，0代表否。
+
+    @XStreamAlias("FriendUserName")
+    private String friendUserName;//赠送方账号（一个OpenID），"IsGiveByFriend”为1时填写该参数。
+
+    @XStreamAlias("UserCardCode")
+    private String userCardCode;//code序列号。自定义code及非自定义code的卡券被领取后都支持事件推送。
+
+    @XStreamAlias("OldUserCardCode")
+    private String oldUserCardCode;//转赠前的code序列号。
+
+    @XStreamAlias("OuterId")
+    private String outerId;//领取场景值，用于领取渠道数据统计。可在生成二维码接口及添加JS API接口中自定义该字段的整型值。
+
+
+    @XStreamAlias("ConsumeSource")
+    private String consumeSource;//核销来源。支持开发者统计API核销（FROM_API）、公众平台核销（FROM_MP）、卡券商户助手核销（FROM_MOBILE_HELPER）（核销员微信号）
+
+    @JsonProperty("encrypt_code")
+    @JSONField(name = "encrypt_code")
+    private String encryptCode;//待解码的code
+
     public void addItem(Item item) {
         this.articles.add(item);
         this.articleCount = this.articles.size();
@@ -661,5 +712,92 @@ public class Message extends WxApiMsg implements Serializable {
 
     public void setMsg(String msg) {
         this.msg = msg;
+    }
+
+    public String getCardId() {
+        return cardId;
+    }
+
+    public void setCardId(String cardId) {
+        this.cardId = cardId;
+    }
+
+    public String getGiveByFriend() {
+        return giveByFriend;
+    }
+
+    public void setGiveByFriend(String giveByFriend) {
+        this.giveByFriend = giveByFriend;
+    }
+
+    public String getUserCardCode() {
+        return userCardCode;
+    }
+
+    public void setUserCardCode(String userCardCode) {
+        this.userCardCode = userCardCode;
+    }
+
+    public String getOldUserCardCode() {
+        return oldUserCardCode;
+    }
+
+    public void setOldUserCardCode(String oldUserCardCode) {
+        this.oldUserCardCode = oldUserCardCode;
+    }
+
+    public String getOuterId() {
+        return outerId;
+    }
+
+    public void setOuterId(String outerId) {
+        this.outerId = outerId;
+    }
+
+    public String getConsumeSource() {
+        return consumeSource;
+    }
+
+    public void setConsumeSource(String consumeSource) {
+        this.consumeSource = consumeSource;
+    }
+
+    public Map<String, Object> getCard() {
+        return card;
+    }
+
+    public void setCard(Map<String, Object> card) {
+        this.card = card;
+    }
+
+    public void setCard(String cardId) {
+        if (this.card == null) {
+            this.card = new HashMap<>();
+        }
+        this.card.put("code",cardId);
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getEncryptCode() {
+        return encryptCode;
+    }
+
+    public void setEncryptCode(String encryptCode) {
+        this.encryptCode = encryptCode;
+    }
+
+    public String getFriendUserName() {
+        return friendUserName;
+    }
+
+    public void setFriendUserName(String friendUserName) {
+        this.friendUserName = friendUserName;
     }
 }

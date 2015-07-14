@@ -2,10 +2,10 @@ package com.fenlibao.p2p.weixin.domain;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fenlibao.p2p.weixin.message.WxApiMsg;
+import com.fenlibao.p2p.weixin.message.WxMsg;
 import com.fenlibao.p2p.weixin.service.Constants;
 
-public class Token  extends WxApiMsg {
+public class Token  extends WxMsg {
 
     @JsonProperty("expires_in")
     @JSONField(name = "expires_in")

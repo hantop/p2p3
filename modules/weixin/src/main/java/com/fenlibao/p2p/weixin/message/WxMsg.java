@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * Created by lenovo on 2015/5/24.
  */
-public abstract class WxApiMsg implements Serializable {
+public class WxMsg implements Serializable {
 
     private String id;
 

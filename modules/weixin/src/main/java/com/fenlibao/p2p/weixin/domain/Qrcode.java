@@ -1,8 +1,8 @@
 package com.fenlibao.p2p.weixin.domain;
 
-import com.fenlibao.p2p.weixin.message.WxApiMsg;
+import com.fenlibao.p2p.weixin.message.WxMsg;
 
-public class Qrcode extends WxApiMsg{
+public class Qrcode extends WxMsg {
 
     private String sceneName;
 

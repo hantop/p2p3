@@ -129,7 +129,30 @@ public enum  CodeMsg {
     ERROR_CODE_9001033(9001033, "门店ID不合法"),
     ERROR_CODE_9001034(9001034, "设备备注信息过长"),
     ERROR_CODE_9001035(9001035, "设备申请参数不合法"),
-    ERROR_CODE_9001036(9001036, "查询起始值begin不合法");
+    ERROR_CODE_9001036(9001036, "查询起始值begin不合法"),
+    ERROR_CODE_40053(40053,"不合法的actioninfo，请开发者确认参数正确。"),
+    ERROR_CODE_40071(40071,"不合法的卡券类型。"),
+    ERROR_CODE_40072(40072,"不合法的编码方式。"),
+    ERROR_CODE_40078(40078,"不合法的卡券状态。"),
+    ERROR_CODE_40079(40079,"不合法的时间。"),
+    ERROR_CODE_40080(40080,"不合法的CardExt。"),
+    ERROR_CODE_40099(40099,"卡券已被核销。"),
+    ERROR_CODE_40100(40100,"不合法的时间区间。"),
+    ERROR_CODE_40116(40116,"不合法的Code码。"),
+    ERROR_CODE_40122(40122,"不合法的库存数量。"),
+    ERROR_CODE_40124(40124,"会员卡设置查过限制的 custom_field字段。"),
+    ERROR_CODE_40127(40127,"卡券被用户删除或转赠中。"),
+    ERROR_CODE_41012(41012,"缺少cardid参数。"),
+    ERROR_CODE_45030(45030,"该cardid无接口权限。"),
+    ERROR_CODE_45031(45031,"库存为0。"),
+    ERROR_CODE_45033(45033,"用户领取次数超过限制get_limit"),
+    ERROR_CODE_41011(41011,"缺少必填字段。"),
+    ERROR_CODE_45021(45021,"字段超过长度限制，请参考相应接口的字段说明。"),
+    ERROR_CODE_40056(40056,"不合法的Code码。"),
+    ERROR_CODE_43009(43009,"自定义SN权限，请前往公众平台申请。"),
+    ERROR_CODE_43010(43010,"无储值权限，请前往公众平台申请。");
+
+
 
     private int errorcode;
     private String errmsg;

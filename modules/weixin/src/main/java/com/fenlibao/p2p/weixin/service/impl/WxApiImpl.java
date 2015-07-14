@@ -22,7 +22,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
@@ -35,7 +37,7 @@ import java.util.*;
  */
 @Service("wxApi")
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-public class WxApiImpl implements WxApi {
+public class WxApiImpl implements WxApi,ApplicationListener<ContextRefreshedEvent> {
 
     private final static Logger log = LoggerFactory.getLogger(WxApiImpl.class);
 
@@ -56,15 +58,30 @@ public class WxApiImpl implements WxApi {
 
     private MessageHandler messageHandler;
 
-    @Autowired
-    public WxApiImpl(MessageHandler messageHandler) {
-        this.messageHandler = messageHandler;
-    }
+//    @Autowired
+//    public WxApiImpl(MessageHandler messageHandler) {
+//        this.messageHandler = messageHandler;
+//    }
 
     static {
         xStream.autodetectAnnotations(true);
         xStream.processAnnotations(Message.class);
     }
+
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+//        //防止重复执行。
+//        if (event.getApplicationContext().getParent() == null) {
+//            String appid = "o5D9Ts8qEfQy73VwwTOeUbG34Sfw";
+//            try {
+//                Fans fans = this.getFans(appid);
+//                System.out.println(fans);
+//            } catch (WeixinException e) {
+//                e.printStackTrace();
+//            }
+//        }
+    }
+
 
     @Override
     public WeixinConfig getWeixinConfig() {
@@ -122,7 +139,7 @@ public class WxApiImpl implements WxApi {
         Ticket ticket = this.weixinProxy.httpTicket();
         String nonceStr = this.createNonceStr();
         String timestamp = this.createTimestamp();
-        String signature = String.format(JSAPI_SIGN, ticket.getTicket(), nonceStr, timestamp, url);
+        String signature = String.format(JSAPI_SIGN_URL, ticket.getTicket(), nonceStr, timestamp, url);
         signature = DigestUtils.sha1Hex(signature);
         ret.put("url", url);
         ret.put("jsapi_ticket", ticket.getTicket());
@@ -144,7 +161,7 @@ public class WxApiImpl implements WxApi {
 
     @Override
     public Fans getFans(String openid) throws WeixinException {
-        String fansUrl = String.format(FANS, this.weixinProxy.httpToken().getAccessToken(), openid);
+        String fansUrl = String.format(FANS_URL, this.weixinProxy.httpToken().getAccessToken(), openid);
         return this.weixinProxy.httpFans(fansUrl);
     }
 
@@ -218,7 +235,7 @@ public class WxApiImpl implements WxApi {
             return oauthDefines;
         }
         //拉取用户信息(需scope为 snsapi_userinfo)
-        String oauth2UserInfoUrl = String.format(SNSAPI_USERINFO, oauth2Token.getAccessToken(), oauth2Token.getOpenid());
+        String oauth2UserInfoUrl = String.format(SNSAPI_USERINFO_URL, oauth2Token.getAccessToken(), oauth2Token.getOpenid());
         Fans userInfo = this.weixinProxy.httpFans(oauth2UserInfoUrl);
         if (log.isInfoEnabled()) {
             log.info("获取用户信息：" + JSON.toJSONString(userInfo));
@@ -264,7 +281,7 @@ public class WxApiImpl implements WxApi {
             if (message.getEvent() != null) {
                 String event = message.getEvent();
                 String eventKey = message.getEventKey();
-                if ((event.equals(Event.EVENT_SCAN.toString())) || (eventKey.startsWith(Event.EVENT_KEY_QRSCENE.toString()) && event.equals(Event.EVENT_SUBSCRIBE.toString()))) {
+                if ((event.equals(Event.EVENT_SCAN.toString())) || (eventKey != null && eventKey.startsWith(Event.EVENT_KEY_QRSCENE.toString()) && event.equals(Event.EVENT_SUBSCRIBE.toString()))) {
                     /**用户扫描事件*/
                     respMsg = this.messageHandler.scanEvent(message, this, host);
                 } else if (event.equals(Event.EVENT_SUBSCRIBE.toString())) {
@@ -278,8 +295,23 @@ public class WxApiImpl implements WxApi {
                 } else if (event.equals(Event.EVENT_VIEW.toString())) {
                     /**点击菜单跳转链接时的事件推送*/
                 } else if (event.equals(Event.EVENT_POI_CHECK_NOTIFY.toString())) {
-                    /**审核事件推送*/
-                    publisher.publishEvent(new PoiCheckEvent(this,message));
+                    /**门店审核事件推送*/
+                    publisher.publishEvent(new PoiCheckEvent(this, message));
+                } else if (event.equals(Event.CARD_PASS_CHECK.toString())) {
+                    /**卡券通过审核*/
+                } else if (event.equals(Event.CARD_NOT_PASS_CHECK.toString())) {
+                    /**卡券未通过审核*/
+                } else if (event.equals(Event.USER_GET_CARD.toString())) {
+                    /**领取事件推送*/
+
+                } else if (event.equals(Event.USER_DEL_CARD.toString())) {
+                    /**删除事件推送*/
+                } else if (event.equals(Event.USER_CONSUME_CARD.toString())) {
+                    /**核销事件*/
+                } else if (event.equals(Event.USER_VIEW_CARD.toString())) {
+                    /**核销事件，进入会员卡事件推送*/
+                } else if (event.equals(Event.USER_ENTER_SESSION_FROM_CARD.toString())) {
+                    /**从卡券进入公众号会话事件推送*/
                 }
             }
         }
