@@ -15,29 +15,69 @@ public class ReqTicket implements Serializable {
 
     @JsonProperty("action_name")
     @JSONField(name = "action_name")
-    private String actionName;//二维码类型，QR_SCENE为临时,QR_LIMIT_SCENE为永久,QR_LIMIT_STR_SCENE为永久的字符串参数值
+    private Constants.QrcodeType actionName;//二维码类型，QR_SCENE为临时,QR_LIMIT_SCENE为永久,QR_LIMIT_STR_SCENE为永久的字符串参数值
 
     @JsonProperty("action_info")
     @JSONField(name = "action_info")
     private Map<String, Map<String, Object>> actionInfo;//二维码详细信息
 
 
-    public ReqTicket(Constants.QrcodeType actionName, String sceneStr) {
-        this.actionName = actionName.toString();
+    public ReqTicket(Constants.QrcodeType actionName, Serializable scene) {
+        this.actionName = actionName;
         Map<String, Object> scenet = new HashMap();
-        scenet.put("scene_str", sceneStr);
-
-        this.actionInfo = new HashMap<String, Map<String, Object>>();
-        this.actionInfo.put("scene", scenet);
+        if (scene instanceof String) {
+            scenet.put("scene_str", scene);
+            this.actionInfo = new HashMap<>();
+            this.actionInfo.put("scene", scenet);
+        } else {
+            scenet.put("scene_id", scene);
+            this.actionInfo = new HashMap<>();
+            this.actionInfo.put("scene", scenet);
+        }
     }
 
-    public ReqTicket(Constants.QrcodeType actionName, int sceneId) {
-        this.actionName = actionName.toString();
-        Map<String, Object> scenet = new HashMap();
-        scenet.put("scene_id", sceneId);
 
-        this.actionInfo = new HashMap<String, Map<String, Object>>();
-        this.actionInfo.put("scene", scenet);
+//    /**
+//     * 字符场景
+//     * @param actionName
+//     * @param sceneStr
+//     */
+//    public ReqTicket(Constants.QrcodeType actionName, String sceneStr) {
+//        this.actionName = actionName;
+//        Map<String, Object> scenet = new HashMap();
+//        scenet.put("scene_str", sceneStr);
+//
+//        this.actionInfo = new HashMap<String, Map<String, Object>>();
+//        this.actionInfo.put("scene", scenet);
+//    }
+//
+//    /**
+//     * 数字场景
+//     * @param actionName
+//     * @param sceneId
+//     */
+//    public ReqTicket(Constants.QrcodeType actionName, int sceneId) {
+//        this.actionName = actionName;
+//        Map<String, Object> scenet = new HashMap();
+//        scenet.put("scene_id", sceneId);
+//
+//        this.actionInfo = new HashMap<String, Map<String, Object>>();
+//        this.actionInfo.put("scene", scenet);
+//    }
+
+    public ReqTicket(String cardId, Integer outerId, String code, String openid, Integer expireSeconds, Boolean uniqueCode) {
+        this.actionName = Constants.QrcodeType.QR_CARD;
+        Map<String, Object> card = new HashMap();
+        card.put("card_id", cardId);
+        card.put("code", code);
+        card.put("openid", openid);
+        card.put("expire_seconds", expireSeconds);
+        card.put("is_unique_code", uniqueCode);
+        card.put("outer_id", outerId);
+
+
+        this.actionInfo = new HashMap<>();
+        this.actionInfo.put("card", card);
     }
 
     public String generateSceneStr() {
@@ -46,15 +86,15 @@ public class ReqTicket implements Serializable {
     }
 
     public int generateSceneId() {
-        Object sceneId =actionInfo.get("scene").get("scene_id");
+        Object sceneId = actionInfo.get("scene").get("scene_id");
         return sceneId != null ? Integer.parseInt(sceneId.toString()) : 0;
     }
 
-    public String getActionName() {
+    public Constants.QrcodeType getActionName() {
         return actionName;
     }
 
-    public void setActionName(String actionName) {
+    public void setActionName(Constants.QrcodeType actionName) {
         this.actionName = actionName;
     }
 

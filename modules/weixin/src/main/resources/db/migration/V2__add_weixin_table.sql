@@ -135,9 +135,13 @@ CREATE TABLE `weixin_ticket` (
 -- ----------------------------
 -- Records of weixin_ticket
 -- ----------------------------
+drop table if exists weixin_msg;
 
+/*==============================================================*/
+/* Table: weixin_msg                                            */
+/*==============================================================*/
 CREATE TABLE `weixin_msg` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id` varchar(64) NOT NULL,
   `app_id` varchar(64) DEFAULT NULL COMMENT 'appID（应用ID）',
   `to_user_name` varchar(64) DEFAULT NULL COMMENT '接收方帐号（收到的OpenID）',
   `from_user_name` varchar(64) DEFAULT NULL COMMENT '发送方帐号（一个OpenID）',
@@ -145,11 +149,38 @@ CREATE TABLE `weixin_msg` (
   `msg_id` varchar(64) DEFAULT NULL COMMENT '消息id，64位整型',
   `msg_type` varchar(64) DEFAULT NULL COMMENT '消息类型，event',
   `event` varchar(64) DEFAULT NULL COMMENT '事件类型',
-  `type` varchar(30) DEFAULT NULL COMMENT '消息类型',
-  `format` varchar(30) DEFAULT NULL COMMENT '消息内容格式',
   `content` text COMMENT '消息内容',
+  `pic_url` varchar(256) DEFAULT NULL COMMENT '消息内容格式',
+  `media_id` varchar(64) DEFAULT NULL COMMENT '图片消息媒体id，可以调用多媒体文件下载接口拉取数据。',
+  `format` varchar(64) DEFAULT NULL COMMENT '语音格式，如amr，speex等',
+  `thumb_media_id` varchar(64) DEFAULT NULL COMMENT '视频消息缩略图的媒体id，可以调用多媒体文件下载接口拉取数据',
+  `location_X` varchar(64) DEFAULT NULL COMMENT '地理位置维度',
+  `location_Y` varchar(64) DEFAULT NULL COMMENT '地理位置经度',
+  `scale` varchar(10) DEFAULT NULL COMMENT '地图缩放大小',
+  `label` varchar(64) DEFAULT NULL COMMENT '地理位置信息',
+  `title` varchar(64) DEFAULT NULL COMMENT '消息标题',
+  `description` varchar(64) DEFAULT NULL COMMENT '消息描述',
+  `url` varchar(256) DEFAULT NULL COMMENT '消息链接',
+  `event_key` varchar(64) DEFAULT NULL COMMENT '事件KEY值',
+  `ticket` varchar(64) DEFAULT NULL COMMENT '二维码的ticket',
+  `latitude` varchar(64) DEFAULT NULL COMMENT '地理位置纬度(上报地理)',
+  `longitude` varchar(64) DEFAULT NULL COMMENT '地理位置经度(上报地理)',
+  `precision` varchar(64) DEFAULT NULL COMMENT '地理位置精度',
+  `recognition` text COMMENT '语音识别结果',
+  `article_count` int(11) DEFAULT NULL COMMENT '图文消息个数',
+  `uniq_id` varchar(64) DEFAULT NULL COMMENT '商户自己内部ID',
+  `poi_id` varchar(64) DEFAULT NULL COMMENT '微信的门店ID',
+  `result` varchar(64) DEFAULT NULL COMMENT '审核结果',
+  `msg` text COMMENT '成功的通知信息，或审核失败的驳回理由',
+  `card_id` varchar(64) DEFAULT NULL COMMENT '卡券ID',
+  `give_by_friend` bit(1) DEFAULT NULL COMMENT '是否为转赠，1代表是，0代表否。',
+  `user_card_code` varchar(64) DEFAULT NULL COMMENT 'code序列号。自定义code及非自定义code的卡券被领取后都支持事件推送。',
+  `old_user_card_code` varchar(64) DEFAULT NULL COMMENT '转赠前的code序列号',
+  `outer_id` varchar(64) DEFAULT NULL COMMENT '领取场景值，用于领取渠道数据统计。可在生成二维码接口及添加JS API接口中自定义该字段的整型值。',
+  `consume_source` varchar(64) DEFAULT NULL COMMENT '核销来源。支持开发者统计API核销（FROM_API）、公众平台核销（FROM_MP）、卡券商户助手核销（FROM_MOBILE_HELPER）（核销员微信号）',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='微信交互的消息记录';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='微信交互的消息记录';
+
 
 -- 门店信息
 CREATE TABLE `weixin_business` (

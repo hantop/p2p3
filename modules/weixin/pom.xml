@@ -32,7 +32,6 @@
             <groupId>com.fenlibao.p2p</groupId>
             <artifactId>mybatis-config</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

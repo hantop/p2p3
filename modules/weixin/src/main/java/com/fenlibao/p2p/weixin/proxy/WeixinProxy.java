@@ -1,6 +1,7 @@
 package com.fenlibao.p2p.weixin.proxy;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.fenlibao.p2p.weixin.annotation.Thing;
 import com.fenlibao.p2p.weixin.domain.Fans;
 import com.fenlibao.p2p.weixin.domain.Qrcode;
@@ -10,10 +11,13 @@ import com.fenlibao.p2p.weixin.exception.WeixinException;
 import com.fenlibao.p2p.weixin.message.Message;
 import com.fenlibao.p2p.weixin.message.Poi;
 import com.fenlibao.p2p.weixin.message.WxMsg;
+import com.fenlibao.p2p.weixin.message.card.Card;
 import com.fenlibao.p2p.weixin.message.req.ReqTicket;
 import com.fenlibao.p2p.weixin.message.req.White;
 import com.fenlibao.p2p.weixin.service.Constants;
 import com.fenlibao.p2p.weixin.variable.WeiXinThing;
+
+import java.io.IOException;
 
 /**
  * Created by Administrator on 2015/6/10.
@@ -81,6 +85,9 @@ public interface WeixinProxy extends Constants {
      */
     @Thing(WeiXinThing.HTTP_QRCODE)
     Qrcode httpQrcode(ReqTicket reqTicket, String scene);
+
+    @Thing(WeiXinThing.HTTP_QRCODE)
+    Qrcode httpQrcode(ReqTicket reqTicket);
 
     /**
      * 发送模板消息
@@ -150,7 +157,7 @@ public interface WeixinProxy extends Constants {
      * @param message
      * @return
      */
-    Message consume(Message message);
+//    Message consume(Message message);
 
     /**
      * code解码接口支持两种场景： 1.商家获取choos_card_info后，将card_id和encrypt_code字段通过解码接口，获取真实code。 2.卡券内跳转外链的签名中会对code进行加密处理，通过调用解码接口获取真实code。
@@ -158,7 +165,30 @@ public interface WeixinProxy extends Constants {
      * @param message
      * @return
      */
-    Message encryptCode(Message message);
+//    Message encryptCode(Message message);
 
 
+    /**
+     * 获取用户已领取卡券接口
+     *
+     * @param params
+     * @return
+     */
+    byte[] getUserCardList(JSONObject params);
+
+    /**
+     * 查看卡券详情
+     * 调用该接口可查询卡券字段详情及卡券所处状态。建议开发者调用卡券更新信息接口后调用该接口验证是否更新成功。
+     *
+     * @param params
+     * @return
+     */
+    Card getCard(JSONObject params) throws IOException;
+
+    /**
+     * 根据OpenID列表群发【订阅号不可用，服务号认证后可用】
+     * @param params
+     * @return
+     */
+    byte[] messageMassSend(JSONObject params);
 }

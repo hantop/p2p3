@@ -1,6 +1,7 @@
 package com.fenlibao.p2p.weixin.proxy.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.fenlibao.p2p.common.http.HttpClientUtil;
@@ -10,6 +11,7 @@ import com.fenlibao.p2p.weixin.exception.WeixinException;
 import com.fenlibao.p2p.weixin.message.Message;
 import com.fenlibao.p2p.weixin.message.Poi;
 import com.fenlibao.p2p.weixin.message.WxMsg;
+import com.fenlibao.p2p.weixin.message.card.Card;
 import com.fenlibao.p2p.weixin.message.req.ReqTicket;
 import com.fenlibao.p2p.weixin.message.req.White;
 import com.fenlibao.p2p.weixin.proxy.WeixinProxy;
@@ -25,6 +27,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
+
+import java.io.IOException;
 
 /**
  * Created by Administrator on 2015/6/10.
@@ -112,14 +116,23 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
 
     @Override
     public Ticket httpTicket(ReqTicket reqTicket) {
-
         Token token = weixinProxy.httpToken();
-        String ticketUrl = String.format(TICKET, token.getAccessToken());
+        String ticketUrl = null;
+        TicketType ticketType = null;
+        if (reqTicket.getActionName() == QrcodeType.QR_CARD) {
+            ticketUrl = String.format(CARD_QRCODE_URL, token.getAccessToken());//卡券投放的二维码ticket路径
+            ticketType = TicketType.QR_CARD_TICKET;
+        } else {
+            ticketUrl = String.format(TICKET_URL, token.getAccessToken());//二维码ticket路径
+            ticketType = TicketType.QR_TICKET;
+        }
+        Assert.notNull(ticketUrl,"ticket url 不能为空");
+
         String jsonParam = JSON.toJSONString(reqTicket, SerializerFeature.WriteNonStringKeyAsString);
         byte[] results = HttpClientUtil.httpPost(ticketUrl, jsonParam);
         Ticket ticket = JSON.parseObject(results, Ticket.class);
 
-        ticket.setType(TicketType.QR_TICKET);
+        ticket.setType(ticketType);
         ticket.setCreateTime(System.currentTimeMillis());
         return ticket;
     }
@@ -166,7 +179,7 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
     public Qrcode httpQrcode(ReqTicket reqTicket,String scene) {
         String sceneStr = reqTicket.generateSceneStr();
         Integer sceneId = reqTicket.generateSceneId();
-        String actionName = reqTicket.getActionName();
+        String actionName = reqTicket.getActionName().toString();
 
         Ticket ticket = weixinProxy.httpTicket(reqTicket);//通过参数获取ticket
         String qrcodeUrl = String.format(QRCODE_URL, ticket.getTicket());
@@ -194,12 +207,12 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
 
     @Override
     public Poi httpPoi(String poiId) {
-        Assert.isNull(poiId, "获取门店的poi_id不能为空");
+        Assert.notNull(poiId, "获取门店的poi_id不能为空");
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("poi_id",poiId);
         String req = jsonObject.toJSONString();
-        String poiUrl = String.format(POI_URL, this.weixinProxy.httpToken().getAccessToken());
-        byte[] bytes = HttpClientUtil.httpPost(poiUrl, req);
+        String url = String.format(POI_URL, this.weixinProxy.httpToken().getAccessToken());
+        byte[] bytes = HttpClientUtil.httpPost(url, req);
         Poi poi = JSON.parseObject(bytes, Poi.class);
         return poi;
     }
@@ -207,33 +220,67 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
     @Override
     public WxMsg testwhitelist(White white) {
         String jsonString = JSON.toJSONString(white);
-        String cardWhiteListUrl = String.format(CARD_TESTWHITELIST_URL,this.weixinProxy.httpToken().getAccessToken());
-        byte[] bytes = HttpClientUtil.httpPost(cardWhiteListUrl,jsonString);
+        String url = String.format(CARD_TESTWHITELIST_URL, this.weixinProxy.httpToken().getAccessToken());
+        byte[] bytes = HttpClientUtil.httpPost(url,jsonString);
         return JSON.parseObject(bytes,WxMsg.class);
     }
 
+//    @Override
+//    public Message consume(Message message) {
+//        String code = message.getCode();
+//        Assert.notNull(code, "核销的code不能为空");
+//        String jsonString = JSON.toJSONString(message);
+//        String token = this.weixinProxy.httpToken().getAccessToken();
+//        String url = String.format(CONSUME_URL, token);
+//        byte[] bytes = HttpClientUtil.httpPost(url,jsonString);
+//        return JSON.parseObject(bytes,Message.class);
+//    }
+//
+//    @Override
+//    public Message encryptCode(Message message) {
+//        String encryptCode = message.getEncryptCode();
+//        Assert.notNull(encryptCode, "待解码的encryptCode不能为空");
+//        String jsonString = JSON.toJSONString(message);
+//        String token = this.weixinProxy.httpToken().getAccessToken();
+//        String url = String.format(DECRYPT_URL, token);
+//        byte[] bytes = HttpClientUtil.httpPost(url, jsonString);
+//        return JSON.parseObject(bytes,Message.class);
+//    }
+
     @Override
-    public Message consume(Message message) {
-        String code = message.getCode();
-        Assert.isNull(code,"核销的code不能为空");
-        String jsonString = JSON.toJSONString(message);
+    public byte[] getUserCardList(JSONObject params) {
+        Object openid = params.get("openid");
+        Assert.notNull(openid, "需要查询的用户openid不能为空");
+        String jsonString = params.toString();
         String token = this.weixinProxy.httpToken().getAccessToken();
-        String consumeUrl = String.format(CONSUME_URL,token);
-        byte[] bytes = HttpClientUtil.httpPost(consumeUrl,jsonString);
-        return JSON.parseObject(bytes,Message.class);
+        String url = String.format(USER_CARD_LIST_URL, token);
+        byte[] bytes = HttpClientUtil.httpPost(url, jsonString);
+        return bytes;
     }
 
     @Override
-    public Message encryptCode(Message message) {
-        String encryptCode = message.getEncryptCode();
-        Assert.isNull(encryptCode,"待解码的encryptCode不能为空");
-        String jsonString = JSON.toJSONString(message);
+    public Card getCard(JSONObject params) throws IOException {
+        Object cardId = params.get("card_id");
+        Assert.notNull(cardId, "卡券ID不能为空");
+        String jsonString = params.toString();
         String token = this.weixinProxy.httpToken().getAccessToken();
-        String decryptUrl = String.format(DECRYPT_URL, token);
-        byte[] bytes = HttpClientUtil.httpPost(decryptUrl, jsonString);
-        return JSON.parseObject(bytes,Message.class);
+        String url = String.format(CARD_URL, token);
+        byte[] bytes = HttpClientUtil.httpPost(url, jsonString);
+        return JSON.parseObject(bytes,Card.class);
     }
 
+    @Override
+    public byte[] messageMassSend(JSONObject params) {
+        JSONArray tousers = params.getJSONArray("touser");
+        Object msgtype = params.get("msgtype");
+        Assert.notNull(tousers,"填写图文消息的接收者列表不能为空");
+        Assert.notNull(msgtype,"群发的消息类型不能为空");
+        String jsonString = params.toString();
+        String token = this.weixinProxy.httpToken().getAccessToken();
+        String url = String.format(MESSAGE_MASS_SEND_URL, token);
+        byte[] bytes = HttpClientUtil.httpPost(url, jsonString);
+        return bytes;
+    }
 
 
     @Override

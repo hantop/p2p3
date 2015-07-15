@@ -1,18 +1,16 @@
 package com.fenlibao.p2p.weixin.message;
 
-import com.alibaba.fastjson.annotation.JSONField;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.springframework.util.Assert;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Administrator on 2015/5/25.
  */
 @XStreamAlias("xml")
-public class Message extends WxMsg implements Serializable {
+public class Message implements Serializable {
 
     // -------------------------------------------------------------通用信息----------------------------------------------------
     // 接收方帐号（收到的OpenID）
@@ -30,9 +28,6 @@ public class Message extends WxMsg implements Serializable {
     //消息id，64位整型
     @XStreamAlias("MsgId")
     private String msgId;
-    @JsonProperty("msgid")
-    @JSONField(name = "msgid")
-    private String msgid;
     @XStreamAlias("Status")
     private String status;
     // -------------------------------------------------------------通用信息----------------------------------------------------
@@ -121,9 +116,9 @@ public class Message extends WxMsg implements Serializable {
      * </xml>
      */
     @XStreamAlias("Location_X")
-    private String location_X;//	地理位置维度
+    private String locationX;//	地理位置维度
     @XStreamAlias("Location_Y")
-    private String location_Y;//	地理位置经度
+    private String locationY;//	地理位置经度
     @XStreamAlias("Scale")
     private String scale;//地图缩放大小
     @XStreamAlias("Label")
@@ -258,7 +253,7 @@ public class Message extends WxMsg implements Serializable {
      * </xml>
      */
     @XStreamAlias("Image")
-    private Image image;
+    private Media image;
 
     /**
      * 回复语音消息
@@ -274,7 +269,7 @@ public class Message extends WxMsg implements Serializable {
      * </xml>
      */
     @XStreamAlias("Voice")
-    private String voice;
+    private Media voice;
 
     /**
      * 回复视频消息
@@ -292,7 +287,7 @@ public class Message extends WxMsg implements Serializable {
      * </xml>
      */
     @XStreamAlias("Video")
-    private Video video;
+    private Media video;
 
     /**
      * 音乐消息
@@ -311,7 +306,7 @@ public class Message extends WxMsg implements Serializable {
      * </xml>
      */
     @XStreamAlias("Music")
-    private Music music;
+    private Media music;
 
     /**
      * 回复图文消息
@@ -342,7 +337,7 @@ public class Message extends WxMsg implements Serializable {
     private List<Item> articles = new ArrayList<Item>();
 
     @XStreamAlias("ArticleCount")
-    private int articleCount;//	图文消息个数，限制为10条以内
+    private Integer articleCount;//	图文消息个数，限制为10条以内
 
     /**
      * <xml>
@@ -389,17 +384,8 @@ public class Message extends WxMsg implements Serializable {
     @XStreamAlias("CardId")
     private String cardId;//卡券ID
 
-    @JsonProperty("code")
-    @JSONField(name = "code")
-    private String code;
-
-    @JsonProperty("card")
-    @JSONField(name = "card")
-    @XStreamAlias("Card")
-    public Map<String, Object> card;
-
     @XStreamAlias("IsGiveByFriend")
-    private String giveByFriend;//是否为转赠，1代表是，0代表否。
+    private Integer giveByFriend;//是否为转赠，1代表是，0代表否。
 
     @XStreamAlias("FriendUserName")
     private String friendUserName;//赠送方账号（一个OpenID），"IsGiveByFriend”为1时填写该参数。
@@ -417,15 +403,6 @@ public class Message extends WxMsg implements Serializable {
     @XStreamAlias("ConsumeSource")
     private String consumeSource;//核销来源。支持开发者统计API核销（FROM_API）、公众平台核销（FROM_MP）、卡券商户助手核销（FROM_MOBILE_HELPER）（核销员微信号）
 
-    @JsonProperty("encrypt_code")
-    @JSONField(name = "encrypt_code")
-    private String encryptCode;//待解码的code
-
-    public void addItem(Item item) {
-        this.articles.add(item);
-        this.articleCount = this.articles.size();
-    }
-
     public String getToUserName() {
         return toUserName;
     }
@@ -442,7 +419,7 @@ public class Message extends WxMsg implements Serializable {
         this.fromUserName = fromUserName;
     }
 
-    public Long getCreateTime() {
+    public long getCreateTime() {
         return createTime;
     }
 
@@ -464,6 +441,14 @@ public class Message extends WxMsg implements Serializable {
 
     public void setMsgId(String msgId) {
         this.msgId = msgId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getContent() {
@@ -506,20 +491,20 @@ public class Message extends WxMsg implements Serializable {
         this.thumbMediaId = thumbMediaId;
     }
 
-    public String getLocation_X() {
-        return location_X;
+    public String getLocationX() {
+        return locationX;
     }
 
-    public void setLocation_X(String location_X) {
-        this.location_X = location_X;
+    public void setLocationX(String locationX) {
+        this.locationX = locationX;
     }
 
-    public String getLocation_Y() {
-        return location_Y;
+    public String getLocationY() {
+        return locationY;
     }
 
-    public void setLocation_Y(String location_Y) {
-        this.location_Y = location_Y;
+    public void setLocationY(String locationY) {
+        this.locationY = locationY;
     }
 
     public String getScale() {
@@ -618,35 +603,35 @@ public class Message extends WxMsg implements Serializable {
         this.recognition = recognition;
     }
 
-    public Image getImage() {
+    public Media getImage() {
         return image;
     }
 
-    public void setImage(Image image) {
+    public void setImage(Media image) {
         this.image = image;
     }
 
-    public String getVoice() {
+    public Media getVoice() {
         return voice;
     }
 
-    public void setVoice(String voice) {
+    public void setVoice(Media voice) {
         this.voice = voice;
     }
 
-    public Video getVideo() {
+    public Media getVideo() {
         return video;
     }
 
-    public void setVideo(Video video) {
+    public void setVideo(Media video) {
         this.video = video;
     }
 
-    public Music getMusic() {
+    public Media getMusic() {
         return music;
     }
 
-    public void setMusic(Music music) {
+    public void setMusic(Media music) {
         this.music = music;
     }
 
@@ -655,31 +640,15 @@ public class Message extends WxMsg implements Serializable {
     }
 
     public void setArticles(List<Item> articles) {
-        this.articles.addAll(articles);
+        this.articles = articles;
     }
 
-    public int getArticleCount() {
+    public Integer getArticleCount() {
         return articleCount;
     }
 
-    public void setArticleCount(int articleCount) {
+    public void setArticleCount(Integer articleCount) {
         this.articleCount = articleCount;
-    }
-
-    public String getMsgid() {
-        return msgid;
-    }
-
-    public void setMsgid(String msgid) {
-        this.msgid = msgid;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public String getUniqId() {
@@ -722,12 +691,20 @@ public class Message extends WxMsg implements Serializable {
         this.cardId = cardId;
     }
 
-    public String getGiveByFriend() {
+    public Integer getGiveByFriend() {
         return giveByFriend;
     }
 
-    public void setGiveByFriend(String giveByFriend) {
+    public void setGiveByFriend(Integer giveByFriend) {
         this.giveByFriend = giveByFriend;
+    }
+
+    public String getFriendUserName() {
+        return friendUserName;
+    }
+
+    public void setFriendUserName(String friendUserName) {
+        this.friendUserName = friendUserName;
     }
 
     public String getUserCardCode() {
@@ -760,44 +737,5 @@ public class Message extends WxMsg implements Serializable {
 
     public void setConsumeSource(String consumeSource) {
         this.consumeSource = consumeSource;
-    }
-
-    public Map<String, Object> getCard() {
-        return card;
-    }
-
-    public void setCard(Map<String, Object> card) {
-        this.card = card;
-    }
-
-    public void setCard(String cardId) {
-        if (this.card == null) {
-            this.card = new HashMap<>();
-        }
-        this.card.put("code",cardId);
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getEncryptCode() {
-        return encryptCode;
-    }
-
-    public void setEncryptCode(String encryptCode) {
-        this.encryptCode = encryptCode;
-    }
-
-    public String getFriendUserName() {
-        return friendUserName;
-    }
-
-    public void setFriendUserName(String friendUserName) {
-        this.friendUserName = friendUserName;
     }
 }

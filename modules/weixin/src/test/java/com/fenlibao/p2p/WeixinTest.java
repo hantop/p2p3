@@ -1,9 +1,12 @@
 package com.fenlibao.p2p;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.fenlibao.p2p.weixin.message.Message;
 import com.fenlibao.p2p.weixin.exception.WeixinException;
 import com.fenlibao.p2p.weixin.message.WxMsg;
+import com.fenlibao.p2p.weixin.message.card.Card;
 import com.fenlibao.p2p.weixin.message.req.White;
 import com.fenlibao.p2p.weixin.message.template.TemplateMsg;
 import com.fenlibao.p2p.weixin.message.template.TemplateMsgData;
@@ -15,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -57,4 +61,36 @@ public class WeixinTest {
         System.out.println(JSON.toJSONString(wxMsg));
     }
 
+    @Test
+    public void getUserCardList() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("openid", "o5D9Ts8qEfQy73VwwTOeUbG34Sfw");
+        byte[] bytes = this.weixinProxy.getUserCardList(jsonObject);
+        System.out.println(new String(bytes,0,bytes.length));
+    }
+
+    @Test
+    public void getCard() throws IOException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("card_id","p5D9Ts6TAHJIL8z_NqS9sy6RGcOw");
+        Card card = this.weixinProxy.getCard(jsonObject);
+        System.out.println(card);
+    }
+
+    @Test
+    public void messageMassSend() {
+        JSONObject jsonObject = new JSONObject();
+
+        JSONArray touser = new JSONArray();
+        touser.add("o5D9Ts8qEfQy73VwwTOeUbG34Sfw");
+        jsonObject.put("touser", touser);
+        jsonObject.put("msgtype","wxcard");
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("card_id","p5D9Ts47oOC64nb5GV-JZOKnF78s");
+        jsonObject.put("wxcard",map);
+        byte[] bytes = this.weixinProxy.messageMassSend(jsonObject);
+        System.out.println(new String(bytes, 0, bytes.length));
+
+    }
 }

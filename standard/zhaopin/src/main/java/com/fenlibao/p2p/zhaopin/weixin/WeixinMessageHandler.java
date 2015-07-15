@@ -67,7 +67,7 @@ public class WeixinMessageHandler implements MessageHandler,Constants {
         item.setDescription(channel.getName());
         item.setPicUrl("http://img5.imgtn.bdimg.com/it/u=747474479,3247936386&fm=21&gp=0.jpg");
         item.setUrl(wxApi.generateOauth2Url(redirectUrl,state));
-        result.addItem(item);
+        result.getArticles().add(item);
         return result;
     }
 
