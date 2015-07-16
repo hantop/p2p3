@@ -5,9 +5,9 @@
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="scene_name" property="sceneName" jdbcType="VARCHAR" />
     <result column="action_name" property="actionName" jdbcType="VARCHAR" />
+    <result column="scene_value" property="sceneValue" jdbcType="VARCHAR" />
+    <result column="scene_type" property="sceneType" jdbcType="VARCHAR" />
     <result column="ticket_id" property="ticketId" jdbcType="VARCHAR" />
-    <result column="scene_id" property="sceneId" jdbcType="INTEGER" />
-    <result column="scene_str" property="sceneStr" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="BIGINT" />
     <result column="suffix" property="suffix" jdbcType="VARCHAR" />
     <result column="name" property="name" jdbcType="VARCHAR" />
@@ -17,7 +17,7 @@
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, scene_name, action_name, ticket_id, scene_id, scene_str, create_time, suffix,
+    id, scene_name, action_name, scene_value, scene_type, ticket_id, create_time, suffix,
     name, enable, log_id,bytes
   </sql>
 
@@ -28,20 +28,12 @@
     where id = #{id,jdbcType=VARCHAR}
   </select>
 
-  <select id="selectLimitSceneBySceneStr" resultMap="BaseResultMap" >
+  <select id="selectLimitSceneByScene" resultMap="BaseResultMap" >
     select
     <include refid="Base_Column_List" />
     from weixin_qrcode
     where
-    id = (SELECT MAX(id) FROM weixin_qrcode WHERE scene_str = #{0} and scene_name=#{1})
-  </select>
-
-  <select id="selectLimitSceneBySceneId" resultMap="BaseResultMap" >
-    select
-    <include refid="Base_Column_List" />
-    from weixin_qrcode
-    where
-    id = (SELECT MAX(id) FROM weixin_qrcode WHERE scene_id = #{0} and scene_name=#{1} )
+    id = (SELECT MAX(id) FROM weixin_qrcode WHERE scene_value = #{0} and scene_type=#{1} and scene_name=#{2})
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
@@ -52,17 +44,19 @@
     <selectKey resultType="java.lang.String" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into weixin_qrcode (scene_name, action_name, ticket_id,
-    scene_id, scene_str, create_time,
+    insert into weixin_qrcode (scene_name, action_name, scene_value,
+    scene_type, ticket_id, create_time,
     suffix, name, enable, log_id,
     bytes)
-    values (#{sceneName,jdbcType=VARCHAR}, #{actionName,jdbcType=VARCHAR}, #{ticketId,jdbcType=VARCHAR},
-    #{sceneId,jdbcType=INTEGER}, #{sceneStr,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+    values (#{sceneName,jdbcType=VARCHAR}, #{actionName,jdbcType=VARCHAR}, #{sceneValue,jdbcType=VARCHAR},
+    #{sceneType,jdbcType=VARCHAR}, #{ticketId,jdbcType=VARCHAR}, #{createTime,jdbcType=BIGINT},
     #{suffix,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{enable,jdbcType=BIT}, #{logId,jdbcType=BIGINT},
     #{bytes,jdbcType=LONGVARBINARY})
   </insert>
   <insert id="insertSelective" parameterType="com.fenlibao.p2p.weixin.domain.Qrcode" >
-
+    <selectKey resultType="java.lang.String" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into weixin_qrcode
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -74,14 +68,14 @@
       <if test="actionName != null" >
         action_name,
       </if>
+      <if test="sceneValue != null" >
+        scene_value,
+      </if>
+      <if test="sceneType != null" >
+        scene_type,
+      </if>
       <if test="ticketId != null" >
         ticket_id,
-      </if>
-      <if test="sceneId != null" >
-        scene_id,
-      </if>
-      <if test="sceneStr != null" >
-        scene_str,
       </if>
       <if test="createTime != null" >
         create_time,
@@ -112,17 +106,17 @@
       <if test="actionName != null" >
         #{actionName,jdbcType=VARCHAR},
       </if>
+      <if test="sceneValue != null" >
+        #{sceneValue,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneType != null" >
+        #{sceneType,jdbcType=VARCHAR},
+      </if>
       <if test="ticketId != null" >
         #{ticketId,jdbcType=VARCHAR},
       </if>
-      <if test="sceneId != null" >
-        #{sceneId,jdbcType=INTEGER},
-      </if>
-      <if test="sceneStr != null" >
-        #{sceneStr,jdbcType=VARCHAR},
-      </if>
       <if test="createTime != null" >
-        #{createTime,jdbcType=TIMESTAMP},
+        #{createTime,jdbcType=BIGINT},
       </if>
       <if test="suffix != null" >
         #{suffix,jdbcType=VARCHAR},
@@ -150,17 +144,17 @@
       <if test="actionName != null" >
         action_name = #{actionName,jdbcType=VARCHAR},
       </if>
+      <if test="sceneValue != null" >
+        scene_value = #{sceneValue,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneType != null" >
+        scene_type = #{sceneType,jdbcType=VARCHAR},
+      </if>
       <if test="ticketId != null" >
         ticket_id = #{ticketId,jdbcType=VARCHAR},
       </if>
-      <if test="sceneId != null" >
-        scene_id = #{sceneId,jdbcType=INTEGER},
-      </if>
-      <if test="sceneStr != null" >
-        scene_str = #{sceneStr,jdbcType=VARCHAR},
-      </if>
       <if test="createTime != null" >
-        create_time = #{createTime,jdbcType=TIMESTAMP},
+        create_time = #{createTime,jdbcType=BIGINT},
       </if>
       <if test="suffix != null" >
         suffix = #{suffix,jdbcType=VARCHAR},
@@ -180,15 +174,14 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-
   <update id="updateByPrimaryKey" parameterType="com.fenlibao.p2p.weixin.domain.Qrcode" >
-   update weixin_qrcode
+    update weixin_qrcode
     set scene_name = #{sceneName,jdbcType=VARCHAR},
     action_name = #{actionName,jdbcType=VARCHAR},
+    scene_value = #{sceneValue,jdbcType=VARCHAR},
+    scene_type = #{sceneType,jdbcType=VARCHAR},
     ticket_id = #{ticketId,jdbcType=VARCHAR},
-    scene_id = #{sceneId,jdbcType=INTEGER},
-    scene_str = #{sceneStr,jdbcType=VARCHAR},
-    create_time = #{createTime,jdbcType=TIMESTAMP},
+    create_time = #{createTime,jdbcType=BIGINT},
     suffix = #{suffix,jdbcType=VARCHAR},
     name = #{name,jdbcType=VARCHAR},
     enable = #{enable,jdbcType=BIT},

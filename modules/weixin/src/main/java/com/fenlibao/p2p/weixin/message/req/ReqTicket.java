@@ -19,12 +19,19 @@ public class ReqTicket implements Serializable {
 
     @JsonProperty("action_info")
     @JSONField(name = "action_info")
-    private Map<String, Map<String, Object>> actionInfo;//二维码详细信息
+    private Map<String, Map<String, Serializable>> actionInfo;//二维码详细信息
+
+    private String cardId;
+    private Integer outerId;
+    private String code;
+    private String openid;
+    private Integer expireSeconds;
+    private Boolean uniqueCode;
 
 
     public ReqTicket(Constants.QrcodeType actionName, Serializable scene) {
         this.actionName = actionName;
-        Map<String, Object> scenet = new HashMap();
+        Map<String, Serializable> scenet = new HashMap();
         if (scene instanceof String) {
             scenet.put("scene_str", scene);
             this.actionInfo = new HashMap<>();
@@ -67,7 +74,7 @@ public class ReqTicket implements Serializable {
 
     public ReqTicket(String cardId, Integer outerId, String code, String openid, Integer expireSeconds, Boolean uniqueCode) {
         this.actionName = Constants.QrcodeType.QR_CARD;
-        Map<String, Object> card = new HashMap();
+        Map<String, Serializable> card = new HashMap();
         card.put("card_id", cardId);
         card.put("code", code);
         card.put("openid", openid);
@@ -75,19 +82,30 @@ public class ReqTicket implements Serializable {
         card.put("is_unique_code", uniqueCode);
         card.put("outer_id", outerId);
 
-
         this.actionInfo = new HashMap<>();
         this.actionInfo.put("card", card);
+
+        this.cardId = cardId;
+        this.outerId = outerId;
+        this.code = code;
+        this.openid = openid;
+        this.expireSeconds = expireSeconds;
+        this.uniqueCode = uniqueCode;
     }
 
-    public String generateSceneStr() {
-        Object seceneStr = actionInfo.get("scene").get("scene_str");
-        return seceneStr != null ? seceneStr.toString() : null;
-    }
-
-    public int generateSceneId() {
-        Object sceneId = actionInfo.get("scene").get("scene_id");
-        return sceneId != null ? Integer.parseInt(sceneId.toString()) : 0;
+    public Serializable generateScene() {
+        if(this.actionName == Constants.QrcodeType.QR_LIMIT_SCENE) {
+            Serializable secene = actionInfo.get("scene").get("scene_str");
+            if(secene == null) {
+                secene = actionInfo.get("scene").get("scene_id");
+            }
+            return secene;
+        } else if(this.actionName == Constants.QrcodeType.QR_CARD) {
+            Serializable secene = actionInfo.get("card").get("outer_id");
+            return secene;
+        }
+        Serializable secene = actionInfo.get("scene").get("scene_id");
+        return secene;
     }
 
     public Constants.QrcodeType getActionName() {
@@ -98,11 +116,60 @@ public class ReqTicket implements Serializable {
         this.actionName = actionName;
     }
 
-    public Map<String, Map<String, Object>> getActionInfo() {
+    public Map<String, Map<String, Serializable>> getActionInfo() {
         return actionInfo;
     }
 
-    public void setActionInfo(Map<String, Map<String, Object>> actionInfo) {
+    public void setActionInfo(Map<String, Map<String, Serializable>> actionInfo) {
         this.actionInfo = actionInfo;
+    }
+
+
+    public String getCardId() {
+        return cardId;
+    }
+
+    public void setCardId(String cardId) {
+        this.cardId = cardId;
+    }
+
+    public Integer getOuterId() {
+        return outerId;
+    }
+
+    public void setOuterId(Integer outerId) {
+        this.outerId = outerId;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getOpenid() {
+        return openid;
+    }
+
+    public void setOpenid(String openid) {
+        this.openid = openid;
+    }
+
+    public Integer getExpireSeconds() {
+        return expireSeconds;
+    }
+
+    public void setExpireSeconds(Integer expireSeconds) {
+        this.expireSeconds = expireSeconds;
+    }
+
+    public Boolean getUniqueCode() {
+        return uniqueCode;
+    }
+
+    public void setUniqueCode(Boolean uniqueCode) {
+        this.uniqueCode = uniqueCode;
     }
 }

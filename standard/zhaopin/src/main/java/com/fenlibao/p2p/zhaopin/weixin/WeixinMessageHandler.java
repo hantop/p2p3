@@ -15,6 +15,9 @@ import com.fenlibao.p2p.zhaopin.service.ChannelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Administrator on 2015/6/18.
  */
@@ -66,8 +69,12 @@ public class WeixinMessageHandler implements MessageHandler,Constants {
         item.setTitle(channel.getName());
         item.setDescription(channel.getName());
         item.setPicUrl("http://img5.imgtn.bdimg.com/it/u=747474479,3247936386&fm=21&gp=0.jpg");
-        item.setUrl(wxApi.generateOauth2Url(redirectUrl,state));
-        result.getArticles().add(item);
+        item.setUrl(wxApi.generateOauth2Url(redirectUrl, state));
+
+        List<Item> items = new ArrayList<>();
+        items.add(item);
+        result.setArticles(items);
+        result.setArticleCount(items.size());
         return result;
     }
 

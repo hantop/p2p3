@@ -94,12 +94,12 @@ CREATE TABLE `weixin_log` (
 DROP TABLE IF EXISTS `weixin_qrcode`;
 CREATE TABLE `weixin_qrcode` (
   `id` varchar(50) NOT NULL,
-  `scene_name` varchar(20) DEFAULT NULL COMMENT '二维码场景名称,指定该二维码是做什么应用的，招聘，广告，登陆，等等，场景管理',
+  `scene_name` varchar(50) DEFAULT NULL COMMENT '二维码场景,指定该二维码是做什么应用的，招聘，广告，登陆，等等，场景管理',
   `action_name` varchar(20) DEFAULT NULL COMMENT '二维码类型（永久，临时），QR_SCENE为临时,QR_LIMIT_SCENE为永久,QR_LIMIT_STR_SCENE为永久的字符串参数值',
+  `scene_value` varchar(64) DEFAULT NULL COMMENT '二维码场景值scene',
+  `scene_type` varchar(64) DEFAULT NULL COMMENT '二维码场景类型,int,String',
   `ticket_id` varchar(50) DEFAULT NULL COMMENT 'ticket外键',
-  `scene_id` int(11) DEFAULT NULL COMMENT '二维码scene_id',
-  `scene_str` varchar(64) DEFAULT NULL COMMENT '二维码scene_str',
-  `create_time` bigint(20) NOT NULL COMMENT '二维码的创建时间',
+  `create_time` bigint(20) DEFAULT NULL COMMENT '二维码的创建时间',
   `bytes` longblob COMMENT '二进制内容',
   `suffix` varchar(30) DEFAULT NULL COMMENT '文件后缀',
   `name` varchar(64) DEFAULT NULL COMMENT '文件名称',
@@ -107,9 +107,6 @@ CREATE TABLE `weixin_qrcode` (
   `log_id` bigint(20) DEFAULT NULL COMMENT '日志记录',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='二维码';
-
-
-
 
 
 -- ----------------------------
@@ -129,8 +126,18 @@ CREATE TABLE `weixin_ticket` (
   `expires_in` bigint(20) DEFAULT NULL COMMENT 'jsapi_adk ticket有效时间',
   `url` varchar(300) DEFAULT NULL COMMENT '二维码图片解析后的地址，开发者可根据该地址自行生成需要的二维码图片',
   `type` varchar(20) DEFAULT NULL COMMENT 'ticket类型',
+  `code` varchar(20) DEFAULT NULL COMMENT 'use_custom_code字段为true的卡券必须填写，非自定义code不必填写。',
+  `card_id` varchar(32) DEFAULT NULL COMMENT '卡券ID',
+  `openid` varchar(32) DEFAULT NULL COMMENT '指定领取者的openid，只有该用户能领取。bind_openid字段为true的卡券必须填写，非指定openid不必填写。',
+  `unique_code` bit(1) DEFAULT NULL COMMENT '指定下发二维码，生成的二维码随机分配一个code，领取后不可再次扫描。填写true或false。默认false。',
+  `outer_id` int(11) DEFAULT NULL COMMENT '领取场景值，用于领取渠道的数据统计，默认值为0，字段类型为整型，长度限制为60位数字。用户领取卡券后触发的事件推送中会带上此自定义场景值。',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='微信ticket';
+
+
+
+
+
 
 -- ----------------------------
 -- Records of weixin_ticket
@@ -162,7 +169,7 @@ CREATE TABLE `weixin_msg` (
   `description` varchar(64) DEFAULT NULL COMMENT '消息描述',
   `url` varchar(256) DEFAULT NULL COMMENT '消息链接',
   `event_key` varchar(64) DEFAULT NULL COMMENT '事件KEY值',
-  `ticket` varchar(64) DEFAULT NULL COMMENT '二维码的ticket',
+  `ticket` varchar(200) DEFAULT NULL COMMENT '二维码的ticket',
   `latitude` varchar(64) DEFAULT NULL COMMENT '地理位置纬度(上报地理)',
   `longitude` varchar(64) DEFAULT NULL COMMENT '地理位置经度(上报地理)',
   `precision` varchar(64) DEFAULT NULL COMMENT '地理位置精度',
@@ -181,7 +188,26 @@ CREATE TABLE `weixin_msg` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='微信交互的消息记录';
 
+drop table if exists weixin_media;
+CREATE TABLE `weixin_media` (
+  `id` varchar(64) NOT NULL,
+  `message_id` varchar(64) DEFAULT NULL COMMENT '所属消息id',
+  `type` varchar(64) DEFAULT NULL COMMENT '媒体类型enum',
+  `media_id` varchar(64) DEFAULT NULL COMMENT '通过素材管理接口上传多媒体文件，得到的id',
+  `title` varchar(64) DEFAULT NULL COMMENT '消息的标题',
+  `description` varchar(64) DEFAULT NULL COMMENT '消息的描述',
+  `music_url` varchar(256) DEFAULT NULL COMMENT '音乐链接',
+  `hqmusic_url` varchar(256) DEFAULT NULL COMMENT '高质量音乐链接，WIFI环境优先使用该链接播放音乐',
+  `thumb_media_id` varchar(64) DEFAULT NULL COMMENT '缩略图的媒体id，通过上传多媒体文件，得到的id',
+  `pic_url` varchar(256) DEFAULT NULL COMMENT '图片链接，支持JPG、PNG格式，较好的效果为大图640*320，小图80*80，限制图片链接的域名需要与开发者填写的基本资料中的Url一致',
+  `url` text COMMENT '点击图文消息跳转链接',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='媒体消息\r\n';
 
+
+
+
+drop table if exists weixin_business;
 -- 门店信息
 CREATE TABLE `weixin_business` (
   `id` varchar(50) NOT NULL,

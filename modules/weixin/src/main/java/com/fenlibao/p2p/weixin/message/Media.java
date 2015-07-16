@@ -7,12 +7,6 @@ import java.io.Serializable;
 
 public class Media implements Serializable {
 
-	private String id;
-
-	private String messageId;
-
-	private String type;//媒体类型
-
 	/* 通过上传多媒体文件，得到的id。 */
 	@XStreamAlias("MediaId")
 	private String mediaId;
@@ -39,30 +33,6 @@ public class Media implements Serializable {
 	// 点击图文消息跳转链接
 	@XStreamAlias("Url")
 	private String url;
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getMessageId() {
-		return messageId;
-	}
-
-	public void setMessageId(String messageId) {
-		this.messageId = messageId;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
 
 	public String getMediaId() {
 		return mediaId;

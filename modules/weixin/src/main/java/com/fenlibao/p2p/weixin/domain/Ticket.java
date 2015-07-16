@@ -27,7 +27,17 @@ public class Ticket extends WxMsg {
     @JSONField(name = "url")
     private String url;
 
-    private Constants.TicketType type;
+    private Constants.TicketType type;//ticket类型
+
+    private String code;
+
+    private String cardId;
+
+    private String openid;
+
+    private Boolean uniqueCode;
+
+    private Integer outerId;
 
     public Long getLogId() {
         return logId;
@@ -83,5 +93,47 @@ public class Ticket extends WxMsg {
 
     public void setType(Constants.TicketType type) {
         this.type = type;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getCardId() {
+        return cardId;
+    }
+
+    public void setCardId(String cardId) {
+        this.cardId = cardId;
+    }
+
+    @Override
+    public String getOpenid() {
+        return openid;
+    }
+
+    @Override
+    public void setOpenid(String openid) {
+        this.openid = openid;
+    }
+
+    public Boolean getUniqueCode() {
+        return uniqueCode;
+    }
+
+    public void setUniqueCode(Boolean uniqueCode) {
+        this.uniqueCode = uniqueCode;
+    }
+
+    public Integer getOuterId() {
+        return outerId;
+    }
+
+    public void setOuterId(Integer outerId) {
+        this.outerId = outerId;
     }
 }

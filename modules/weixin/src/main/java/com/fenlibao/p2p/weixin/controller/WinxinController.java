@@ -45,7 +45,8 @@ public class WinxinController {
     @ResponseBody
     Serializable process(@RequestBody String requestbody, HttpServletRequest request) {
         String host = request.getScheme() + "://" + request.getServerName(); //服务器地址request.getServerName()
-        return this.wxApi.process(requestbody, host);
+        Serializable result = this.wxApi.process(requestbody, host);
+        return result;
     }
 
 

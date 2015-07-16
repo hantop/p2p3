@@ -3,22 +3,25 @@ package com.fenlibao.p2p;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.fenlibao.p2p.weixin.domain.Qrcode;
 import com.fenlibao.p2p.weixin.message.Message;
 import com.fenlibao.p2p.weixin.exception.WeixinException;
 import com.fenlibao.p2p.weixin.message.WxMsg;
 import com.fenlibao.p2p.weixin.message.card.Card;
+import com.fenlibao.p2p.weixin.message.req.ReqTicket;
 import com.fenlibao.p2p.weixin.message.req.White;
 import com.fenlibao.p2p.weixin.message.template.TemplateMsg;
 import com.fenlibao.p2p.weixin.message.template.TemplateMsgData;
 import com.fenlibao.p2p.weixin.proxy.WeixinProxy;
 import com.fenlibao.p2p.weixin.service.WxApi;
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -91,6 +94,13 @@ public class WeixinTest {
         jsonObject.put("wxcard",map);
         byte[] bytes = this.weixinProxy.messageMassSend(jsonObject);
         System.out.println(new String(bytes, 0, bytes.length));
+    }
 
+    @Test
+    public void httpCardQrcode() throws IOException {
+        ReqTicket reqTicket = new ReqTicket("p5D9Tszt2VCNzNeX3BsBl0JjLhVo",2,null,null,null,null);
+        Qrcode qrcode = this.weixinProxy.httpQrcode(reqTicket, "qr_card");
+        ByteArrayInputStream bw = new ByteArrayInputStream(qrcode.getBytes());
+        FileUtils.copyInputStreamToFile(bw,new File("d:/二维码.jpg"));
     }
 }

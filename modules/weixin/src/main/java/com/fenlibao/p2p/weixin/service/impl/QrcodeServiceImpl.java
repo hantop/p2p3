@@ -7,6 +7,7 @@ import com.fenlibao.p2p.weixin.service.QrcodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -64,12 +65,7 @@ public class QrcodeServiceImpl implements QrcodeService {
     }
 
     @Override
-    public Qrcode selectLimitSceneBySceneStr(String sceneStr,String scene) {
-        return qrcodeMapper.selectLimitSceneBySceneStr(sceneStr,scene);
-    }
-
-    @Override
-    public Qrcode selectLimitSceneBySceneId(Integer sceneId,String scene) {
-        return this.qrcodeMapper.selectLimitSceneBySceneId(sceneId,scene);
+    public Qrcode selectLimitSceneByScene(Serializable sceneValue,String scene) {
+        return qrcodeMapper.selectLimitSceneByScene(sceneValue.toString(), sceneValue.getClass().getName(), scene);
     }
 }

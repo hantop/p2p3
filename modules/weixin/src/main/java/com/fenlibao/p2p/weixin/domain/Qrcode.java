@@ -2,17 +2,20 @@ package com.fenlibao.p2p.weixin.domain;
 
 import com.fenlibao.p2p.weixin.message.WxMsg;
 
-public class Qrcode extends WxMsg {
+public class Qrcode extends WxMsg{
+    private String id;
 
     private String sceneName;
 
     private String actionName;
 
+    private String sceneValue;
+
+    private String sceneType;
+
     private String ticketId;
 
-    private Integer sceneId;
-
-    private String sceneStr;
+    private Long createTime;
 
     private String suffix;
 
@@ -24,12 +27,20 @@ public class Qrcode extends WxMsg {
 
     private byte[] bytes;
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id == null ? null : id.trim();
+    }
+
     public String getSceneName() {
         return sceneName;
     }
 
     public void setSceneName(String sceneName) {
-        this.sceneName = sceneName;
+        this.sceneName = sceneName == null ? null : sceneName.trim();
     }
 
     public String getActionName() {
@@ -40,6 +51,22 @@ public class Qrcode extends WxMsg {
         this.actionName = actionName == null ? null : actionName.trim();
     }
 
+    public String getSceneValue() {
+        return sceneValue;
+    }
+
+    public void setSceneValue(String sceneValue) {
+        this.sceneValue = sceneValue == null ? null : sceneValue.trim();
+    }
+
+    public String getSceneType() {
+        return sceneType;
+    }
+
+    public void setSceneType(String sceneType) {
+        this.sceneType = sceneType == null ? null : sceneType.trim();
+    }
+
     public String getTicketId() {
         return ticketId;
     }
@@ -48,20 +75,12 @@ public class Qrcode extends WxMsg {
         this.ticketId = ticketId == null ? null : ticketId.trim();
     }
 
-    public Integer getSceneId() {
-        return sceneId;
+    public Long getCreateTime() {
+        return createTime;
     }
 
-    public void setSceneId(Integer sceneId) {
-        this.sceneId = sceneId;
-    }
-
-    public String getSceneStr() {
-        return sceneStr;
-    }
-
-    public void setSceneStr(String sceneStr) {
-        this.sceneStr = sceneStr == null ? null : sceneStr.trim();
+    public void setCreateTime(Long createTime) {
+        this.createTime = createTime;
     }
 
     public String getSuffix() {

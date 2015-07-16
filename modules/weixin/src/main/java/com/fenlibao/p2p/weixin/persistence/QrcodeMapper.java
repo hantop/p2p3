@@ -16,7 +16,5 @@ public interface QrcodeMapper {
 
     int updateByPrimaryKey(Qrcode record);
 
-    Qrcode selectLimitSceneBySceneStr(String sceneStr, String scene);
-
-    Qrcode selectLimitSceneBySceneId(Integer sceneId, String scene);
+    Qrcode selectLimitSceneByScene(String sceneStr,String sceneType, String scene);
 }

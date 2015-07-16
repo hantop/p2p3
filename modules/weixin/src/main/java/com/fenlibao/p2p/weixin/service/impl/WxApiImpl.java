@@ -58,10 +58,10 @@ public class WxApiImpl implements WxApi,ApplicationListener<ContextRefreshedEven
 
     private MessageHandler messageHandler;
 
-//    @Autowired
-//    public WxApiImpl(MessageHandler messageHandler) {
-//        this.messageHandler = messageHandler;
-//    }
+    @Autowired
+    public WxApiImpl(MessageHandler messageHandler) {
+        this.messageHandler = messageHandler;
+    }
 
     static {
         xStream.autodetectAnnotations(true);
@@ -194,14 +194,9 @@ public class WxApiImpl implements WxApi,ApplicationListener<ContextRefreshedEven
      * @return
      */
     private Qrcode getLimitSceneQrcode(ReqTicket reqTicket, String scene) {
-        String sceneStr = reqTicket.generateSceneStr();
-        Integer sceneId = reqTicket.generateSceneId();
-        if (sceneStr != null) {
-            Qrcode qrcode = this.qrcodeService.selectLimitSceneBySceneStr(sceneStr, scene);
-            if (qrcode != null)
-                return qrcode;
-        } else if (sceneId > 0) {
-            Qrcode qrcode = this.qrcodeService.selectLimitSceneBySceneId(sceneId, scene);
+        Serializable sceneValue = reqTicket.generateScene();
+        if (sceneValue != null) {
+            Qrcode qrcode = this.qrcodeService.selectLimitSceneByScene(sceneValue, scene);
             if (qrcode != null)
                 return qrcode;
         }
@@ -274,6 +269,8 @@ public class WxApiImpl implements WxApi,ApplicationListener<ContextRefreshedEven
             //小视频消息
         } else if (message.getMsgType().equals(MsgType.MESSAGETYPE_LOCATION.toString())) {
             //地理位置消息
+        } else if (message.getMsgType().equals(MsgType.MESSAGETYPE_MUSIC.toString())) {
+            //音乐消息
         } else if (message.getMsgType().equals(MsgType.MESSAGETYPE_LINK.toString())) {
             //链接消息
         } else if (message.getMsgType().equals(MsgType.MESSAGETYPE_EVENT.toString())) {

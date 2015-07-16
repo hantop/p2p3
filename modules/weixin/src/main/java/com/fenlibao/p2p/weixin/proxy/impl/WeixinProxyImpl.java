@@ -29,6 +29,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * Created by Administrator on 2015/6/10.
@@ -134,6 +135,17 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
 
         ticket.setType(ticketType);
         ticket.setCreateTime(System.currentTimeMillis());
+        if (reqTicket.getActionName() == QrcodeType.QR_CARD) {
+            ticket.setCode(reqTicket.getCode());
+            ticket.setCardId(reqTicket.getCardId());
+            ticket.setOpenid(reqTicket.getOpenid());
+            ticket.setUniqueCode(reqTicket.getUniqueCode());
+            ticket.setOuterId(reqTicket.getOuterId());
+        }
+
+        if (reqTicket.getActionName() == QrcodeType.QR_CARD) {
+
+        }
         return ticket;
     }
 
@@ -177,8 +189,7 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
 
     @Override
     public Qrcode httpQrcode(ReqTicket reqTicket,String scene) {
-        String sceneStr = reqTicket.generateSceneStr();
-        Integer sceneId = reqTicket.generateSceneId();
+        Serializable sceneValue = reqTicket.generateScene();
         String actionName = reqTicket.getActionName().toString();
 
         Ticket ticket = weixinProxy.httpTicket(reqTicket);//通过参数获取ticket
@@ -187,8 +198,8 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
         Qrcode qrcode = new Qrcode();
         qrcode.setTicketId(ticket.getId());
         qrcode.setActionName(actionName);
-        qrcode.setSceneId(sceneId);
-        qrcode.setSceneStr(sceneStr);
+        qrcode.setSceneValue(sceneValue.toString());
+        qrcode.setSceneType(sceneValue.getClass().getName());
         qrcode.setName(weixinConfig.getName());
         qrcode.setSuffix(weixinConfig.getSuffix());
         qrcode.setBytes(results);

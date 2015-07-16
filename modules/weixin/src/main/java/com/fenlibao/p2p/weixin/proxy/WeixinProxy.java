@@ -86,8 +86,6 @@ public interface WeixinProxy extends Constants {
     @Thing(WeiXinThing.HTTP_QRCODE)
     Qrcode httpQrcode(ReqTicket reqTicket, String scene);
 
-    @Thing(WeiXinThing.HTTP_QRCODE)
-    Qrcode httpQrcode(ReqTicket reqTicket);
 
     /**
      * 发送模板消息

@@ -1,137 +1,194 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.fenlibao.p2p.weixin.persistence.TicketMapper" >
-  <resultMap id="BaseResultMap" type="com.fenlibao.p2p.weixin.domain.Ticket" >
-    <id column="id" property="id" jdbcType="VARCHAR" />
-    <result column="create_time" property="createTime" jdbcType="BIGINT" />
-    <result column="ticket" property="ticket" jdbcType="VARCHAR" />
-    <result column="expire_seconds" property="expireSeconds" jdbcType="BIGINT" />
-    <result column="expires_in" property="expiresIn" jdbcType="BIGINT" />
-    <result column="url" property="url" jdbcType="VARCHAR" />
-    <result column="type" property="type" jdbcType="VARCHAR" />
-    <result column="log_id" property="logId" jdbcType="BIGINT" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    id, create_time, ticket, expire_seconds, expires_in, url, type, log_id
+<mapper namespace="com.fenlibao.p2p.weixin.persistence.TicketMapper">
+    <resultMap id="BaseResultMap" type="com.fenlibao.p2p.weixin.domain.Ticket">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="log_id" property="logId" jdbcType="BIGINT"/>
+        <result column="create_time" property="createTime" jdbcType="BIGINT"/>
+        <result column="ticket" property="ticket" jdbcType="VARCHAR"/>
+        <result column="expire_seconds" property="expireSeconds" jdbcType="BIGINT"/>
+        <result column="expires_in" property="expiresIn" jdbcType="BIGINT"/>
+        <result column="url" property="url" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+        <result column="code" property="code" jdbcType="VARCHAR"/>
+        <result column="card_id" property="cardId" jdbcType="VARCHAR"/>
+        <result column="openid" property="openid" jdbcType="VARCHAR"/>
+        <result column="unique_code" property="uniqueCode" jdbcType="BIT"/>
+        <result column="outer_id" property="outerId" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, log_id, create_time, ticket, expire_seconds, expires_in, url, type, code, card_id,
+    openid, unique_code, outer_id
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select
-    <include refid="Base_Column_List" />
-    from weixin_ticket
-    where id = #{id,jdbcType=VARCHAR}
-  </select>
-  <select id="selectLastTicket" resultMap="BaseResultMap" >
-    select
-    <include refid="Base_Column_List" />
-    from weixin_ticket
-    where id = (SELECT MAX(id) FROM weixin_ticket where type= #{0})
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from weixin_ticket
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    <select id="selectLastTicket" resultMap="BaseResultMap" >
+        select
+        <include refid="Base_Column_List" />
+        from weixin_ticket
+        where id = (SELECT MAX(id) FROM weixin_ticket where type= #{0})
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from weixin_ticket
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.fenlibao.p2p.weixin.domain.Ticket" >
-    <selectKey resultType="java.lang.String" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into weixin_ticket (create_time, ticket, expire_seconds,
-    expires_in, url, type,
-    log_id)
-    values (#{createTime,jdbcType=BIGINT}, #{ticket,jdbcType=VARCHAR}, #{expireSeconds,jdbcType=BIGINT},
-    #{expiresIn,jdbcType=BIGINT}, #{url,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR},
-    #{logId,jdbcType=BIGINT})
+    <insert id="insert" parameterType="com.fenlibao.p2p.weixin.domain.Ticket" useGeneratedKeys="true" keyProperty="id">
+    insert into weixin_ticket (log_id, create_time, ticket,
+    expire_seconds, expires_in, url,
+    type, code, card_id,
+    openid, unique_code, outer_id
+    )
+    values (#{logId,jdbcType=BIGINT}, #{createTime,jdbcType=BIGINT}, #{ticket,jdbcType=VARCHAR},
+    #{expireSeconds,jdbcType=BIGINT}, #{expiresIn,jdbcType=BIGINT}, #{url,jdbcType=VARCHAR},
+    #{type,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, #{cardId,jdbcType=VARCHAR},
+    #{openid,jdbcType=VARCHAR}, #{uniqueCode,jdbcType=BIT}, #{outerId,jdbcType=INTEGER}
+    )
   </insert>
-  <insert id="insertSelective" parameterType="com.fenlibao.p2p.weixin.domain.Ticket" useGeneratedKeys="true"  keyProperty="id">
-    insert into weixin_ticket
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="createTime != null" >
-        create_time,
-      </if>
-      <if test="ticket != null" >
-        ticket,
-      </if>
-      <if test="expireSeconds != null" >
-        expire_seconds,
-      </if>
-      <if test="expiresIn != null" >
-        expires_in,
-      </if>
-      <if test="url != null" >
-        url,
-      </if>
-      <if test="type != null" >
-        type,
-      </if>
-      <if test="logId != null" >
-        log_id,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null" >
-        #{createTime,jdbcType=BIGINT},
-      </if>
-      <if test="ticket != null" >
-        #{ticket,jdbcType=VARCHAR},
-      </if>
-      <if test="expireSeconds != null" >
-        #{expireSeconds,jdbcType=BIGINT},
-      </if>
-      <if test="expiresIn != null" >
-        #{expiresIn,jdbcType=BIGINT},
-      </if>
-      <if test="url != null" >
-        #{url,jdbcType=VARCHAR},
-      </if>
-      <if test="type != null" >
-        #{type,jdbcType=VARCHAR},
-      </if>
-      <if test="logId != null" >
-        #{logId,jdbcType=BIGINT},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.fenlibao.p2p.weixin.domain.Ticket" >
+    <insert id="insertSelective" parameterType="com.fenlibao.p2p.weixin.domain.Ticket" useGeneratedKeys="true" keyProperty="id">
+        insert into weixin_ticket
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="logId != null">
+                log_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="ticket != null">
+                ticket,
+            </if>
+            <if test="expireSeconds != null">
+                expire_seconds,
+            </if>
+            <if test="expiresIn != null">
+                expires_in,
+            </if>
+            <if test="url != null">
+                url,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="code != null">
+                code,
+            </if>
+            <if test="cardId != null">
+                card_id,
+            </if>
+            <if test="openid != null">
+                openid,
+            </if>
+            <if test="uniqueCode != null">
+                unique_code,
+            </if>
+            <if test="outerId != null">
+                outer_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="logId != null">
+                #{logId,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="ticket != null">
+                #{ticket,jdbcType=VARCHAR},
+            </if>
+            <if test="expireSeconds != null">
+                #{expireSeconds,jdbcType=BIGINT},
+            </if>
+            <if test="expiresIn != null">
+                #{expiresIn,jdbcType=BIGINT},
+            </if>
+            <if test="url != null">
+                #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="code != null">
+                #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="cardId != null">
+                #{cardId,jdbcType=VARCHAR},
+            </if>
+            <if test="openid != null">
+                #{openid,jdbcType=VARCHAR},
+            </if>
+            <if test="uniqueCode != null">
+                #{uniqueCode,jdbcType=BIT},
+            </if>
+            <if test="outerId != null">
+                #{outerId,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.fenlibao.p2p.weixin.domain.Ticket">
+        update weixin_ticket
+        <set>
+            <if test="logId != null">
+                log_id = #{logId,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="ticket != null">
+                ticket = #{ticket,jdbcType=VARCHAR},
+            </if>
+            <if test="expireSeconds != null">
+                expire_seconds = #{expireSeconds,jdbcType=BIGINT},
+            </if>
+            <if test="expiresIn != null">
+                expires_in = #{expiresIn,jdbcType=BIGINT},
+            </if>
+            <if test="url != null">
+                url = #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="code != null">
+                code = #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="cardId != null">
+                card_id = #{cardId,jdbcType=VARCHAR},
+            </if>
+            <if test="openid != null">
+                openid = #{openid,jdbcType=VARCHAR},
+            </if>
+            <if test="uniqueCode != null">
+                unique_code = #{uniqueCode,jdbcType=BIT},
+            </if>
+            <if test="outerId != null">
+                outer_id = #{outerId,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.fenlibao.p2p.weixin.domain.Ticket">
     update weixin_ticket
-    <set >
-      <if test="createTime != null" >
-        create_time = #{createTime,jdbcType=BIGINT},
-      </if>
-      <if test="ticket != null" >
-        ticket = #{ticket,jdbcType=VARCHAR},
-      </if>
-      <if test="expireSeconds != null" >
-        expire_seconds = #{expireSeconds,jdbcType=BIGINT},
-      </if>
-      <if test="expiresIn != null" >
-        expires_in = #{expiresIn,jdbcType=BIGINT},
-      </if>
-      <if test="url != null" >
-        url = #{url,jdbcType=VARCHAR},
-      </if>
-      <if test="type != null" >
-        type = #{type,jdbcType=VARCHAR},
-      </if>
-      <if test="logId != null" >
-        log_id = #{logId,jdbcType=BIGINT},
-      </if>
-    </set>
-    where id = #{id,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.fenlibao.p2p.weixin.domain.Ticket" >
-    update weixin_ticket
-    set create_time = #{createTime,jdbcType=BIGINT},
+    set log_id = #{logId,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=BIGINT},
       ticket = #{ticket,jdbcType=VARCHAR},
       expire_seconds = #{expireSeconds,jdbcType=BIGINT},
       expires_in = #{expiresIn,jdbcType=BIGINT},
       url = #{url,jdbcType=VARCHAR},
       type = #{type,jdbcType=VARCHAR},
-      log_id = #{logId,jdbcType=BIGINT}
+      code = #{code,jdbcType=VARCHAR},
+      card_id = #{cardId,jdbcType=VARCHAR},
+      openid = #{openid,jdbcType=VARCHAR},
+      unique_code = #{uniqueCode,jdbcType=BIT},
+      outer_id = #{outerId,jdbcType=INTEGER}
     where id = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>

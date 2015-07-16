@@ -42,6 +42,12 @@ public enum MsgType {
             return "video";//视频消息
         }
     },
+    MESSAGETYPE_MUSIC {
+        @Override
+        public String toString() {
+            return "music";//音乐消息
+        }
+    },
     MESSAGETYPE_SHORTVIDEO {
         @Override
         public String toString() {
