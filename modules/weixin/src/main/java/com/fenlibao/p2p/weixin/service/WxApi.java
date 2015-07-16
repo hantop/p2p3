@@ -6,6 +6,7 @@ import com.fenlibao.p2p.weixin.domain.Fans;
 import com.fenlibao.p2p.weixin.message.Message;
 import com.fenlibao.p2p.weixin.domain.Qrcode;
 import com.fenlibao.p2p.weixin.exception.WeixinException;
+import com.fenlibao.p2p.weixin.message.card.CardTypeValue;
 import com.fenlibao.p2p.weixin.message.template.TemplateMsg;
 
 import java.io.Serializable;
@@ -13,7 +14,7 @@ import java.util.Map;
 
 /**
  * 微信api
- * <p>
+ * <p/>
  * 130130118@qq.com
  * AAA111aaa
  * Created by lenovo on 2015/5/24.
@@ -23,11 +24,14 @@ public interface WxApi extends Constants {
 
     /**
      * 获取微信配置信息
+     *
      * @return
      */
     WeixinConfig getWeixinConfig();
+
     /**
      * 根据url生成网页授权获取用户基本信息url
+     *
      * @param url
      * @return
      */
@@ -56,10 +60,21 @@ public interface WxApi extends Constants {
 
     /**
      * 微信页面config接入
+     *
      * @param url
      * @return
      */
     Map<String, String> signature(final String url);
+
+    /**
+     * 微信卡券网页签名
+     *
+     * @param locationId
+     * @param cardId
+     * @param cardType
+     * @return
+     */
+    Map<String, String> signature(CardTypeValue cardType, String cardId,String locationId);
 
     /**
      * access_token是公众号的全局唯一票据，公众号调用各接口时都需使用access_token。
@@ -69,7 +84,6 @@ public interface WxApi extends Constants {
      * @return
      */
 //    Token getToken();
-
 
 
     /**
@@ -82,12 +96,12 @@ public interface WxApi extends Constants {
 
     /**
      * 永久二维码
-     *
+     * <p/>
      * 为了满足用户渠道推广分析的需要，公众平台提供了生成带参数二维码的接口。
      * 使用该接口可以获得多个带不同场景值的二维码，用户扫描后，公众号可以接收到事件推送。
-     * <p>
+     * <p/>
      * 用户扫描带场景值二维码时，可能推送以下两种事件：
-     * <p>
+     * <p/>
      * 如果用户还未关注公众号，则用户可以关注公众号，关注后微信会将带场景值关注事件推送给开发者。
      * 如果用户已经关注公众号，在用户扫描后会自动进入会话，微信也会将带场景值扫描事件推送给开发者。
      * <b>步奏如下：</b>
@@ -100,6 +114,7 @@ public interface WxApi extends Constants {
 
     /**
      * 查看Qrcode getQrLimitScene(String sceneStr);说明
+     *
      * @param sceneId
      * @return
      */
@@ -107,6 +122,7 @@ public interface WxApi extends Constants {
 
     /**
      * 临时二维码
+     *
      * @param sceneId
      * @return
      */
@@ -125,7 +141,6 @@ public interface WxApi extends Constants {
     OauthDefines oauth2(String code, String state);
 
 
-
     /**
      * 处理微信客户端产生的xml数据，处理完成后返回
      *
@@ -136,7 +151,8 @@ public interface WxApi extends Constants {
 
     /**
      * 发送模板消息
-     * @param templateMsg   模板消息内容
+     *
+     * @param templateMsg 模板消息内容
      * @return
      */
     Message send(TemplateMsg templateMsg) throws WeixinException;

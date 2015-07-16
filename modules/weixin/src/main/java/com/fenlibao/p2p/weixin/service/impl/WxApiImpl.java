@@ -12,6 +12,7 @@ import com.fenlibao.p2p.weixin.event.MsgEvent;
 import com.fenlibao.p2p.weixin.event.PoiCheckEvent;
 import com.fenlibao.p2p.weixin.exception.WeixinException;
 import com.fenlibao.p2p.weixin.message.Message;
+import com.fenlibao.p2p.weixin.message.card.CardTypeValue;
 import com.fenlibao.p2p.weixin.message.req.ReqTicket;
 import com.fenlibao.p2p.weixin.message.template.TemplateMsg;
 import com.fenlibao.p2p.weixin.proxy.WeixinProxy;
@@ -30,22 +31,20 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.net.URLEncoder;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by Administrator on 2015/7/6.
  */
 @Service("wxApi")
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-public class WxApiImpl implements WxApi,ApplicationListener<ContextRefreshedEvent> {
+public class WxApiImpl implements WxApi, ApplicationListener<ContextRefreshedEvent> {
 
     private final static Logger log = LoggerFactory.getLogger(WxApiImpl.class);
 
@@ -143,7 +142,7 @@ public class WxApiImpl implements WxApi,ApplicationListener<ContextRefreshedEven
 
     @Override
     public Map<String, String> signature(String url) {
-        Map<String, String> ret = new HashMap<String, String>();
+        Map<String, String> ret = new HashMap<>();
         Ticket ticket = this.weixinProxy.httpTicket(TicketType.JSAPI_TICKET);
         String nonceStr = this.createNonceStr();
         String timestamp = this.createTimestamp();
@@ -155,8 +154,49 @@ public class WxApiImpl implements WxApi,ApplicationListener<ContextRefreshedEven
         ret.put("timestamp", timestamp);
         ret.put("signature", signature);
         ret.put("appId", weixinConfig.getAppId());
-        if(log.isInfoEnabled()) {
+        if (log.isInfoEnabled()) {
             log.info(ReflectionToStringBuilder.toString(ret, ToStringStyle.MULTI_LINE_STYLE));
+        }
+        return ret;
+    }
+
+    @Override
+    public Map<String, String> signature(CardTypeValue cardType, String cardId,String locationId) {
+        Assert.notNull(cardType,"卡券类型不能为空");
+        Map<String, String> ret = new HashMap<>();
+        List<String> list = new ArrayList<>();
+        Ticket ticket = this.weixinProxy.httpTicket(TicketType.JSAPI_CARD_TICKET);
+        list.add(ticket.getTicket());
+        list.add(weixinConfig.getAppId());
+        if (locationId != null) {
+            list.add(locationId);
+        }
+        if (cardType != null) {
+            list.add(cardType.toString());
+        }
+        if(cardId != null) {
+            list.add(cardId);
+        }
+        String timestamp = this.createTimestamp();
+        String nonceStr = this.createNonceStr();
+        list.add(timestamp);
+        list.add(nonceStr);
+        Collections.sort(list);
+        String content = list.toString().replaceAll(",", "").replaceAll("\\s*", "");
+        content = content.substring(1, content.length() - 1);
+        String signature = DigestUtils.sha1Hex(content);
+
+        ret.put("location_id",locationId);
+        ret.put("time_stamp",timestamp);
+        ret.put("nonce_str",nonceStr);
+        ret.put("card_id",cardId);
+        ret.put("card_type",cardType.toString());
+        ret.put("signature",signature);
+        ret.put("api_ticket",ticket.getTicket());
+        ret.put("app_id", weixinConfig.getAppId());
+
+        if (log.isInfoEnabled()) {
+            log.info("卡券签名：{},\n signature:{}",JSON.toJSONString(ret));
         }
         return ret;
     }
@@ -237,7 +277,7 @@ public class WxApiImpl implements WxApi,ApplicationListener<ContextRefreshedEven
                 log.info(e.getMessage());
             }
             OauthDefines oauthDefines = new OauthDefines(CodeMsg.ERROR_TIME_OUT);
-            if(log.isErrorEnabled()) {
+            if (log.isErrorEnabled()) {
                 log.error("网页授权错误:{}", ReflectionToStringBuilder.toString(oauthDefines, ToStringStyle.MULTI_LINE_STYLE));
             }
             return oauthDefines;
@@ -245,8 +285,8 @@ public class WxApiImpl implements WxApi,ApplicationListener<ContextRefreshedEven
         //拉取用户信息(需scope为 snsapi_userinfo)
         String oauth2UserInfoUrl = String.format(SNSAPI_USERINFO_URL, oauth2Token.getAccessToken(), oauth2Token.getOpenid());
         Fans userInfo = this.weixinProxy.httpFans(oauth2UserInfoUrl);
-        if(log.isInfoEnabled()) {
-            log.info("获取用户信息:{}" ,ReflectionToStringBuilder.toString(userInfo, ToStringStyle.MULTI_LINE_STYLE));
+        if (log.isInfoEnabled()) {
+            log.info("获取用户信息:{}", ReflectionToStringBuilder.toString(userInfo, ToStringStyle.MULTI_LINE_STYLE));
         }
         this.messageHandler.oauth2Event(userInfo, state);
         OauthDefines oauthDefines = new OauthDefines(CodeMsg.SUCCESS, userInfo.getOpenid());
@@ -255,27 +295,27 @@ public class WxApiImpl implements WxApi,ApplicationListener<ContextRefreshedEven
 
     @Override
     public Serializable process(String reqMsg, String host) {
-        if(log.isInfoEnabled()) {
-            log.info("请求消息:{},请求域名：{}" ,reqMsg,host);
+        if (log.isInfoEnabled()) {
+            log.info("请求消息:{},请求域名：{}", reqMsg, host);
         }
         Message message = (Message) xStream.fromXML(reqMsg);
         publisher.publishEvent(new MsgEvent(this, message, this.weixinConfig.getAppId(), MsgDefines.RECEIVE, reqMsg));
         Serializable result = process(message, host);
-        if(log.isInfoEnabled()) {
-            log.info("返回消息:{}" ,ReflectionToStringBuilder.toString(result, ToStringStyle.MULTI_LINE_STYLE));
+        if (log.isInfoEnabled()) {
+            log.info("返回消息:{}", ReflectionToStringBuilder.toString(result, ToStringStyle.MULTI_LINE_STYLE));
         }
         return result;
     }
 
     @Override
     public Message send(TemplateMsg templateMsg) throws WeixinException {
-        if(log.isInfoEnabled()) {
-            log.info("发送模板消息:{}" ,ReflectionToStringBuilder.toString(templateMsg, ToStringStyle.MULTI_LINE_STYLE));
+        if (log.isInfoEnabled()) {
+            log.info("发送模板消息:{}", ReflectionToStringBuilder.toString(templateMsg, ToStringStyle.MULTI_LINE_STYLE));
         }
         String json = JSON.toJSONString(templateMsg);
         Message result = this.weixinProxy.httpTemplateMsg(json);
-        if(log.isInfoEnabled()) {
-            log.info("返回模板消息:{}" ,ReflectionToStringBuilder.toString(result, ToStringStyle.MULTI_LINE_STYLE));
+        if (log.isInfoEnabled()) {
+            log.info("返回模板消息:{}", ReflectionToStringBuilder.toString(result, ToStringStyle.MULTI_LINE_STYLE));
         }
         return result;
     }

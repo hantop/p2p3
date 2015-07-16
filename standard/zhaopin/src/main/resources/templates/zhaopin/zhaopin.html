@@ -100,22 +100,55 @@
             wx.onMenuShareAppMessage(shareData);
 
 
+            // 12 微信卡券接口
+            // 12.1 添加卡券
+            document.querySelector('#addCard').onclick = function () {
+                wx.addCard({
+                    cardList: [
+                        {
+                            cardId: 'pDF3iY9tv9zCGCj4jTXFOo1DxHdo',
+                            cardExt: {signature:"f54dae85e7807cc9525ccc127b4796e021f05b33",code: "", openid: "", timestamp: "1418301401"}
+                        },
+                        {
+                            cardId: 'pDF3iY9tv9zCGCj4jTXFOo1DxHdo',
+                            cardExt: {code: "", openid: "", timestamp: "1418301401", signature:"f54dae85e7807cc9525ccc127b4796e021f05b33"}
+                        }
+                    ],
+                    success: function (res) {
+                        alert('已添加卡券：' + JSON.stringify(res.cardList));
+                    }
+                });
+            };
 
-//            document.querySelector('#chooseImage').onclick = function () {
-//
-//            };
+
+
         });
 
         wx.error(function (res) {
             alert(res.errMsg);
         });
     </script>
+ <!--   <script type="application/javascript" th:inline="javascript">
+        wx.chooseCard({
+            debug: true,
+            cardType: [[${ret.card_type}]],// 卡券类型
+            timestamp: [[${ret.time_stamp}]], // 卡券签名时间戳
+            nonceStr: [[${ret.nonce_str}]], // 卡券签名随机串
+            signType: 'SHA1', // 签名方式，默认'SHA1'
+            cardSign: [[${ret.signature}]], // 卡券签名
+            success: function (res) {
+                var cardList = res.cardList; // 用户选中的卡券列表信息
+            }
+        });
+    </script>-->
+
 </head>
 <body ontouchstart="">
 <div class="wxapi_container">
     <button class="btn btn_primary" id="checkJsApi">checkJsApi</button>
     <button class="btn btn_primary" id="onMenuShareTimeline">onMenuShareTimeline</button>
     <button class="btn btn_primary" id="chooseImage">选择图片</button>
+    <button class="btn btn_primary" id="addCard">addCard</button>
     <div id="imagelist"></div>
 </div>
 </body>
