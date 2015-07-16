@@ -20,6 +20,8 @@ import com.fenlibao.p2p.weixin.service.QrcodeService;
 import com.fenlibao.p2p.weixin.service.WxApi;
 import com.thoughtworks.xstream.XStream;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -153,7 +155,9 @@ public class WxApiImpl implements WxApi,ApplicationListener<ContextRefreshedEven
         ret.put("timestamp", timestamp);
         ret.put("signature", signature);
         ret.put("appId", weixinConfig.getAppId());
-        log.info(JSON.toJSONString(ret));
+        if(log.isInfoEnabled()) {
+            log.info(ReflectionToStringBuilder.toString(ret, ToStringStyle.MULTI_LINE_STYLE));
+        }
         return ret;
     }
 
@@ -233,15 +237,17 @@ public class WxApiImpl implements WxApi,ApplicationListener<ContextRefreshedEven
                 log.info(e.getMessage());
             }
             OauthDefines oauthDefines = new OauthDefines(CodeMsg.ERROR_TIME_OUT);
+            if(log.isErrorEnabled()) {
+                log.error("网页授权错误:{}", ReflectionToStringBuilder.toString(oauthDefines, ToStringStyle.MULTI_LINE_STYLE));
+            }
             return oauthDefines;
         }
         //拉取用户信息(需scope为 snsapi_userinfo)
         String oauth2UserInfoUrl = String.format(SNSAPI_USERINFO_URL, oauth2Token.getAccessToken(), oauth2Token.getOpenid());
         Fans userInfo = this.weixinProxy.httpFans(oauth2UserInfoUrl);
-        if (log.isInfoEnabled()) {
-            log.info("获取用户信息：" + JSON.toJSONString(userInfo));
+        if(log.isInfoEnabled()) {
+            log.info("获取用户信息:{}" ,ReflectionToStringBuilder.toString(userInfo, ToStringStyle.MULTI_LINE_STYLE));
         }
-
         this.messageHandler.oauth2Event(userInfo, state);
         OauthDefines oauthDefines = new OauthDefines(CodeMsg.SUCCESS, userInfo.getOpenid());
         return oauthDefines;
@@ -249,16 +255,29 @@ public class WxApiImpl implements WxApi,ApplicationListener<ContextRefreshedEven
 
     @Override
     public Serializable process(String reqMsg, String host) {
+        if(log.isInfoEnabled()) {
+            log.info("请求消息:{},请求域名：{}" ,reqMsg,host);
+        }
         Message message = (Message) xStream.fromXML(reqMsg);
         publisher.publishEvent(new MsgEvent(this, message, this.weixinConfig.getAppId(), MsgDefines.RECEIVE, reqMsg));
         Serializable result = process(message, host);
+        if(log.isInfoEnabled()) {
+            log.info("返回消息:{}" ,ReflectionToStringBuilder.toString(result, ToStringStyle.MULTI_LINE_STYLE));
+        }
         return result;
     }
 
     @Override
     public Message send(TemplateMsg templateMsg) throws WeixinException {
+        if(log.isInfoEnabled()) {
+            log.info("发送模板消息:{}" ,ReflectionToStringBuilder.toString(templateMsg, ToStringStyle.MULTI_LINE_STYLE));
+        }
         String json = JSON.toJSONString(templateMsg);
-        return this.weixinProxy.httpTemplateMsg(json);
+        Message result = this.weixinProxy.httpTemplateMsg(json);
+        if(log.isInfoEnabled()) {
+            log.info("返回模板消息:{}" ,ReflectionToStringBuilder.toString(result, ToStringStyle.MULTI_LINE_STYLE));
+        }
+        return result;
     }
 
     private Serializable process(Message message, String host) {

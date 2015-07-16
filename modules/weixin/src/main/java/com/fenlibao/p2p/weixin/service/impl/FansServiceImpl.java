@@ -4,6 +4,10 @@ import com.fenlibao.p2p.common.page.Page;
 import com.fenlibao.p2p.weixin.domain.Fans;
 import com.fenlibao.p2p.weixin.persistence.FansMapper;
 import com.fenlibao.p2p.weixin.service.FansService;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -14,6 +18,8 @@ import java.util.List;
  */
 @Service("fansService")
 public class FansServiceImpl implements FansService {
+
+    private static final Logger log = LoggerFactory.getLogger(FansServiceImpl.class);
 
     @Inject
     private FansMapper fansMapper;
@@ -70,6 +76,9 @@ public class FansServiceImpl implements FansService {
 
     @Override
     public int saveOrUpdate(Fans record) {
+        if(log.isInfoEnabled()) {
+            log.info(ReflectionToStringBuilder.toString(record, ToStringStyle.MULTI_LINE_STYLE));
+        }
         Fans flag = this.fansMapper.selectByOpenId(record.getOpenid());
         if(flag != null) {
             return this.fansMapper.updateByOpenIdSelective(record);

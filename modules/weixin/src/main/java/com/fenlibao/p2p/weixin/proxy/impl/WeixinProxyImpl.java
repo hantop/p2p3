@@ -20,6 +20,10 @@ import com.fenlibao.p2p.weixin.message.req.White;
 import com.fenlibao.p2p.weixin.proxy.WeixinProxy;
 import com.fenlibao.p2p.weixin.service.TicketService;
 import com.fenlibao.p2p.weixin.service.TokenService;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -41,7 +45,7 @@ import java.io.Serializable;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<ContextRefreshedEvent>,ApplicationContextAware {
 
-
+    private static final Logger log = LoggerFactory.getLogger(WeixinProxyImpl.class);
     @Inject
     private WeixinConfig weixinConfig;
 
@@ -82,6 +86,9 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
      * @return
      */
     private Token httpToken(TokeyType tokenType) {
+        if(log.isInfoEnabled()) {
+            log.info(ReflectionToStringBuilder.toString(tokenType, ToStringStyle.MULTI_LINE_STYLE));
+        }
         if (this.token == null) {
             this.token = this.tokenService.selectLast(tokenType);
         }
@@ -120,6 +127,9 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
 
     @Override
     public Ticket httpTicket(ReqTicket reqTicket) {
+        if(log.isInfoEnabled()) {
+            log.info(ReflectionToStringBuilder.toString(reqTicket, ToStringStyle.MULTI_LINE_STYLE));
+        }
         Token token = weixinProxy.httpToken();
         String ticketUrl = null;
         TicketType ticketType = null;
@@ -170,6 +180,9 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
         this.ticket = JSON.parseObject(bytes, Ticket.class);
         ticket.setType(TicketType.JSAPI_TICKET);
         ticket.setCreateTime(System.currentTimeMillis());
+        if(log.isInfoEnabled()) {
+            log.info(ReflectionToStringBuilder.toString(ticket, ToStringStyle.MULTI_LINE_STYLE));
+        }
         return ticket;
     }
 
@@ -187,6 +200,9 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
 //        if(oauth2Token.getErrcode() == HTTP_STATUS.ERROR_CODE_40029.getErrorcode()) {
 //            new RuntimeException(HTTP_STATUS.ERROR_CODE_40029.getErrmsg());
 //        }
+        if(log.isInfoEnabled()) {
+            log.info(ReflectionToStringBuilder.toString(oauth2Token, ToStringStyle.MULTI_LINE_STYLE));
+        }
         return oauth2Token;
     }
 
@@ -207,6 +223,9 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
         qrcode.setSuffix(weixinConfig.getSuffix());
         qrcode.setBytes(results);
         qrcode.setSceneName(scene);
+        if(log.isInfoEnabled()) {
+            log.info(ReflectionToStringBuilder.toString(qrcode, ToStringStyle.MULTI_LINE_STYLE));
+        }
         return qrcode;
     }
 
@@ -216,6 +235,9 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
         String templateUrl = String.format(TEMPLATE_URL,token.getAccessToken());
         byte[] bytes = HttpClientUtil.httpPost(templateUrl,templateMsg);
         Message message = JSON.parseObject(bytes, Message.class);
+        if(log.isInfoEnabled()) {
+            log.info(ReflectionToStringBuilder.toString(message, ToStringStyle.MULTI_LINE_STYLE));
+        }
         return message;
     }
 
@@ -228,6 +250,9 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
         String url = String.format(POI_URL, this.weixinProxy.httpToken().getAccessToken());
         byte[] bytes = HttpClientUtil.httpPost(url, req);
         Poi poi = JSON.parseObject(bytes, Poi.class);
+        if(log.isInfoEnabled()) {
+            log.info(ReflectionToStringBuilder.toString(poi, ToStringStyle.MULTI_LINE_STYLE));
+        }
         return poi;
     }
 

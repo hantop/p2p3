@@ -8,6 +8,8 @@ import com.fenlibao.p2p.weixin.domain.Log;
 import com.fenlibao.p2p.weixin.event.LogEvent;
 import com.fenlibao.p2p.weixin.exception.WeixinException;
 import com.fenlibao.p2p.weixin.message.WxMsg;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -76,6 +78,7 @@ public class WeixinInterceptor {
         String signature = methodSignature.toLongString();
 
 
+
         Object returnValue = null;
         try {
             //执行目标方法
@@ -84,8 +87,16 @@ public class WeixinInterceptor {
                 WxMsg message = (WxMsg) returnValue;
                 CodeMsg codeMsg = handleException(message);
                 Log log = new Log(weixinConfig.getAppId(),target.getClass().getName(),signature, JSON.toJSONString(args),String.valueOf(codeMsg.getErrorcode()),codeMsg.getErrmsg(),thingName);
+
+                if(WeixinInterceptor.log.isInfoEnabled()) {
+                    WeixinInterceptor.log.info(ReflectionToStringBuilder.toString(log, ToStringStyle.MULTI_LINE_STYLE));
+                }
+
                 publisher.publishEvent(new LogEvent(this,log,returnValue));
                 if(codeMsg != CodeMsg.SUCCESS) {
+                    if(WeixinInterceptor.log.isErrorEnabled()) {
+                        WeixinInterceptor.log.error(ReflectionToStringBuilder.toString(codeMsg, ToStringStyle.MULTI_LINE_STYLE));
+                    }
                     throw new WeixinException("微信错误消息：" + codeMsg.getErrmsg(), codeMsg.getErrorcode());
                 }
             }

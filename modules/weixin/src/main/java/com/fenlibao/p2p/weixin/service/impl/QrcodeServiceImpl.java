@@ -4,6 +4,9 @@ import com.fenlibao.p2p.common.page.Page;
 import com.fenlibao.p2p.weixin.domain.Qrcode;
 import com.fenlibao.p2p.weixin.persistence.QrcodeMapper;
 import com.fenlibao.p2p.weixin.service.QrcodeService;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -15,7 +18,7 @@ import java.util.List;
  */
 @Service("qrcodeService")
 public class QrcodeServiceImpl implements QrcodeService {
-
+    private static final Logger log = LoggerFactory.getLogger(QrcodeServiceImpl.class);
     @Inject
     private QrcodeMapper qrcodeMapper;
 
@@ -65,7 +68,10 @@ public class QrcodeServiceImpl implements QrcodeService {
     }
 
     @Override
-    public Qrcode selectLimitSceneByScene(Serializable sceneValue,String scene) {
+    public Qrcode selectLimitSceneByScene(Serializable sceneValue, String scene) {
+        if (log.isInfoEnabled()) {
+            log.info("sceneValue:{},scene:{}", sceneValue, scene);
+        }
         return qrcodeMapper.selectLimitSceneByScene(sceneValue.toString(), sceneValue.getClass().getName(), scene);
     }
 }

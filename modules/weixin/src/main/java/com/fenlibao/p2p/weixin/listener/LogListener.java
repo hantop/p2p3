@@ -6,6 +6,10 @@ import com.fenlibao.p2p.weixin.message.Poi;
 import com.fenlibao.p2p.weixin.persistence.LogMapper;
 import com.fenlibao.p2p.weixin.service.*;
 import com.fenlibao.p2p.weixin.variable.WeiXinThing;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +22,7 @@ import java.util.UUID;
 @Component
 public class LogListener implements ApplicationListener<LogEvent> {
 
+    private static final Logger log = LoggerFactory.getLogger(LogListener.class);
     @Inject
     private LogMapper logMapper;
 
@@ -42,6 +47,9 @@ public class LogListener implements ApplicationListener<LogEvent> {
         String thingName = log.getThing();
         Object returnValue = event.getReturnValue();
         logMapper.insertSelective(log);
+        if(LogListener.log.isInfoEnabled()) {
+            LogListener.log.info(ReflectionToStringBuilder.toString(logMapper, ToStringStyle.MULTI_LINE_STYLE));
+        }
         if (thingName.equals(WeiXinThing.HTTP_TOKEN.toString())) {
             //token
             Token token = (Token) returnValue;

@@ -13,6 +13,10 @@ import com.fenlibao.p2p.sms.persistence.SignMapper;
 import com.fenlibao.p2p.sms.service.SmsApi;
 import com.fenlibao.p2p.sms.variable.SmsThing;
 import com.fenlibao.p2p.sms.variable.SmsVariable;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -30,6 +34,8 @@ import java.util.List;
  */
 @Service("smsApi")
 public class SmsApiImpl implements SmsApi, ApplicationListener<ContextRefreshedEvent>,ApplicationContextAware {
+
+    private final static Logger log = LoggerFactory.getLogger(SmsApiImpl.class);
 
     private ApplicationContext applicationContext;
 
@@ -54,6 +60,9 @@ public class SmsApiImpl implements SmsApi, ApplicationListener<ContextRefreshedE
             //获取数据库配置的常量值，初始化配置
             Utils.setMapValue(constants, smsConfig);
             setSmsConfig(smsConfig);
+            if(SmsApiImpl.log.isInfoEnabled()) {
+                SmsApiImpl.log.info("短信配置信息：{}", ReflectionToStringBuilder.toString(smsConfig, ToStringStyle.MULTI_LINE_STYLE));
+            }
         }
     }
 
@@ -64,6 +73,9 @@ public class SmsApiImpl implements SmsApi, ApplicationListener<ContextRefreshedE
 
     @Override
     public Serializable registEx(String serialpass) {
+        if(SmsApiImpl.log.isInfoEnabled()) {
+            SmsApiImpl.log.info("注册序列号：{}", ReflectionToStringBuilder.toString(serialpass, ToStringStyle.MULTI_LINE_STYLE));
+        }
         return sdkclient.registEx(serialpass);
     }
 
@@ -74,27 +86,46 @@ public class SmsApiImpl implements SmsApi, ApplicationListener<ContextRefreshedE
 
     @Override
     public Serializable logout() {
+        if(SmsApiImpl.log.isInfoEnabled()) {
+            SmsApiImpl.log.info("注销短信");
+        }
         return sdkclient.logout();
     }
 
     @Override
     public double getEachFee() {
-        return sdkclient.getEachFee();
+        double eachFee = sdkclient.getEachFee();
+        if(SmsApiImpl.log.isInfoEnabled()) {
+            SmsApiImpl.log.info("获取短信金额：{}" ,eachFee);
+        }
+        return eachFee;
     }
 
     @Override
     public double getBalance() throws Exception {
-        return sdkclient.getBalance();
+        double balance = sdkclient.getBalance();
+        if(SmsApiImpl.log.isInfoEnabled()) {
+            SmsApiImpl.log.info("获取短信余额：{}" ,balance);
+        }
+        return balance;
     }
 
     @Override
     public Serializable chargeUp(String cardNo, String cardPass) {
-        return sdkclient.chargeUp(cardNo, cardPass);
+        Serializable result = sdkclient.chargeUp(cardNo, cardPass);
+        if(SmsApiImpl.log.isInfoEnabled()) {
+            SmsApiImpl.log.info("短信充值：{}" ,ReflectionToStringBuilder.toString(result, ToStringStyle.MULTI_LINE_STYLE));
+        }
+        return result;
     }
 
     @Override
     public Serializable sendSMS(String[] mobiles, String smsContent, int smsPriority) {
-        return sdkclient.sendSMS(mobiles, smsContent, smsPriority);
+        Serializable result =  sdkclient.sendSMS(mobiles, smsContent, smsPriority);
+        if(SmsApiImpl.log.isInfoEnabled()) {
+            SmsApiImpl.log.info("发送短信：{}" ,ReflectionToStringBuilder.toString(result, ToStringStyle.MULTI_LINE_STYLE));
+        }
+        return result;
     }
 
     @Override

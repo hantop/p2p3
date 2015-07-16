@@ -5,6 +5,10 @@ import com.fenlibao.p2p.weixin.domain.Ticket;
 import com.fenlibao.p2p.weixin.persistence.TicketMapper;
 import com.fenlibao.p2p.weixin.service.Constants;
 import com.fenlibao.p2p.weixin.service.TicketService;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -15,7 +19,7 @@ import java.util.List;
  */
 @Service("ticketService")
 public class TicketServiceImpl implements TicketService {
-
+    private static final Logger log = LoggerFactory.getLogger(TicketServiceImpl.class);
     @Inject
     private TicketMapper ticketMapper;
 
@@ -46,6 +50,9 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public int insertSelective(Ticket record) {
+        if(log.isInfoEnabled()) {
+            log.info(ReflectionToStringBuilder.toString(record, ToStringStyle.MULTI_LINE_STYLE));
+        }
         return ticketMapper.insertSelective(record);
     }
 

@@ -5,6 +5,10 @@ import com.fenlibao.p2p.weixin.domain.Token;
 import com.fenlibao.p2p.weixin.persistence.TokenMapper;
 import com.fenlibao.p2p.weixin.service.Constants;
 import com.fenlibao.p2p.weixin.service.TokenService;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -19,6 +23,7 @@ import java.util.List;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class TokenServiceImpl implements TokenService {
 
+    private static final Logger log = LoggerFactory.getLogger(TokenServiceImpl.class);
     @Inject
     private TokenMapper tokenMapper;
 
@@ -54,6 +59,9 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public int insertSelective(Token record) {
+        if(log.isInfoEnabled()) {
+            log.info(ReflectionToStringBuilder.toString(record, ToStringStyle.MULTI_LINE_STYLE));
+        }
         return this.tokenMapper.insertSelective(record);
     }
 

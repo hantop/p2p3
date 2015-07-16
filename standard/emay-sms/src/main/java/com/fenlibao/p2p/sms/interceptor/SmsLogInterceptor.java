@@ -8,6 +8,8 @@ import com.fenlibao.p2p.sms.domain.Log;
 import com.fenlibao.p2p.sms.event.SmsInvokeEvent;
 import com.fenlibao.p2p.sms.persistence.LogMapper;
 import com.fenlibao.p2p.sms.service.SmsApi;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -89,8 +91,14 @@ public class SmsLogInterceptor {
         CodeMsg codeMsg = CodeMsg.handCode(returnValue);
 
         Log log = new Log(config.getSoftwareSerialNo(), target.toString(), signature, JSON.toJSONString(args), returnValue != null ? returnValue.toString() : "", codeMsg.getSource(), codeMsg.getErrmsg(), thingName);
+        if(SmsLogInterceptor.log.isInfoEnabled()) {
+            SmsLogInterceptor.log.info(ReflectionToStringBuilder.toString(log, ToStringStyle.MULTI_LINE_STYLE));
+        }
         logMapper.insertSelective(log);
         publisher.publishEvent(new SmsInvokeEvent(this, target, args, log));
+        if(SmsLogInterceptor.log.isInfoEnabled()) {
+            SmsLogInterceptor.log.info(ReflectionToStringBuilder.toString(codeMsg, ToStringStyle.MULTI_LINE_STYLE));
+        }
         if(returnType == Serializable.class) {
             return codeMsg;
         }
