@@ -24,6 +24,8 @@ public interface Constants {
 
     String JSAPI_TICKET_URL = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=jsapi";
 
+    String JSAPI_CARD_TICKET_URL = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=wx_card";//微信卡券网页ticket
+
     String CARD_QRCODE_URL = "https://api.weixin.qq.com/card/qrcode/create?access_token=%s";//二维码卡券投放的ticket url
 
     String QRCODE_URL = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=%s";
@@ -70,6 +72,7 @@ public interface Constants {
     enum TicketType {
         QR_CARD_TICKET,//卡券ticket
         QR_TICKET,//二维码token
+        JSAPI_CARD_TICKET,//微信卡券网页ticket
         JSAPI_TICKET;//网页交互ticket
     }
 

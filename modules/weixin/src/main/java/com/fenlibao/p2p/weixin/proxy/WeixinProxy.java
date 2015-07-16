@@ -65,7 +65,7 @@ public interface WeixinProxy extends Constants {
      * @return
      */
     @Thing(WeiXinThing.HTTP_TICKET)
-    Ticket httpTicket();
+    Ticket httpTicket(TicketType ticketType);
 
     /**
      * 网页授权获取用户信息

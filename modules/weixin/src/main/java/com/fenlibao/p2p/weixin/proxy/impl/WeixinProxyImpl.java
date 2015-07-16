@@ -43,7 +43,7 @@ import java.io.Serializable;
  */
 @Component("weixinProxy")
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<ContextRefreshedEvent>,ApplicationContextAware {
+public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<ContextRefreshedEvent>, ApplicationContextAware {
 
     private static final Logger log = LoggerFactory.getLogger(WeixinProxyImpl.class);
     @Inject
@@ -57,7 +57,9 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
 
     private Token token;
 
-    private Ticket ticket;
+    private Ticket jssapiTicket;//jssapi网页ticket
+
+    private Ticket jssapiCardTicket;//卡券网页ticket
 
     private WeixinProxy weixinProxy;
 
@@ -86,7 +88,7 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
      * @return
      */
     private Token httpToken(TokeyType tokenType) {
-        if(log.isInfoEnabled()) {
+        if (log.isInfoEnabled()) {
             log.info(ReflectionToStringBuilder.toString(tokenType, ToStringStyle.MULTI_LINE_STYLE));
         }
         if (this.token == null) {
@@ -127,7 +129,7 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
 
     @Override
     public Ticket httpTicket(ReqTicket reqTicket) {
-        if(log.isInfoEnabled()) {
+        if (log.isInfoEnabled()) {
             log.info(ReflectionToStringBuilder.toString(reqTicket, ToStringStyle.MULTI_LINE_STYLE));
         }
         Token token = weixinProxy.httpToken();
@@ -140,7 +142,7 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
             ticketUrl = String.format(TICKET_URL, token.getAccessToken());//二维码ticket路径
             ticketType = TicketType.QR_TICKET;
         }
-        Assert.notNull(ticketUrl,"ticket url 不能为空");
+        Assert.notNull(ticketUrl, "ticket url 不能为空");
 
         String jsonParam = JSON.toJSONString(reqTicket, SerializerFeature.WriteNonStringKeyAsString);
         byte[] results = HttpClientUtil.httpPost(ticketUrl, jsonParam);
@@ -163,27 +165,55 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
     }
 
     @Override
-    public Ticket httpTicket() {
-        if(this.ticket == null) {
-            this.ticket = this.ticketService.selectLastTicket(TicketType.JSAPI_TICKET);
+    public Ticket httpTicket(TicketType ticketType) {
+        Assert.notNull(ticketType, "请求的ticketType类型不能为空");
+        if (log.isInfoEnabled()) {
+            log.info("请求获取ticket：{}", ReflectionToStringBuilder.toString(ticketType, ToStringStyle.MULTI_LINE_STYLE));
         }
-        if(ticket != null && ticket.getCreateTime() != null) {
+        if (ticketType == TicketType.QR_TICKET || ticketType == TicketType.QR_CARD_TICKET) {
+            if (log.isInfoEnabled()) {
+                log.info("不能获取改类型的ticket，请调用public Ticket httpTicket(ReqTicket reqTicket) 方法获取", ReflectionToStringBuilder.toString(ticketType, ToStringStyle.MULTI_LINE_STYLE));
+            }
+            throw new RuntimeException("不能获取改类型(" + ticketType + ")的ticket");
+        }
+        Ticket result = null;
+        result = this.ticketService.selectLastTicket(ticketType);
+
+        if (result != null && result.getCreateTime() != null) {
             Long currentTime = System.currentTimeMillis() / 1000;
-            Long lastTokenCreateTime = ticket.getCreateTime() / 1000;
+            Long lastTokenCreateTime = result.getCreateTime() / 1000;
             Long gap = currentTime - lastTokenCreateTime;
-            if (gap < ticket.getExpiresIn()) {
-                return ticket;
+            if (gap < result.getExpiresIn()) {
+                this.jssapiTicket = result;
+                if (log.isInfoEnabled()) {
+                    log.info(ReflectionToStringBuilder.toString(result, ToStringStyle.MULTI_LINE_STYLE));
+                }
+                return result;
             }
         }
-        String ticketUrl = String.format(JSAPI_TICKET_URL, this.weixinProxy.httpToken().getAccessToken());
-        byte[] bytes = HttpClientUtil.httpGet(ticketUrl);
-        this.ticket = JSON.parseObject(bytes, Ticket.class);
-        ticket.setType(TicketType.JSAPI_TICKET);
-        ticket.setCreateTime(System.currentTimeMillis());
-        if(log.isInfoEnabled()) {
-            log.info(ReflectionToStringBuilder.toString(ticket, ToStringStyle.MULTI_LINE_STYLE));
+        String ticketUrl = null;
+
+        if (ticketType == TicketType.JSAPI_TICKET) {
+            ticketUrl = String.format(JSAPI_TICKET_URL, this.weixinProxy.httpToken().getAccessToken());
+        } else if (ticketType == TicketType.JSAPI_CARD_TICKET) {
+            ticketUrl = String.format(JSAPI_CARD_TICKET_URL, this.weixinProxy.httpToken().getAccessToken());
         }
-        return ticket;
+        Assert.notNull(ticketUrl, "获取ticket的url不能为空");
+
+        byte[] bytes = HttpClientUtil.httpGet(ticketUrl);
+        result = JSON.parseObject(bytes, Ticket.class);
+        result.setType(ticketType);
+        result.setCreateTime(System.currentTimeMillis());
+        if (log.isInfoEnabled()) {
+            log.info(ReflectionToStringBuilder.toString(result, ToStringStyle.MULTI_LINE_STYLE));
+        }
+        if (ticketType == TicketType.JSAPI_TICKET) {
+            this.jssapiTicket = result;
+        } else if (ticketType == TicketType.JSAPI_CARD_TICKET) {
+            this.jssapiCardTicket = result;
+        }
+        return result;
+
     }
 
     @Override
@@ -200,14 +230,14 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
 //        if(oauth2Token.getErrcode() == HTTP_STATUS.ERROR_CODE_40029.getErrorcode()) {
 //            new RuntimeException(HTTP_STATUS.ERROR_CODE_40029.getErrmsg());
 //        }
-        if(log.isInfoEnabled()) {
+        if (log.isInfoEnabled()) {
             log.info(ReflectionToStringBuilder.toString(oauth2Token, ToStringStyle.MULTI_LINE_STYLE));
         }
         return oauth2Token;
     }
 
     @Override
-    public Qrcode httpQrcode(ReqTicket reqTicket,String scene) {
+    public Qrcode httpQrcode(ReqTicket reqTicket, String scene) {
         Serializable sceneValue = reqTicket.generateScene();
         String actionName = reqTicket.getActionName().toString();
 
@@ -223,7 +253,7 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
         qrcode.setSuffix(weixinConfig.getSuffix());
         qrcode.setBytes(results);
         qrcode.setSceneName(scene);
-        if(log.isInfoEnabled()) {
+        if (log.isInfoEnabled()) {
             log.info(ReflectionToStringBuilder.toString(qrcode, ToStringStyle.MULTI_LINE_STYLE));
         }
         return qrcode;
@@ -232,10 +262,10 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
     @Override
     public Message httpTemplateMsg(String templateMsg) {
         Token token = this.weixinProxy.httpToken();
-        String templateUrl = String.format(TEMPLATE_URL,token.getAccessToken());
-        byte[] bytes = HttpClientUtil.httpPost(templateUrl,templateMsg);
+        String templateUrl = String.format(TEMPLATE_URL, token.getAccessToken());
+        byte[] bytes = HttpClientUtil.httpPost(templateUrl, templateMsg);
         Message message = JSON.parseObject(bytes, Message.class);
-        if(log.isInfoEnabled()) {
+        if (log.isInfoEnabled()) {
             log.info(ReflectionToStringBuilder.toString(message, ToStringStyle.MULTI_LINE_STYLE));
         }
         return message;
@@ -245,12 +275,12 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
     public Poi httpPoi(String poiId) {
         Assert.notNull(poiId, "获取门店的poi_id不能为空");
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("poi_id",poiId);
+        jsonObject.put("poi_id", poiId);
         String req = jsonObject.toJSONString();
         String url = String.format(POI_URL, this.weixinProxy.httpToken().getAccessToken());
         byte[] bytes = HttpClientUtil.httpPost(url, req);
         Poi poi = JSON.parseObject(bytes, Poi.class);
-        if(log.isInfoEnabled()) {
+        if (log.isInfoEnabled()) {
             log.info(ReflectionToStringBuilder.toString(poi, ToStringStyle.MULTI_LINE_STYLE));
         }
         return poi;
@@ -260,8 +290,8 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
     public WxMsg testwhitelist(White white) {
         String jsonString = JSON.toJSONString(white);
         String url = String.format(CARD_TESTWHITELIST_URL, this.weixinProxy.httpToken().getAccessToken());
-        byte[] bytes = HttpClientUtil.httpPost(url,jsonString);
-        return JSON.parseObject(bytes,WxMsg.class);
+        byte[] bytes = HttpClientUtil.httpPost(url, jsonString);
+        return JSON.parseObject(bytes, WxMsg.class);
     }
 
 //    @Override
@@ -305,15 +335,15 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
         String token = this.weixinProxy.httpToken().getAccessToken();
         String url = String.format(CARD_URL, token);
         byte[] bytes = HttpClientUtil.httpPost(url, jsonString);
-        return JSON.parseObject(bytes,Card.class);
+        return JSON.parseObject(bytes, Card.class);
     }
 
     @Override
     public byte[] messageMassSend(JSONObject params) {
         JSONArray tousers = params.getJSONArray("touser");
         Object msgtype = params.get("msgtype");
-        Assert.notNull(tousers,"填写图文消息的接收者列表不能为空");
-        Assert.notNull(msgtype,"群发的消息类型不能为空");
+        Assert.notNull(tousers, "填写图文消息的接收者列表不能为空");
+        Assert.notNull(msgtype, "群发的消息类型不能为空");
         String jsonString = params.toString();
         String token = this.weixinProxy.httpToken().getAccessToken();
         String url = String.format(MESSAGE_MASS_SEND_URL, token);

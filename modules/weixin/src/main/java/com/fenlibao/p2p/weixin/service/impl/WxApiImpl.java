@@ -144,7 +144,7 @@ public class WxApiImpl implements WxApi,ApplicationListener<ContextRefreshedEven
     @Override
     public Map<String, String> signature(String url) {
         Map<String, String> ret = new HashMap<String, String>();
-        Ticket ticket = this.weixinProxy.httpTicket();
+        Ticket ticket = this.weixinProxy.httpTicket(TicketType.JSAPI_TICKET);
         String nonceStr = this.createNonceStr();
         String timestamp = this.createTimestamp();
         String signature = String.format(JSAPI_SIGN_URL, ticket.getTicket(), nonceStr, timestamp, url);
