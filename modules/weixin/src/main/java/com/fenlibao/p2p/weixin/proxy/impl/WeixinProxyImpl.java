@@ -6,7 +6,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.fenlibao.p2p.common.http.HttpClientUtil;
 import com.fenlibao.p2p.weixin.config.WeixinConfig;
-import com.fenlibao.p2p.weixin.domain.*;
+import com.fenlibao.p2p.weixin.domain.Fans;
+import com.fenlibao.p2p.weixin.domain.Qrcode;
+import com.fenlibao.p2p.weixin.domain.Ticket;
+import com.fenlibao.p2p.weixin.domain.Token;
 import com.fenlibao.p2p.weixin.exception.WeixinException;
 import com.fenlibao.p2p.weixin.message.Message;
 import com.fenlibao.p2p.weixin.message.Poi;
@@ -18,7 +21,6 @@ import com.fenlibao.p2p.weixin.proxy.WeixinProxy;
 import com.fenlibao.p2p.weixin.service.TicketService;
 import com.fenlibao.p2p.weixin.service.TokenService;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -28,6 +30,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -39,13 +42,13 @@ import java.io.Serializable;
 public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<ContextRefreshedEvent>,ApplicationContextAware {
 
 
-    @Autowired
+    @Inject
     private WeixinConfig weixinConfig;
 
-    @Autowired
+    @Inject
     private TokenService tokenService;
 
-    @Autowired
+    @Inject
     private TicketService ticketService;
 
     private Token token;

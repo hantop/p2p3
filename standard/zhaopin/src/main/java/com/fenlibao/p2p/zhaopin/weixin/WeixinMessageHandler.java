@@ -12,9 +12,9 @@ import com.fenlibao.p2p.zhaopin.domain.Channel;
 import com.fenlibao.p2p.zhaopin.domain.Relationship;
 import com.fenlibao.p2p.zhaopin.persistence.RelationshipMapper;
 import com.fenlibao.p2p.zhaopin.service.ChannelService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,10 +25,10 @@ import java.util.List;
 public class WeixinMessageHandler implements MessageHandler,Constants {
 
 
-    @Autowired
+    @Inject
     private ChannelService channelService;
 
-    @Autowired
+    @Inject
     private RelationshipMapper relationshipMapper;
 
 

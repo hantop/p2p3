@@ -3,10 +3,11 @@ package com.fenlibao.p2p.zhaopin.controller;
 import com.fenlibao.p2p.common.page.Page;
 import com.fenlibao.p2p.zhaopin.domain.RelationshipHistory;
 import com.fenlibao.p2p.zhaopin.service.RelationshipHistoryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.inject.Inject;
 
 /**
  * Created by Administrator on 2015/6/18.
@@ -15,7 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/history")
 public class RelationshipHistoryController {
 
-    @Autowired
+    @Inject
     private RelationshipHistoryService relationshipHistoryService;
 
     @RequestMapping("/list")

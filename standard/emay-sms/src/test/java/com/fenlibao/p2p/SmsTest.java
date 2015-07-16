@@ -37,7 +37,7 @@ public class SmsTest {
         xStream.processAnnotations(Message.class);
     }
 //
-//    @Autowired
+//    @Inject
 //    private SmsApi smsApi;
 //
 //    @Test

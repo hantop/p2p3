@@ -3,10 +3,11 @@ package com.fenlibao.p2p.sms.controller;
 import com.fenlibao.p2p.sms.defines.CodeMsg;
 import com.fenlibao.p2p.sms.message.Message;
 import com.fenlibao.p2p.sms.service.SmsApi;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+
+import javax.inject.Inject;
 
 /**
  * Created by Administrator on 2015/7/10.
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/sms")
 public class SmsController {
 
-    @Autowired
+    @Inject
     private SmsApi smsApi;
 
     @ResponseStatus(HttpStatus.OK)

@@ -4,9 +4,9 @@ import com.fenlibao.p2p.common.page.Page;
 import com.fenlibao.p2p.weixin.domain.Fans;
 import com.fenlibao.p2p.weixin.persistence.FansMapper;
 import com.fenlibao.p2p.weixin.service.FansService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
 import java.util.List;
 
 /**
@@ -15,7 +15,7 @@ import java.util.List;
 @Service("fansService")
 public class FansServiceImpl implements FansService {
 
-    @Autowired
+    @Inject
     private FansMapper fansMapper;
 
     @Override

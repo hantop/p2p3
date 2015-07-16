@@ -9,7 +9,6 @@ import com.fenlibao.p2p.weixin.message.Message;
 import com.fenlibao.p2p.weixin.persistence.MediaMapper;
 import com.fenlibao.p2p.weixin.persistence.MsgMapper;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -24,7 +23,7 @@ import java.util.UUID;
 @Component
 public class MsgListener implements ApplicationListener<MsgEvent> {
 
-    @Autowired
+    @Inject
     private MsgMapper msgMapper;
 
     @Inject

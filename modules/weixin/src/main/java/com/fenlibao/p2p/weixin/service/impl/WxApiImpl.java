@@ -3,12 +3,15 @@ package com.fenlibao.p2p.weixin.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.fenlibao.p2p.weixin.config.WeixinConfig;
 import com.fenlibao.p2p.weixin.defines.*;
-import com.fenlibao.p2p.weixin.domain.*;
+import com.fenlibao.p2p.weixin.domain.Fans;
+import com.fenlibao.p2p.weixin.domain.Qrcode;
+import com.fenlibao.p2p.weixin.domain.Ticket;
+import com.fenlibao.p2p.weixin.domain.Token;
 import com.fenlibao.p2p.weixin.event.FansEvent;
 import com.fenlibao.p2p.weixin.event.MsgEvent;
 import com.fenlibao.p2p.weixin.event.PoiCheckEvent;
-import com.fenlibao.p2p.weixin.message.Message;
 import com.fenlibao.p2p.weixin.exception.WeixinException;
+import com.fenlibao.p2p.weixin.message.Message;
 import com.fenlibao.p2p.weixin.message.req.ReqTicket;
 import com.fenlibao.p2p.weixin.message.template.TemplateMsg;
 import com.fenlibao.p2p.weixin.proxy.WeixinProxy;
@@ -19,7 +22,6 @@ import com.thoughtworks.xstream.XStream;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationListener;
@@ -27,10 +29,14 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by Administrator on 2015/7/6.
@@ -43,22 +49,22 @@ public class WxApiImpl implements WxApi,ApplicationListener<ContextRefreshedEven
 
     private static final XStream xStream = new XStream();
 
-    @Autowired
+    @Inject
     private QrcodeService qrcodeService;
 
     @NotNull
-    @Autowired
+    @Inject
     private WeixinConfig weixinConfig;
 
-    @Autowired
+    @Inject
     private WeixinProxy weixinProxy;
 
-    @Autowired
+    @Inject
     private ApplicationEventPublisher publisher;
 
     private MessageHandler messageHandler;
 
-    @Autowired
+    @Inject
     public WxApiImpl(MessageHandler messageHandler) {
         this.messageHandler = messageHandler;
     }

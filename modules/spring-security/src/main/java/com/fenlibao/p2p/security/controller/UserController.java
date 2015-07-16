@@ -3,7 +3,6 @@ package com.fenlibao.p2p.security.controller;
 import com.fenlibao.p2p.security.domain.User;
 import com.fenlibao.p2p.security.error.UserException;
 import com.fenlibao.p2p.security.service.impl.UserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.inject.Inject;
+
 /**
  * Created by Administrator on 2015/6/19.
  */
@@ -19,7 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping
 public class UserController {
 
-    @Autowired
+    @Inject
     private UserDetailsService userDetailsService;
 
     @RequestMapping(value="/register",method= RequestMethod.POST)

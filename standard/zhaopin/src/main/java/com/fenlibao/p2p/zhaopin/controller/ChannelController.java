@@ -6,7 +6,6 @@ import com.fenlibao.p2p.zhaopin.domain.Channel;
 import com.fenlibao.p2p.zhaopin.domain.Rule;
 import com.fenlibao.p2p.zhaopin.service.ChannelService;
 import com.fenlibao.p2p.zhaopin.service.RuleService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.util.List;
 
@@ -25,10 +25,10 @@ import java.util.List;
 @RequestMapping("/channel")
 public class ChannelController {
 
-    @Autowired
+    @Inject
     private ChannelService channelService;
 
-    @Autowired
+    @Inject
     private RuleService ruleService;
 
     @RequestMapping("/list")

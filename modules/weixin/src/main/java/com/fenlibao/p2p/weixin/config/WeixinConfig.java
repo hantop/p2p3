@@ -5,13 +5,13 @@ import com.fenlibao.p2p.constant.domain.Constant;
 import com.fenlibao.p2p.constant.service.ConstantService;
 import com.fenlibao.p2p.constant.util.Utils;
 import com.fenlibao.p2p.weixin.variable.WxVariable;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -22,7 +22,7 @@ import java.util.List;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class WeixinConfig implements ApplicationListener<ContextRefreshedEvent> {
 
-    @Autowired
+    @Inject
     private ConstantService constantService;//常量service
 
     @PropMap("WX_APP_ID")

@@ -2,14 +2,14 @@ package com.fenlibao.p2p.constant.service.impl;
 
 import com.fenlibao.p2p.common.page.Page;
 import com.fenlibao.p2p.constant.domain.Constant;
-import com.fenlibao.p2p.constant.variable.ConstantVariable;
 import com.fenlibao.p2p.constant.persistence.ConstantMapper;
 import com.fenlibao.p2p.constant.service.ConstantService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import javax.inject.Inject;
 import java.util.List;
 
 /**
@@ -19,7 +19,7 @@ import java.util.List;
 @Service("constantService")
 public class ConstantServiceImpl implements ConstantService {
 
-    @Autowired
+    @Resource
     private ConstantMapper constantMapper;
 
     @Override

@@ -4,8 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fenlibao.p2p.weixin.domain.Qrcode;
-import com.fenlibao.p2p.weixin.message.Message;
 import com.fenlibao.p2p.weixin.exception.WeixinException;
+import com.fenlibao.p2p.weixin.message.Message;
 import com.fenlibao.p2p.weixin.message.WxMsg;
 import com.fenlibao.p2p.weixin.message.card.Card;
 import com.fenlibao.p2p.weixin.message.req.ReqTicket;
@@ -17,12 +17,16 @@ import com.fenlibao.p2p.weixin.service.WxApi;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.io.*;
-import java.util.*;
+import javax.inject.Inject;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2015/7/9.
@@ -31,10 +35,10 @@ import java.util.*;
 @SpringApplicationConfiguration(classes = SimpleApplication.class)
 public class WeixinTest {
 
-    @Autowired
+    @Inject
     private WxApi wxApi;
 
-    @Autowired
+    @Inject
     private WeixinProxy weixinProxy;
 
     @Test

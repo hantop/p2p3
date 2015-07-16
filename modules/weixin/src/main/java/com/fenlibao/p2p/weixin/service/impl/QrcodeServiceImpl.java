@@ -4,9 +4,9 @@ import com.fenlibao.p2p.common.page.Page;
 import com.fenlibao.p2p.weixin.domain.Qrcode;
 import com.fenlibao.p2p.weixin.persistence.QrcodeMapper;
 import com.fenlibao.p2p.weixin.service.QrcodeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.List;
 
@@ -16,7 +16,7 @@ import java.util.List;
 @Service("qrcodeService")
 public class QrcodeServiceImpl implements QrcodeService {
 
-    @Autowired
+    @Inject
     private QrcodeMapper qrcodeMapper;
 
     @Override

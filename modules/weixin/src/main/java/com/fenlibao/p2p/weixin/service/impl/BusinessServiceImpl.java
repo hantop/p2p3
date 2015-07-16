@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class BusinessServiceImpl implements BusinessService {
 
 
-//    @Autowired
+//    @Inject
     private BusinessMapper businessMapper;
 
     @Override

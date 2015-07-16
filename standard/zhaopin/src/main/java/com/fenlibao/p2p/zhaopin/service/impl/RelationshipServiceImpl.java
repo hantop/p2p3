@@ -10,11 +10,11 @@ import com.fenlibao.p2p.zhaopin.service.RelationshipHistoryService;
 import com.fenlibao.p2p.zhaopin.service.RelationshipService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -26,16 +26,16 @@ public class RelationshipServiceImpl implements RelationshipService {
 
     private final static Logger log = LoggerFactory.getLogger(RelationshipServiceImpl.class);
 
-    @Autowired
+    @Inject
     private RelationshipMapper relationshipMapper;
 
-    @Autowired
+    @Inject
     private ChannelService channelService;
 
-    @Autowired
+    @Inject
     private WxApi wxApi;
 
-    @Autowired
+    @Inject
     private RelationshipHistoryService relationshipHistoryService;
 
     @Override

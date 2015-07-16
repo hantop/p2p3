@@ -4,22 +4,20 @@ import com.fenlibao.p2p.common.page.Page;
 import com.fenlibao.p2p.zhaopin.domain.Relationship;
 import com.fenlibao.p2p.zhaopin.domain.Rule;
 import com.fenlibao.p2p.zhaopin.service.RelationshipService;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
+import javax.inject.Inject;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URLEncoder;
 
 /**
  * Created by Administrator on 2015/6/18.
@@ -28,7 +26,7 @@ import java.net.URLEncoder;
 @RequestMapping("/relationship")
 public class RelationshipController {
 
-    @Autowired
+    @Inject
     private RelationshipService relationshipService;
 
     @RequestMapping("/list")

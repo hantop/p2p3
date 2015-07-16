@@ -4,9 +4,9 @@ import com.fenlibao.p2p.common.page.Page;
 import com.fenlibao.p2p.security.domain.Role;
 import com.fenlibao.p2p.security.persistence.RoleMapper;
 import com.fenlibao.p2p.security.service.RoleService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -15,7 +15,7 @@ import java.util.List;
 @Service("roleService")
 public class RoleServiceImpl implements RoleService {
 
-    @Autowired
+    @Resource
     private RoleMapper roleMapper;
 
     @Override

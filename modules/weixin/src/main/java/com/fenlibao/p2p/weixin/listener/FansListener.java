@@ -7,9 +7,10 @@ import com.fenlibao.p2p.weixin.exception.WeixinException;
 import com.fenlibao.p2p.weixin.service.WxApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
+
+import javax.inject.Inject;
 
 /**
  * Created by Administrator on 2015/7/10.
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class FansListener implements ApplicationListener<FansEvent> {
 
-    @Autowired
+    @Inject
     private WxApi wxApi;
     private static final Logger log = LoggerFactory.getLogger(FansListener.class);
 

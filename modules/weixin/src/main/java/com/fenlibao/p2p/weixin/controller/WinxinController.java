@@ -4,10 +4,10 @@ import com.fenlibao.p2p.weixin.defines.CodeMsg;
 import com.fenlibao.p2p.weixin.defines.OauthDefines;
 import com.fenlibao.p2p.weixin.service.Constants;
 import com.fenlibao.p2p.weixin.service.WxApi;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Map;
@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 @RequestMapping("/weixin")
 public class WinxinController {
 
-    @Autowired
+    @Inject
     private WxApi wxApi;
 
     @RequestMapping(value = "/process", method = RequestMethod.GET)

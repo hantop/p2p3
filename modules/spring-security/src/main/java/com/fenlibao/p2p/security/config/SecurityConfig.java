@@ -1,7 +1,6 @@
 package com.fenlibao.p2p.security.config;
 
 import com.fenlibao.p2p.security.service.impl.UserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -10,16 +9,18 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.util.AntPathRequestMatcher;
 
+import javax.inject.Inject;
+
 /**
  * Created by Administrator on 2015/6/19.
  */
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
+    @Inject
     private ApplicationContext context;
 
-    @Autowired
+    @Inject
     private UserDetailsService userDetailsService;
 
     @Override
@@ -41,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/resources/**", "/weixin/**", "/zhaopin/**","/sign/**"); // 忽略任何以”/resources/”开头的请求，这和在XML配置http@security=none的效果一样
     }
 
-    @Autowired
+    @Inject
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService);
     }

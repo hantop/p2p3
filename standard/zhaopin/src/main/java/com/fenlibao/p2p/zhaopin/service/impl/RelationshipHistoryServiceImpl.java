@@ -4,9 +4,9 @@ import com.fenlibao.p2p.common.page.Page;
 import com.fenlibao.p2p.zhaopin.domain.RelationshipHistory;
 import com.fenlibao.p2p.zhaopin.persistence.RelationshipHistoryMapper;
 import com.fenlibao.p2p.zhaopin.service.RelationshipHistoryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
 import java.util.List;
 
 /**
@@ -15,7 +15,7 @@ import java.util.List;
 @Service("relationshipHistoryService")
 public class RelationshipHistoryServiceImpl implements RelationshipHistoryService {
 
-    @Autowired
+    @Inject
     private RelationshipHistoryMapper relationshipHistoryMapper;
 
     @Override

@@ -14,10 +14,10 @@ import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Configuration;
 
+import javax.inject.Inject;
 import java.lang.reflect.Method;
 
 /**
@@ -29,12 +29,12 @@ public class WeixinInterceptor {
 
     private final static Logger log = LoggerFactory.getLogger(WeixinInterceptor.class);
 
-    @Autowired
+    @Inject
     private WeixinConfig weixinConfig;
 
 
 
-    @Autowired
+    @Inject
     private ApplicationEventPublisher publisher;
 
     @Pointcut("execution (* com.fenlibao.p2p.weixin.proxy.WeixinProxy.http* (..)) ")

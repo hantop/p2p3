@@ -14,10 +14,10 @@ import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Configuration;
 
+import javax.inject.Inject;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
@@ -32,10 +32,10 @@ public class SmsLogInterceptor {
 
     private final static Logger log = LoggerFactory.getLogger(SmsLogInterceptor.class);
 
-    @Autowired
+    @Inject
     private LogMapper logMapper;
 
-    @Autowired
+    @Inject
     private ApplicationEventPublisher publisher;
 
     @Pointcut("execution (* com.fenlibao.p2p.sms.service.SmsApi.* (..)) ")

@@ -5,11 +5,11 @@ import com.fenlibao.p2p.weixin.domain.Token;
 import com.fenlibao.p2p.weixin.persistence.TokenMapper;
 import com.fenlibao.p2p.weixin.service.Constants;
 import com.fenlibao.p2p.weixin.service.TokenService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
 import java.util.List;
 
 /**
@@ -19,7 +19,7 @@ import java.util.List;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class TokenServiceImpl implements TokenService {
 
-    @Autowired
+    @Inject
     private TokenMapper tokenMapper;
 
     @Override

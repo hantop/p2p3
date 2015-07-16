@@ -1,8 +1,6 @@
 package com.fenlibao.p2p.sms.listener;
 
-import com.fenlibao.p2p.sms.annotation.Thing;
 import com.fenlibao.p2p.sms.config.SmsConfig;
-import com.fenlibao.p2p.sms.variable.SendVariable;
 import com.fenlibao.p2p.sms.domain.*;
 import com.fenlibao.p2p.sms.event.SmsInvokeEvent;
 import com.fenlibao.p2p.sms.persistence.ChargeLogMapper;
@@ -10,11 +8,12 @@ import com.fenlibao.p2p.sms.persistence.RegisterInfoMapper;
 import com.fenlibao.p2p.sms.persistence.SignMapper;
 import com.fenlibao.p2p.sms.persistence.TaskMapper;
 import com.fenlibao.p2p.sms.service.SmsApi;
+import com.fenlibao.p2p.sms.variable.SendVariable;
 import com.fenlibao.p2p.sms.variable.SmsThing;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import java.util.Arrays;
 
 /**
@@ -24,16 +23,16 @@ import java.util.Arrays;
 @Component
 public class SmsInvokeListener implements ApplicationListener<SmsInvokeEvent> {
 
-    @Autowired
+    @Inject
     private SignMapper signMapper;
 
-    @Autowired
+    @Inject
     private RegisterInfoMapper registerInfoMapper;
 
-    @Autowired
+    @Inject
     private ChargeLogMapper chargeLogMapper;
 
-    @Autowired
+    @Inject
     private TaskMapper taskMapper;
 
     @Override

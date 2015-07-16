@@ -10,11 +10,11 @@ import com.fenlibao.p2p.zhaopin.domain.Channel;
 import com.fenlibao.p2p.zhaopin.persistence.ChannelMapper;
 import com.fenlibao.p2p.zhaopin.service.ChannelService;
 import com.fenlibao.p2p.zhaopin.service.Constants;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
 import java.util.List;
 
 /**
@@ -23,13 +23,13 @@ import java.util.List;
 @Service("channelService")
 public class ChannelServiceImpl implements ChannelService, ApplicationListener<ContextRefreshedEvent> ,Constants {
 
-    @Autowired
+    @Inject
     private ChannelMapper channelMapper;
 
-    @Autowired
+    @Inject
     private ConstantService constantService;
 
-    @Autowired
+    @Inject
     private WxApi wxApi;
 
     private Constant constant;

@@ -4,9 +4,9 @@ import com.fenlibao.p2p.common.page.Page;
 import com.fenlibao.p2p.zhaopin.domain.Rule;
 import com.fenlibao.p2p.zhaopin.persistence.RuleMapper;
 import com.fenlibao.p2p.zhaopin.service.RuleService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
 import java.util.List;
 
 /**
@@ -15,7 +15,7 @@ import java.util.List;
 @Service("ruleService")
 public class RuleServiceImpl implements RuleService {
 
-    @Autowired
+    @Inject
     private RuleMapper ruleMapper;
 
     @Override

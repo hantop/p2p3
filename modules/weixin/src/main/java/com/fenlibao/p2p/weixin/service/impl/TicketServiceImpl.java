@@ -5,9 +5,9 @@ import com.fenlibao.p2p.weixin.domain.Ticket;
 import com.fenlibao.p2p.weixin.persistence.TicketMapper;
 import com.fenlibao.p2p.weixin.service.Constants;
 import com.fenlibao.p2p.weixin.service.TicketService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
 import java.util.List;
 
 /**
@@ -16,7 +16,7 @@ import java.util.List;
 @Service("ticketService")
 public class TicketServiceImpl implements TicketService {
 
-    @Autowired
+    @Inject
     private TicketMapper ticketMapper;
 
     @Override

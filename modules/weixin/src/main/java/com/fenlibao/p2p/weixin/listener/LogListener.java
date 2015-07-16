@@ -6,10 +6,10 @@ import com.fenlibao.p2p.weixin.message.Poi;
 import com.fenlibao.p2p.weixin.persistence.LogMapper;
 import com.fenlibao.p2p.weixin.service.*;
 import com.fenlibao.p2p.weixin.variable.WeiXinThing;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import java.util.UUID;
 
 /**
@@ -18,22 +18,22 @@ import java.util.UUID;
 @Component
 public class LogListener implements ApplicationListener<LogEvent> {
 
-    @Autowired
+    @Inject
     private LogMapper logMapper;
 
-    @Autowired
+    @Inject
     private TokenService tokenService;
 
-    @Autowired
+    @Inject
     private FansService fansService;
 
-    @Autowired
+    @Inject
     private TicketService ticketService;
 
-    @Autowired
+    @Inject
     private QrcodeService qrcodeService;
 
-    @Autowired
+    @Inject
     private BusinessService businessService;
 
     @Override

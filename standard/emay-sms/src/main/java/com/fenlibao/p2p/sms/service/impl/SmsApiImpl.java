@@ -14,13 +14,13 @@ import com.fenlibao.p2p.sms.service.SmsApi;
 import com.fenlibao.p2p.sms.variable.SmsThing;
 import com.fenlibao.p2p.sms.variable.SmsVariable;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.List;
 
@@ -35,10 +35,10 @@ public class SmsApiImpl implements SmsApi, ApplicationListener<ContextRefreshedE
 
     private Client sdkclient;
 
-    @Autowired
+    @Inject
     private ConstantService constantService;//常量service
 
-    @Autowired
+    @Inject
     private SignMapper signMapper;//初始化注册信息
 
     private SmsConfig smsConfig;

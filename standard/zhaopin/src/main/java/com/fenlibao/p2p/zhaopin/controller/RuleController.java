@@ -3,10 +3,11 @@ package com.fenlibao.p2p.zhaopin.controller;
 import com.fenlibao.p2p.common.page.Page;
 import com.fenlibao.p2p.zhaopin.domain.Rule;
 import com.fenlibao.p2p.zhaopin.service.RuleService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
+
+import javax.inject.Inject;
 
 /**
  * Created by Administrator on 2015/6/18.
@@ -15,7 +16,7 @@ import org.springframework.web.servlet.view.RedirectView;
 @RequestMapping("/rule")
 public class RuleController {
 
-    @Autowired
+    @Inject
     private RuleService ruleService;
 
     @RequestMapping("/list")
