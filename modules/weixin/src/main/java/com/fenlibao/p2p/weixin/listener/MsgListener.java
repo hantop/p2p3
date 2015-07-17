@@ -37,11 +37,22 @@ public class MsgListener implements ApplicationListener<MsgEvent> {
     @Override
     public void onApplicationEvent(MsgEvent event) {
         if (log.isInfoEnabled()) {
-            log.info("用户、微信交互信息:{}", JSON.toJSONString(event, SerializerFeature.PrettyFormat ,SerializerFeature.WriteClassName));
+            log.info("用户、微信交互信息:{}", JSON.toJSONString(event, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
         }
 
         String id = getUUID();
         Message message = event.getMessage();
+        if (message == null) {
+            return;
+        }
+        String msgID = message.getMsgID();
+        String msgId = message.getMsgId();
+        if (msgID != null) {
+            message.setMsgId(msgID);
+        } else if (msgId != null) {
+            message.setMsgID(msgId);
+        }
+
         Msg msg = new Msg();
         msg.setId(id);
         BeanUtils.copyProperties(message, msg);
@@ -72,7 +83,7 @@ public class MsgListener implements ApplicationListener<MsgEvent> {
             }
             mediaMapper.insertBatch(itemList);
             if (log.isInfoEnabled()) {
-                log.info("保存微信用户交互的多媒体信息:{}", JSON.toJSONString(itemList, SerializerFeature.PrettyFormat ,SerializerFeature.WriteClassName));
+                log.info("保存微信用户交互的多媒体信息:{}", JSON.toJSONString(itemList, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
             }
             return;
         }
@@ -81,7 +92,7 @@ public class MsgListener implements ApplicationListener<MsgEvent> {
             mediaMapper.insertSelective(domain);
         }
         if (log.isInfoEnabled()) {
-            log.info("保存微信用户交互的多媒体信息:{}", JSON.toJSONString(domain, SerializerFeature.PrettyFormat ,SerializerFeature.WriteClassName));
+            log.info("保存微信用户交互的多媒体信息:{}", JSON.toJSONString(domain, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
         }
     }
 

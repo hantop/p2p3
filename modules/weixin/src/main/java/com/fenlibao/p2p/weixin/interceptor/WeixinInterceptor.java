@@ -96,7 +96,7 @@ public class WeixinInterceptor {
                 publisher.publishEvent(new LogEvent(this,log,returnValue));
                 if(codeMsg != CodeMsg.SUCCESS) {
                     if(WeixinInterceptor.log.isErrorEnabled()) {
-                        WeixinInterceptor.log.info("微信错误消息:{}", JSON.toJSONString(codeMsg, SerializerFeature.PrettyFormat ,SerializerFeature.WriteClassName));
+                        WeixinInterceptor.log.info("微信错误消息:errorcode:{},errormsg:{}", codeMsg.getErrorcode(),codeMsg.getErrmsg());
                     }
                     throw new WeixinException("微信错误消息：" + codeMsg.getErrmsg(), codeMsg.getErrorcode());
                 }

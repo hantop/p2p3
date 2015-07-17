@@ -28,6 +28,9 @@ public class Message implements Serializable {
     //消息id，64位整型
     @XStreamAlias("MsgId")
     private String msgId;
+    //消息id，64位整型
+    @XStreamAlias("MsgID")
+    private String msgID;
     @XStreamAlias("Status")
     private String status;
     // -------------------------------------------------------------通用信息----------------------------------------------------
@@ -737,5 +740,13 @@ public class Message implements Serializable {
 
     public void setConsumeSource(String consumeSource) {
         this.consumeSource = consumeSource;
+    }
+
+    public String getMsgID() {
+        return msgID;
+    }
+
+    public void setMsgID(String msgID) {
+        this.msgID = msgID;
     }
 }

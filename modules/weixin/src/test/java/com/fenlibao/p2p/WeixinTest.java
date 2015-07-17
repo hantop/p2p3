@@ -1,7 +1,6 @@
 package com.fenlibao.p2p;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.fenlibao.p2p.weixin.domain.Qrcode;
@@ -11,6 +10,7 @@ import com.fenlibao.p2p.weixin.message.WxMsg;
 import com.fenlibao.p2p.weixin.message.card.Card;
 import com.fenlibao.p2p.weixin.message.card.CardTypeValue;
 import com.fenlibao.p2p.weixin.message.card.UserCard;
+import com.fenlibao.p2p.weixin.message.card.req.ReqBatchCatch;
 import com.fenlibao.p2p.weixin.message.card.req.ReqUserCard;
 import com.fenlibao.p2p.weixin.message.req.ReqTicket;
 import com.fenlibao.p2p.weixin.message.req.White;
@@ -19,8 +19,6 @@ import com.fenlibao.p2p.weixin.message.template.TemplateMsgData;
 import com.fenlibao.p2p.weixin.proxy.WeixinProxy;
 import com.fenlibao.p2p.weixin.service.WxApi;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -32,9 +30,7 @@ import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Administrator on 2015/7/9.
@@ -82,7 +78,7 @@ public class WeixinTest {
     public void getUserCardList() {
         ReqUserCard reqUserCard = new ReqUserCard("o5D9Ts8qEfQy73VwwTOeUbG34Sfw",null);
 
-        UserCard userCard = this.weixinProxy.getUserCardList(reqUserCard);
+        UserCard userCard = this.wxApi.getUserCardList(reqUserCard);
 
         log.info(JSON.toJSONString(userCard, SerializerFeature.PrettyFormat));
     }
@@ -95,21 +91,6 @@ public class WeixinTest {
         System.out.println(card);
     }
 
-    @Test
-    public void messageMassSend() {
-        JSONObject jsonObject = new JSONObject();
-
-        JSONArray touser = new JSONArray();
-        touser.add("o5D9Ts8qEfQy73VwwTOeUbG34Sfw");
-        jsonObject.put("touser", touser);
-        jsonObject.put("msgtype","wxcard");
-
-        Map<String,Object> map = new HashMap<>();
-        map.put("card_id","p5D9Ts47oOC64nb5GV-JZOKnF78s");
-        jsonObject.put("wxcard",map);
-        byte[] bytes = this.weixinProxy.messageMassSend(jsonObject);
-        System.out.println(new String(bytes, 0, bytes.length));
-    }
 
     @Test
     public void httpCardQrcode() throws IOException {
@@ -123,5 +104,28 @@ public class WeixinTest {
     public void signatureCard() {
         Map<String,String> signature = this.wxApi.signature(CardTypeValue.CASH,null,null);
         log.info(JSON.toJSONString(signature));
+    }
+
+    @Test
+    public void signatureCardExt() {
+        List<String> cardsId = new ArrayList<>();
+        cardsId.add("p5D9Ts6TAHJIL8z_NqS9sy6RGcOw");
+        cardsId.add("p5D9Tszt2VCNzNeX3BsBl0JjLhVo");
+        List<Map<String, Object>> signature = this.wxApi.signature(cardsId,null,null);
+        log.info(JSON.toJSONString(signature,SerializerFeature.PrettyFormat));
+    }
+
+    @Test
+    public void batchCard() {
+        ReqBatchCatch batch = new ReqBatchCatch(0,10);
+        Card card = this.wxApi.batchCard(batch);
+        log.info(JSON.toJSONString(card,SerializerFeature.PrettyFormat));
+    }
+
+    @Test
+    public void signature() {
+        ReqBatchCatch batch = new ReqBatchCatch(0,10);
+        List<Map<String, Object>> result = this.wxApi.signature(batch,null,null);
+        log.info(JSON.toJSONString(result, SerializerFeature.PrettyFormat));
     }
 }

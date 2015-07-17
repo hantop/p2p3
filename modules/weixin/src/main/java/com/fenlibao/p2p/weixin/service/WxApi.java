@@ -6,10 +6,15 @@ import com.fenlibao.p2p.weixin.domain.Fans;
 import com.fenlibao.p2p.weixin.message.Message;
 import com.fenlibao.p2p.weixin.domain.Qrcode;
 import com.fenlibao.p2p.weixin.exception.WeixinException;
+import com.fenlibao.p2p.weixin.message.card.Card;
 import com.fenlibao.p2p.weixin.message.card.CardTypeValue;
+import com.fenlibao.p2p.weixin.message.card.UserCard;
+import com.fenlibao.p2p.weixin.message.card.req.ReqBatchCatch;
+import com.fenlibao.p2p.weixin.message.card.req.ReqUserCard;
 import com.fenlibao.p2p.weixin.message.template.TemplateMsg;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -67,14 +72,53 @@ public interface WxApi extends Constants {
     Map<String, String> signature(final String url);
 
     /**
-     * 微信卡券网页签名
+     * 卡券签名cardSign说明
+     * 将 api_ticket（特别说明：api_ticket 相较 appsecret 安全性更高，同时兼容老版本文档中使用的 appsecret 作为签名凭证。）、app_id、location_id、times_tamp、nonce_str、card_id、card_type的value值进行字符串的字典序排序。
+     * 将所有参数字符串拼接成一个字符串进行sha1加密，得到cardSign。
      *
      * @param locationId
      * @param cardId
      * @param cardType
      * @return
      */
-    Map<String, String> signature(CardTypeValue cardType, String cardId,String locationId);
+    Map<String, String> signature(CardTypeValue cardType, String cardId, String locationId);
+
+
+    /**
+     * 里面分两步运行，
+     * 1.获取卡券列表信息
+     * 2.对卡券列表进行加密签名
+     *
+     * @param reqBatchCatch
+     * @param openid
+     * @param code
+     * @return
+     */
+    List<Map<String, Object>> signature(ReqBatchCatch reqBatchCatch, String openid, String code);
+
+    /**
+     * 卡券扩展字段cardExt说明
+     * <p/>
+     * cardExt本身是一个JSON字符串，是商户为该张卡券分配的唯一性信息，包含以下字段：
+     * <p/>
+     * 字段	        是否必填	 说明
+     * code	        否	         指定的卡券code码，只能被领一次。use_custom_code字段为true的卡券必须填写，非自定义code不必填写。
+     * openid	    否	         指定领取者的openid，只有该用户能领取。bind_openid字段为true的卡券必须填写，bind_openid字段为false不必填写。
+     * timestamp	是	         时间戳，商户生成从1970年1月1日00:00:00至今的秒数,即当前的时间,且最终需要转换为字符串形式;由商户生成后传入。
+     * nonce_str	否	         随机字符串，由开发者设置传入，加强签名的安全性。随机字符串，不长于32位。推荐使用大小写字母和数字。
+     * signature	是	         签名，商户将接口列表中的参数按照指定方式进行签名,签名方式使用SHA1,具体签名方案参见下文;由商户按照规范签名后传入。
+     * 签名说明
+     * <p/>
+     * 将 api_ticket（特别说明：api_ticket 相较 appsecret 安全性更高，同时兼容老版本文档中使用的 appsecret 作为签名凭证。）、timestamp、card_id、code、openid、nonce_str的value值进行字符串的字典序排序。
+     * 将所有参数字符串拼接成一个字符串进行sha1加密，得到signature。
+     * signature中的timestamp，nonce字段和card_ext中的timestamp，nonce_str字段必须保持一致。
+     * code=jonyqin_1434008071，timestamp=1404896688，card_id=pjZ8Yt1XGILfi-FUsewpnnolGgZk， api_ticket=ojZ8YtyVyr30HheH3CM73y7h4jJE ，nonce_str=jonyqin 则signature=sha1(pjZ8Yt1XGILfi-FUsewpnnolGgZkjonyqin_1434008071ojZ8YtyVyr30HheH3CM73y7h4jJE1404896688jonyqin)=4F76593A4245644FAE4E1BC940F6422A0C3EC03E。
+     *
+     * @param openid
+     * @param code
+     * @return
+     */
+    List<Map<String, Object>> signature(List<String> cardsId, String openid, String code);
 
     /**
      * access_token是公众号的全局唯一票据，公众号调用各接口时都需使用access_token。
@@ -157,6 +201,24 @@ public interface WxApi extends Constants {
      */
     Message send(TemplateMsg templateMsg) throws WeixinException;
 
+    /**
+     * 获取用户已领取卡券接口
+     *
+     * @param params
+     * @return
+     */
+    UserCard getUserCardList(ReqUserCard params);
 
 
+    /**
+     * 批量查询卡列表
+     * 参数名	       必填	类型	       示例值	                          描述
+     * offset	        是	     int	     0	                             查询卡列表的起始偏移量，从0开始，即offset: 5是指从从列表里的第六个开始读取。
+     * count	        是	     int	     10	                             需要查询的卡片的数量（数量最大50）。
+     * status_list	    否	     int	     CARD_STATUS_VERIFY_OK	         支持开发者拉出指定状态的卡券列表，例：仅拉出通过审核的卡券。
+     *
+     * @param reqBatchCatch
+     * @return
+     */
+    Card batchCard(ReqBatchCatch reqBatchCatch);
 }

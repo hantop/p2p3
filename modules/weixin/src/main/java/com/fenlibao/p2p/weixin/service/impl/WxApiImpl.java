@@ -13,7 +13,11 @@ import com.fenlibao.p2p.weixin.event.MsgEvent;
 import com.fenlibao.p2p.weixin.event.PoiCheckEvent;
 import com.fenlibao.p2p.weixin.exception.WeixinException;
 import com.fenlibao.p2p.weixin.message.Message;
+import com.fenlibao.p2p.weixin.message.card.Card;
 import com.fenlibao.p2p.weixin.message.card.CardTypeValue;
+import com.fenlibao.p2p.weixin.message.card.UserCard;
+import com.fenlibao.p2p.weixin.message.card.req.ReqBatchCatch;
+import com.fenlibao.p2p.weixin.message.card.req.ReqUserCard;
 import com.fenlibao.p2p.weixin.message.req.ReqTicket;
 import com.fenlibao.p2p.weixin.message.template.TemplateMsg;
 import com.fenlibao.p2p.weixin.proxy.WeixinProxy;
@@ -64,10 +68,10 @@ public class WxApiImpl implements WxApi, ApplicationListener<ContextRefreshedEve
 
     private MessageHandler messageHandler;
 
-//    @Inject
-//    public WxApiImpl(MessageHandler messageHandler) {
-//        this.messageHandler = messageHandler;
-//    }
+    @Inject
+    public WxApiImpl(MessageHandler messageHandler) {
+        this.messageHandler = messageHandler;
+    }
 
     static {
         xStream.autodetectAnnotations(true);
@@ -160,8 +164,8 @@ public class WxApiImpl implements WxApi, ApplicationListener<ContextRefreshedEve
     }
 
     @Override
-    public Map<String, String> signature(CardTypeValue cardType, String cardId,String locationId) {
-        Assert.notNull(cardType,"卡券类型不能为空");
+    public Map<String, String> signature(CardTypeValue cardType, String cardId, String locationId) {
+        Assert.notNull(cardType, "卡券类型不能为空");
         Map<String, String> ret = new HashMap<>();
         List<String> list = new ArrayList<>();
         Ticket ticket = this.weixinProxy.httpTicket(TicketType.JSAPI_CARD_TICKET);
@@ -173,7 +177,7 @@ public class WxApiImpl implements WxApi, ApplicationListener<ContextRefreshedEve
         if (cardType != null) {
             list.add(cardType.toString());
         }
-        if(cardId != null) {
+        if (cardId != null) {
             list.add(cardId);
         }
         String timestamp = this.createTimestamp();
@@ -185,19 +189,64 @@ public class WxApiImpl implements WxApi, ApplicationListener<ContextRefreshedEve
         content = content.substring(1, content.length() - 1);
         String signature = DigestUtils.sha1Hex(content);
 
-        ret.put("location_id",locationId);
-        ret.put("time_stamp",timestamp);
-        ret.put("nonce_str",nonceStr);
-        ret.put("card_id",cardId);
-        ret.put("card_type",cardType.toString());
-        ret.put("signature",signature);
-        ret.put("api_ticket",ticket.getTicket());
+        ret.put("location_id", locationId);
+        ret.put("time_stamp", timestamp);
+        ret.put("nonce_str", nonceStr);
+        ret.put("card_id", cardId);
+        ret.put("card_type", cardType.toString());
+        ret.put("signature", signature);
+        ret.put("api_ticket", ticket.getTicket());
         ret.put("app_id", weixinConfig.getAppId());
 
         if (log.isInfoEnabled()) {
-            log.info("卡券签名：{},\n signature:{}",JSON.toJSONString(ret));
+            log.info("卡券签名：{},\n signature:{}", JSON.toJSONString(ret));
         }
         return ret;
+    }
+    @Override
+    public List<Map<String, Object>> signature(ReqBatchCatch reqBatchCatch, String openid, String code) {
+        Card card = this.batchCard(reqBatchCatch);
+        List<String> cardsId = Arrays.asList(card.getCardIdList());
+        return signature(cardsId,openid,code);
+    }
+
+    @Override
+    public List<Map<String, Object>> signature(List<String> cardsId, String openid, String code) {
+        Assert.notNull(cardsId, "待签名的卡券列表不能为空");
+        Assert.notEmpty(cardsId, "待签名的卡券列表不能为空");
+        List<Map<String, Object>> result = new ArrayList<>();
+        String ticket = this.weixinProxy.httpTicket(TicketType.JSAPI_CARD_TICKET).getTicket();
+        for (String cardId : cardsId) {
+            Map<String, Object> cardSignature = new HashMap<>();
+            Map<String, String> cardExt = new HashMap<>();
+            String timestamp = this.createTimestamp();
+            String nonceStr = this.createNonceStr();
+            List<String> list = new ArrayList<>();
+            list.add(cardId);
+            list.add(ticket);
+            list.add(timestamp);
+            list.add(nonceStr);
+            if (openid != null) {
+                list.add(openid);
+            }
+            if (code != null) {
+                list.add(code);
+            }
+            Collections.sort(list);
+            String content = list.toString().replaceAll(",", "").replaceAll("\\s*", "");
+            content = content.substring(1, content.length() - 1);
+            String signature = DigestUtils.sha1Hex(content);
+            cardExt.put("code", code == null ? "" : code);
+            cardExt.put("openid", openid == null ? "" : openid);
+            cardExt.put("timestamp", timestamp);
+            cardExt.put("nonce_str", nonceStr);
+            cardExt.put("signature", signature);
+//            cardExt.put("ticket", ticket);
+            cardSignature.put("cardExt", cardExt);
+            cardSignature.put("cardId", cardId);
+            result.add(cardSignature);
+        }
+        return result;
     }
 
     private String createNonceStr() {
@@ -291,7 +340,7 @@ public class WxApiImpl implements WxApi, ApplicationListener<ContextRefreshedEve
     @Override
     public Serializable process(String reqMsg, String host) {
         if (log.isInfoEnabled()) {
-            log.info("请求消息:{},请求域名：{}", reqMsg, host);
+            log.info("请求消息:{},\n请求域名：{}", reqMsg, host);
         }
         Message message = (Message) xStream.fromXML(reqMsg);
         publisher.publishEvent(new MsgEvent(this, message, this.weixinConfig.getAppId(), MsgDefines.RECEIVE, reqMsg));
@@ -307,12 +356,16 @@ public class WxApiImpl implements WxApi, ApplicationListener<ContextRefreshedEve
         if (log.isInfoEnabled()) {
             log.info("发送模板消息:{}", JSON.toJSONString(templateMsg, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
         }
-        String json = JSON.toJSONString(templateMsg);
-        Message result = this.weixinProxy.httpTemplateMsg(json);
+        Message result = this.weixinProxy.httpTemplateMsg(templateMsg);
         if (log.isInfoEnabled()) {
             log.info("返回模板消息:{}", JSON.toJSONString(result, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
         }
         return result;
+    }
+
+    @Override
+    public UserCard getUserCardList(ReqUserCard params) {
+        return this.weixinProxy.getUserCardList(params);
     }
 
     private Serializable process(Message message, String host) {
@@ -374,12 +427,25 @@ public class WxApiImpl implements WxApi, ApplicationListener<ContextRefreshedEve
         }
         String openId = message.getFromUserName();
         this.publisher.publishEvent(new FansEvent(this, openId));
-        String xml = xStream.toXML(respMsg);
+        String xml = "";
         if (respMsg != null) {
+            respMsg.setCreateTime(System.currentTimeMillis() / 1000);
+            xml = xStream.toXML(respMsg);
             publisher.publishEvent(new MsgEvent(this, respMsg, this.weixinConfig.getAppId(), MsgDefines.SEND, xml));
         }
         return xml;
     }
 
+    @Override
+    public Card batchCard(ReqBatchCatch reqBatchCatch) {
+        if (log.isInfoEnabled()) {
+            log.info("批量查询卡列表:{}",JSON.toJSONString(reqBatchCatch, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
+        }
+        Card card = this.weixinProxy.batchCard(reqBatchCatch);
+        if (log.isInfoEnabled()) {
+            log.info("获取的卡券列表信息:{}",JSON.toJSONString(card, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
+        }
+        return card;
+    }
 
 }
