@@ -1,6 +1,7 @@
 package com.fenlibao.p2p.weixin.listener;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.fenlibao.p2p.weixin.domain.Fans;
 import com.fenlibao.p2p.weixin.event.FansEvent;
 import com.fenlibao.p2p.weixin.exception.WeixinException;
@@ -26,8 +27,9 @@ public class FansListener implements ApplicationListener<FansEvent> {
     public void onApplicationEvent(FansEvent event) {
         try {
             Fans fans = wxApi.getFans(event.getOpenid());
-            if(log.isInfoEnabled()) {
-                log.info("获取用户信息:" + JSON.toJSONString(fans));
+            if (log.isInfoEnabled()) {
+                log.info("获取用户信息:" + JSON.toJSONString(fans,SerializerFeature.PrettyFormat ,SerializerFeature.WriteClassName));
+
             }
         } catch (WeixinException e) {
             e.printStackTrace();

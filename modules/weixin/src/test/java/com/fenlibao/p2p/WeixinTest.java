@@ -3,12 +3,15 @@ package com.fenlibao.p2p;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.fenlibao.p2p.weixin.domain.Qrcode;
 import com.fenlibao.p2p.weixin.exception.WeixinException;
 import com.fenlibao.p2p.weixin.message.Message;
 import com.fenlibao.p2p.weixin.message.WxMsg;
 import com.fenlibao.p2p.weixin.message.card.Card;
 import com.fenlibao.p2p.weixin.message.card.CardTypeValue;
+import com.fenlibao.p2p.weixin.message.card.UserCard;
+import com.fenlibao.p2p.weixin.message.card.req.ReqUserCard;
 import com.fenlibao.p2p.weixin.message.req.ReqTicket;
 import com.fenlibao.p2p.weixin.message.req.White;
 import com.fenlibao.p2p.weixin.message.template.TemplateMsg;
@@ -77,10 +80,11 @@ public class WeixinTest {
 
     @Test
     public void getUserCardList() {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("openid", "o5D9Ts8qEfQy73VwwTOeUbG34Sfw");
-        byte[] bytes = this.weixinProxy.getUserCardList(jsonObject);
-        System.out.println(new String(bytes,0,bytes.length));
+        ReqUserCard reqUserCard = new ReqUserCard("o5D9Ts8qEfQy73VwwTOeUbG34Sfw",null);
+
+        UserCard userCard = this.weixinProxy.getUserCardList(reqUserCard);
+
+        log.info(JSON.toJSONString(userCard, SerializerFeature.PrettyFormat));
     }
 
     @Test

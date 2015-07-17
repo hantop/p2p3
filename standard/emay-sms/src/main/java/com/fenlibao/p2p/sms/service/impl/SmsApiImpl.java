@@ -3,6 +3,8 @@ package com.fenlibao.p2p.sms.service.impl;
 import cn.emay.sdk.client.api.Client;
 import cn.emay.sdk.client.api.MO;
 import cn.emay.sdk.client.api.StatusReport;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.fenlibao.p2p.constant.domain.Constant;
 import com.fenlibao.p2p.constant.service.ConstantService;
 import com.fenlibao.p2p.constant.util.Utils;
@@ -13,8 +15,6 @@ import com.fenlibao.p2p.sms.persistence.SignMapper;
 import com.fenlibao.p2p.sms.service.SmsApi;
 import com.fenlibao.p2p.sms.variable.SmsThing;
 import com.fenlibao.p2p.sms.variable.SmsVariable;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -33,7 +34,7 @@ import java.util.List;
  * Created by Administrator on 2015/6/30.
  */
 @Service("smsApi")
-public class SmsApiImpl implements SmsApi, ApplicationListener<ContextRefreshedEvent>,ApplicationContextAware {
+public class SmsApiImpl implements SmsApi, ApplicationListener<ContextRefreshedEvent>, ApplicationContextAware {
 
     private final static Logger log = LoggerFactory.getLogger(SmsApiImpl.class);
 
@@ -60,8 +61,8 @@ public class SmsApiImpl implements SmsApi, ApplicationListener<ContextRefreshedE
             //获取数据库配置的常量值，初始化配置
             Utils.setMapValue(constants, smsConfig);
             setSmsConfig(smsConfig);
-            if(SmsApiImpl.log.isInfoEnabled()) {
-                SmsApiImpl.log.info("短信配置信息：{}", ReflectionToStringBuilder.toString(smsConfig, ToStringStyle.MULTI_LINE_STYLE));
+            if (SmsApiImpl.log.isInfoEnabled()) {
+                log.info("短信配置信息:{}", JSON.toJSONString(smsConfig, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
             }
         }
     }
@@ -73,8 +74,8 @@ public class SmsApiImpl implements SmsApi, ApplicationListener<ContextRefreshedE
 
     @Override
     public Serializable registEx(String serialpass) {
-        if(SmsApiImpl.log.isInfoEnabled()) {
-            SmsApiImpl.log.info("注册序列号：{}", ReflectionToStringBuilder.toString(serialpass, ToStringStyle.MULTI_LINE_STYLE));
+        if (SmsApiImpl.log.isInfoEnabled()) {
+            log.info("注册序列号:{}", JSON.toJSONString(serialpass, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
         }
         return sdkclient.registEx(serialpass);
     }
@@ -86,7 +87,7 @@ public class SmsApiImpl implements SmsApi, ApplicationListener<ContextRefreshedE
 
     @Override
     public Serializable logout() {
-        if(SmsApiImpl.log.isInfoEnabled()) {
+        if (SmsApiImpl.log.isInfoEnabled()) {
             SmsApiImpl.log.info("注销短信");
         }
         return sdkclient.logout();
@@ -95,8 +96,8 @@ public class SmsApiImpl implements SmsApi, ApplicationListener<ContextRefreshedE
     @Override
     public double getEachFee() {
         double eachFee = sdkclient.getEachFee();
-        if(SmsApiImpl.log.isInfoEnabled()) {
-            SmsApiImpl.log.info("获取短信金额：{}" ,eachFee);
+        if (SmsApiImpl.log.isInfoEnabled()) {
+            SmsApiImpl.log.info("获取短信金额：{}", eachFee);
         }
         return eachFee;
     }
@@ -104,8 +105,8 @@ public class SmsApiImpl implements SmsApi, ApplicationListener<ContextRefreshedE
     @Override
     public double getBalance() throws Exception {
         double balance = sdkclient.getBalance();
-        if(SmsApiImpl.log.isInfoEnabled()) {
-            SmsApiImpl.log.info("获取短信余额：{}" ,balance);
+        if (SmsApiImpl.log.isInfoEnabled()) {
+            SmsApiImpl.log.info("获取短信余额：{}", balance);
         }
         return balance;
     }
@@ -113,17 +114,19 @@ public class SmsApiImpl implements SmsApi, ApplicationListener<ContextRefreshedE
     @Override
     public Serializable chargeUp(String cardNo, String cardPass) {
         Serializable result = sdkclient.chargeUp(cardNo, cardPass);
-        if(SmsApiImpl.log.isInfoEnabled()) {
-            SmsApiImpl.log.info("短信充值：{}" ,ReflectionToStringBuilder.toString(result, ToStringStyle.MULTI_LINE_STYLE));
+        if (log.isInfoEnabled()) {
+            log.info("短信充值账号：{}，密码：", cardNo, cardPass);
+            log.info("短信充值结果:{}", JSON.toJSONString(result, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
         }
         return result;
     }
 
     @Override
     public Serializable sendSMS(String[] mobiles, String smsContent, int smsPriority) {
-        Serializable result =  sdkclient.sendSMS(mobiles, smsContent, smsPriority);
-        if(SmsApiImpl.log.isInfoEnabled()) {
-            SmsApiImpl.log.info("发送短信：{}" ,ReflectionToStringBuilder.toString(result, ToStringStyle.MULTI_LINE_STYLE));
+        Serializable result = sdkclient.sendSMS(mobiles, smsContent, smsPriority);
+        if (SmsApiImpl.log.isInfoEnabled()) {
+            log.info("待发送的手机号:{},发送内容：{}", Arrays.asList(mobiles), smsContent);
+            log.info("发送短信执行结果:{}", JSON.toJSONString(result, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
         }
         return result;
     }
@@ -160,12 +163,12 @@ public class SmsApiImpl implements SmsApi, ApplicationListener<ContextRefreshedE
 
     @Override
     public Serializable sendScheduledSMS(String[] mobiles, String smsContent, String sendTime, String addSerial) {
-        return sdkclient.sendScheduledSMS(mobiles, smsContent, sendTime,addSerial);
+        return sdkclient.sendScheduledSMS(mobiles, smsContent, sendTime, addSerial);
     }
 
     @Override
     public Serializable sendScheduledSMS(String[] mobiles, String smsContent, String sendTime, String addSerial, String srcCharset) {
-        return sdkclient.sendScheduledSMS(mobiles, smsContent, sendTime,addSerial,srcCharset);
+        return sdkclient.sendScheduledSMS(mobiles, smsContent, sendTime, addSerial, srcCharset);
     }
 
     @Override
@@ -180,7 +183,7 @@ public class SmsApiImpl implements SmsApi, ApplicationListener<ContextRefreshedE
 
     @Override
     public Serializable serialPwdUpd(String serialPwd, String serialPwdNew) {
-        return sdkclient.serialPwdUpd(serialPwd,serialPwdNew);
+        return sdkclient.serialPwdUpd(serialPwd, serialPwdNew);
     }
 
     @Override
@@ -189,7 +192,7 @@ public class SmsApiImpl implements SmsApi, ApplicationListener<ContextRefreshedE
     }
 
     public void setSmsConfig(SmsConfig smsConfig) {
-        Utils.validate(smsConfig)   ;
+        Utils.validate(smsConfig);
         this.smsConfig = smsConfig;
         /**
          * 实例化客户端，如果客服端已经注册过就不需要再次注册
@@ -204,7 +207,7 @@ public class SmsApiImpl implements SmsApi, ApplicationListener<ContextRefreshedE
         Sign sign = signMapper.selectSelective(new Sign(smsConfig.getSoftwareSerialNo(), smsConfig.getPwd(), smsConfig.getKey()));
         if (sign == null || !sign.getLog().getThing().equals(SmsThing.REGISTER_EX.toString()) || (sign.getLog().getThing().equals(SmsThing.REGISTER_EX.toString()) && !sign.getLog().getCode().equals(String.valueOf(CodeMsg.SUCCESS.getErrorcode())))) {
             //未注册改序列号，进行序列号注册
-            if(smsConfig.getAutoRegister() == true) {
+            if (smsConfig.getAutoRegister() == true) {
                 SmsApi smsApi = this.applicationContext.getBean(SmsApi.class);
                 smsApi.registEx(smsConfig.getPwd());
             }

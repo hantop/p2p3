@@ -1,5 +1,7 @@
 package com.fenlibao.p2p.weixin.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.fenlibao.p2p.common.page.Page;
 import com.fenlibao.p2p.weixin.domain.Qrcode;
 import com.fenlibao.p2p.weixin.persistence.QrcodeMapper;
@@ -49,6 +51,9 @@ public class QrcodeServiceImpl implements QrcodeService {
 
     @Override
     public int insertSelective(Qrcode record) {
+        if(log.isInfoEnabled()) {
+            log.info("保存微信二维码信息:{}", JSON.toJSONString(record, SerializerFeature.PrettyFormat,SerializerFeature.WriteClassName));
+        }
         return this.qrcodeMapper.insertSelective(record);
     }
 

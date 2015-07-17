@@ -56,6 +56,10 @@ public final class Utils {
         validate(target);
     }
 
+    /**
+     * 校验数据
+     * @param target
+     */
     public static void validate(Object target) {
         Set<ConstraintViolation<Object>> constraintViolations = validator.validate(target);
         boolean error = constraintViolations.size() > 0;

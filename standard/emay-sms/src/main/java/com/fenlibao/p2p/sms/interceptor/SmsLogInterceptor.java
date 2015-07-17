@@ -1,6 +1,7 @@
 package com.fenlibao.p2p.sms.interceptor;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.fenlibao.p2p.sms.annotation.Thing;
 import com.fenlibao.p2p.sms.config.SmsConfig;
 import com.fenlibao.p2p.sms.defines.CodeMsg;
@@ -8,8 +9,6 @@ import com.fenlibao.p2p.sms.domain.Log;
 import com.fenlibao.p2p.sms.event.SmsInvokeEvent;
 import com.fenlibao.p2p.sms.persistence.LogMapper;
 import com.fenlibao.p2p.sms.service.SmsApi;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -85,19 +84,22 @@ public class SmsLogInterceptor {
         if (signature.matches("send.*")) {
             String content = config.getSign() + (args[1] != null ? args[1].toString() : null);
             args[1] = content;
+            if (SmsLogInterceptor.log.isInfoEnabled()) {
+                SmsLogInterceptor.log.info("发送短信短信:{}", JSON.toJSONString(args, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
+            }
         }
         signature = methodSignature.toLongString();
         Object returnValue = joinPoint.proceed(args);
         CodeMsg codeMsg = CodeMsg.handCode(returnValue);
 
         Log log = new Log(config.getSoftwareSerialNo(), target.toString(), signature, JSON.toJSONString(args), returnValue != null ? returnValue.toString() : "", codeMsg.getSource(), codeMsg.getErrmsg(), thingName);
-        if(SmsLogInterceptor.log.isInfoEnabled()) {
-            SmsLogInterceptor.log.info(ReflectionToStringBuilder.toString(log, ToStringStyle.MULTI_LINE_STYLE));
+        if (SmsLogInterceptor.log.isInfoEnabled()) {
+            SmsLogInterceptor.log.info("发送短信日志记录:{}", JSON.toJSONString(log, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
         }
         logMapper.insertSelective(log);
         publisher.publishEvent(new SmsInvokeEvent(this, target, args, log));
         if(SmsLogInterceptor.log.isInfoEnabled()) {
-            SmsLogInterceptor.log.info(ReflectionToStringBuilder.toString(codeMsg, ToStringStyle.MULTI_LINE_STYLE));
+            SmsLogInterceptor.log.info("短信操作结果记录:{}", JSON.toJSONString(codeMsg, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
         }
         if(returnType == Serializable.class) {
             return codeMsg;

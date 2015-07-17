@@ -157,4 +157,6 @@ public interface WxApi extends Constants {
      */
     Message send(TemplateMsg templateMsg) throws WeixinException;
 
+
+
 }

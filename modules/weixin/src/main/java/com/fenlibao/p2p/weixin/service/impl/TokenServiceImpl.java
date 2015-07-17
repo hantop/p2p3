@@ -1,5 +1,7 @@
 package com.fenlibao.p2p.weixin.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.fenlibao.p2p.common.page.Page;
 import com.fenlibao.p2p.weixin.domain.Token;
 import com.fenlibao.p2p.weixin.persistence.TokenMapper;
@@ -60,7 +62,7 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public int insertSelective(Token record) {
         if(log.isInfoEnabled()) {
-            log.info(ReflectionToStringBuilder.toString(record, ToStringStyle.MULTI_LINE_STYLE));
+            log.info("保存微信token:{}", JSON.toJSONString(record, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
         }
         return this.tokenMapper.insertSelective(record);
     }

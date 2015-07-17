@@ -1,6 +1,7 @@
 package com.fenlibao.p2p.weixin.interceptor;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.fenlibao.p2p.weixin.annotation.Thing;
 import com.fenlibao.p2p.weixin.config.WeixinConfig;
 import com.fenlibao.p2p.weixin.defines.CodeMsg;
@@ -89,13 +90,13 @@ public class WeixinInterceptor {
                 Log log = new Log(weixinConfig.getAppId(),target.getClass().getName(),signature, JSON.toJSONString(args),String.valueOf(codeMsg.getErrorcode()),codeMsg.getErrmsg(),thingName);
 
                 if(WeixinInterceptor.log.isInfoEnabled()) {
-                    WeixinInterceptor.log.info(ReflectionToStringBuilder.toString(log, ToStringStyle.MULTI_LINE_STYLE));
+                    WeixinInterceptor.log.info("微信执行日志消息:{}", JSON.toJSONString(log, SerializerFeature.PrettyFormat ,SerializerFeature.WriteClassName));
                 }
 
                 publisher.publishEvent(new LogEvent(this,log,returnValue));
                 if(codeMsg != CodeMsg.SUCCESS) {
                     if(WeixinInterceptor.log.isErrorEnabled()) {
-                        WeixinInterceptor.log.error(ReflectionToStringBuilder.toString(codeMsg, ToStringStyle.MULTI_LINE_STYLE));
+                        WeixinInterceptor.log.info("微信错误消息:{}", JSON.toJSONString(codeMsg, SerializerFeature.PrettyFormat ,SerializerFeature.WriteClassName));
                     }
                     throw new WeixinException("微信错误消息：" + codeMsg.getErrmsg(), codeMsg.getErrorcode());
                 }
@@ -103,6 +104,10 @@ public class WeixinInterceptor {
         } catch (WeixinException ex) {
             throw ex;
         }
+        if(WeixinInterceptor.log.isInfoEnabled()) {
+            WeixinInterceptor.log.info("微信执行返回信息:{}", JSON.toJSONString(returnValue, SerializerFeature.PrettyFormat ,SerializerFeature.WriteClassName));
+        }
+
         return returnValue;
     }
 

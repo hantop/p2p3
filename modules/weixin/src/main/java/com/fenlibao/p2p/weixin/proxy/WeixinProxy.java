@@ -12,6 +12,8 @@ import com.fenlibao.p2p.weixin.message.Message;
 import com.fenlibao.p2p.weixin.message.Poi;
 import com.fenlibao.p2p.weixin.message.WxMsg;
 import com.fenlibao.p2p.weixin.message.card.Card;
+import com.fenlibao.p2p.weixin.message.card.UserCard;
+import com.fenlibao.p2p.weixin.message.card.req.ReqUserCard;
 import com.fenlibao.p2p.weixin.message.req.ReqTicket;
 import com.fenlibao.p2p.weixin.message.req.White;
 import com.fenlibao.p2p.weixin.service.Constants;
@@ -172,7 +174,7 @@ public interface WeixinProxy extends Constants {
      * @param params
      * @return
      */
-    byte[] getUserCardList(JSONObject params);
+    UserCard getUserCardList(ReqUserCard params);
 
     /**
      * 查看卡券详情

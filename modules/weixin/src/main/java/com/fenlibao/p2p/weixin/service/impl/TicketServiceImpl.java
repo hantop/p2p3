@@ -1,5 +1,7 @@
 package com.fenlibao.p2p.weixin.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.fenlibao.p2p.common.page.Page;
 import com.fenlibao.p2p.weixin.domain.Ticket;
 import com.fenlibao.p2p.weixin.persistence.TicketMapper;
@@ -51,7 +53,7 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public int insertSelective(Ticket record) {
         if(log.isInfoEnabled()) {
-            log.info(ReflectionToStringBuilder.toString(record, ToStringStyle.MULTI_LINE_STYLE));
+            log.info("保存微信ticket信息:{}", JSON.toJSONString(record, SerializerFeature.PrettyFormat,SerializerFeature.WriteClassName));
         }
         return ticketMapper.insertSelective(record);
     }

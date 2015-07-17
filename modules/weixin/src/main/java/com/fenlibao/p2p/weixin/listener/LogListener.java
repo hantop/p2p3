@@ -1,13 +1,13 @@
 package com.fenlibao.p2p.weixin.listener;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.fenlibao.p2p.weixin.domain.*;
 import com.fenlibao.p2p.weixin.event.LogEvent;
 import com.fenlibao.p2p.weixin.message.Poi;
 import com.fenlibao.p2p.weixin.persistence.LogMapper;
 import com.fenlibao.p2p.weixin.service.*;
 import com.fenlibao.p2p.weixin.variable.WeiXinThing;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
@@ -48,7 +48,7 @@ public class LogListener implements ApplicationListener<LogEvent> {
         Object returnValue = event.getReturnValue();
         logMapper.insertSelective(log);
         if(LogListener.log.isInfoEnabled()) {
-            LogListener.log.info(ReflectionToStringBuilder.toString(logMapper, ToStringStyle.MULTI_LINE_STYLE));
+            LogListener.log.info("微信执行日志消息通知保存:{}", JSON.toJSONString(log, SerializerFeature.PrettyFormat ,SerializerFeature.WriteClassName));
         }
         if (thingName.equals(WeiXinThing.HTTP_TOKEN.toString())) {
             //token

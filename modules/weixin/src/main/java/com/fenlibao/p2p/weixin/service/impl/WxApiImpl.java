@@ -1,6 +1,7 @@
 package com.fenlibao.p2p.weixin.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.fenlibao.p2p.weixin.config.WeixinConfig;
 import com.fenlibao.p2p.weixin.defines.*;
 import com.fenlibao.p2p.weixin.domain.Fans;
@@ -21,8 +22,6 @@ import com.fenlibao.p2p.weixin.service.QrcodeService;
 import com.fenlibao.p2p.weixin.service.WxApi;
 import com.thoughtworks.xstream.XStream;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -65,10 +64,10 @@ public class WxApiImpl implements WxApi, ApplicationListener<ContextRefreshedEve
 
     private MessageHandler messageHandler;
 
-    @Inject
-    public WxApiImpl(MessageHandler messageHandler) {
-        this.messageHandler = messageHandler;
-    }
+//    @Inject
+//    public WxApiImpl(MessageHandler messageHandler) {
+//        this.messageHandler = messageHandler;
+//    }
 
     static {
         xStream.autodetectAnnotations(true);
@@ -155,7 +154,7 @@ public class WxApiImpl implements WxApi, ApplicationListener<ContextRefreshedEve
         ret.put("signature", signature);
         ret.put("appId", weixinConfig.getAppId());
         if (log.isInfoEnabled()) {
-            log.info(ReflectionToStringBuilder.toString(ret, ToStringStyle.MULTI_LINE_STYLE));
+            log.info("微信网页授权返回信息:{}", JSON.toJSONString(ret, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
         }
         return ret;
     }
@@ -268,17 +267,13 @@ public class WxApiImpl implements WxApi, ApplicationListener<ContextRefreshedEve
         Token oauth2Token = null;
         try {
             oauth2Token = this.weixinProxy.httpToken(code);
-//            String[] params = state.split(Constants.separator);
-//            String openid = params[0].split("=")[1];
-//            Fans from = this.getFans(openid);
         } catch (WeixinException e) {
-            // e.printStackTrace();
             if (log.isInfoEnabled()) {
                 log.info(e.getMessage());
             }
             OauthDefines oauthDefines = new OauthDefines(CodeMsg.ERROR_TIME_OUT);
             if (log.isErrorEnabled()) {
-                log.error("网页授权错误:{}", ReflectionToStringBuilder.toString(oauthDefines, ToStringStyle.MULTI_LINE_STYLE));
+                log.info("网页授权错误:{}", JSON.toJSONString(oauthDefines, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
             }
             return oauthDefines;
         }
@@ -286,7 +281,7 @@ public class WxApiImpl implements WxApi, ApplicationListener<ContextRefreshedEve
         String oauth2UserInfoUrl = String.format(SNSAPI_USERINFO_URL, oauth2Token.getAccessToken(), oauth2Token.getOpenid());
         Fans userInfo = this.weixinProxy.httpFans(oauth2UserInfoUrl);
         if (log.isInfoEnabled()) {
-            log.info("获取用户信息:{}", ReflectionToStringBuilder.toString(userInfo, ToStringStyle.MULTI_LINE_STYLE));
+            log.info("获取用户信息:{}", JSON.toJSONString(userInfo, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
         }
         this.messageHandler.oauth2Event(userInfo, state);
         OauthDefines oauthDefines = new OauthDefines(CodeMsg.SUCCESS, userInfo.getOpenid());
@@ -302,7 +297,7 @@ public class WxApiImpl implements WxApi, ApplicationListener<ContextRefreshedEve
         publisher.publishEvent(new MsgEvent(this, message, this.weixinConfig.getAppId(), MsgDefines.RECEIVE, reqMsg));
         Serializable result = process(message, host);
         if (log.isInfoEnabled()) {
-            log.info("返回消息:{}", ReflectionToStringBuilder.toString(result, ToStringStyle.MULTI_LINE_STYLE));
+            log.info("返回到用户消息:{}", JSON.toJSONString(result, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
         }
         return result;
     }
@@ -310,12 +305,12 @@ public class WxApiImpl implements WxApi, ApplicationListener<ContextRefreshedEve
     @Override
     public Message send(TemplateMsg templateMsg) throws WeixinException {
         if (log.isInfoEnabled()) {
-            log.info("发送模板消息:{}", ReflectionToStringBuilder.toString(templateMsg, ToStringStyle.MULTI_LINE_STYLE));
+            log.info("发送模板消息:{}", JSON.toJSONString(templateMsg, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
         }
         String json = JSON.toJSONString(templateMsg);
         Message result = this.weixinProxy.httpTemplateMsg(json);
         if (log.isInfoEnabled()) {
-            log.info("返回模板消息:{}", ReflectionToStringBuilder.toString(result, ToStringStyle.MULTI_LINE_STYLE));
+            log.info("返回模板消息:{}", JSON.toJSONString(result, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
         }
         return result;
     }

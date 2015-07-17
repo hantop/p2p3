@@ -1,5 +1,7 @@
 package com.fenlibao.p2p.weixin.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.fenlibao.p2p.common.page.Page;
 import com.fenlibao.p2p.weixin.domain.Fans;
 import com.fenlibao.p2p.weixin.persistence.FansMapper;
@@ -77,7 +79,7 @@ public class FansServiceImpl implements FansService {
     @Override
     public int saveOrUpdate(Fans record) {
         if(log.isInfoEnabled()) {
-            log.info(ReflectionToStringBuilder.toString(record, ToStringStyle.MULTI_LINE_STYLE));
+            log.info("保存获取更新微信fans信息:{}", JSON.toJSONString(record, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
         }
         Fans flag = this.fansMapper.selectByOpenId(record.getOpenid());
         if(flag != null) {

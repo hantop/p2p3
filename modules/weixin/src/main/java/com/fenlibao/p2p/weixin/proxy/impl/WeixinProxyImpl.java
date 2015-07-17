@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.fenlibao.p2p.common.http.HttpClientUtil;
+import com.fenlibao.p2p.constant.util.Utils;
 import com.fenlibao.p2p.weixin.config.WeixinConfig;
 import com.fenlibao.p2p.weixin.domain.Fans;
 import com.fenlibao.p2p.weixin.domain.Qrcode;
@@ -15,6 +16,8 @@ import com.fenlibao.p2p.weixin.message.Message;
 import com.fenlibao.p2p.weixin.message.Poi;
 import com.fenlibao.p2p.weixin.message.WxMsg;
 import com.fenlibao.p2p.weixin.message.card.Card;
+import com.fenlibao.p2p.weixin.message.card.UserCard;
+import com.fenlibao.p2p.weixin.message.card.req.ReqUserCard;
 import com.fenlibao.p2p.weixin.message.req.ReqTicket;
 import com.fenlibao.p2p.weixin.message.req.White;
 import com.fenlibao.p2p.weixin.proxy.WeixinProxy;
@@ -89,7 +92,7 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
      */
     private Token httpToken(TokeyType tokenType) {
         if (log.isInfoEnabled()) {
-            log.info(ReflectionToStringBuilder.toString(tokenType, ToStringStyle.MULTI_LINE_STYLE));
+            log.info("请求token:{}",JSON.toJSONString(tokenType, SerializerFeature.PrettyFormat,SerializerFeature.WriteClassName));
         }
         if (this.token == null) {
             this.token = this.tokenService.selectLast(tokenType);
@@ -130,7 +133,7 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
     @Override
     public Ticket httpTicket(ReqTicket reqTicket) {
         if (log.isInfoEnabled()) {
-            log.info(ReflectionToStringBuilder.toString(reqTicket, ToStringStyle.MULTI_LINE_STYLE));
+            log.info(JSON.toJSONString(reqTicket, SerializerFeature.PrettyFormat,SerializerFeature.WriteClassName));
         }
         Token token = weixinProxy.httpToken();
         String ticketUrl = null;
@@ -168,11 +171,11 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
     public Ticket httpTicket(TicketType ticketType) {
         Assert.notNull(ticketType, "请求的ticketType类型不能为空");
         if (log.isInfoEnabled()) {
-            log.info("请求获取ticket：{}", ReflectionToStringBuilder.toString(ticketType, ToStringStyle.MULTI_LINE_STYLE));
+            log.info("请求获取ticket：{}", JSON.toJSONString(ticketType, SerializerFeature.PrettyFormat,SerializerFeature.WriteClassName));
         }
         if (ticketType == TicketType.QR_TICKET || ticketType == TicketType.QR_CARD_TICKET) {
-            if (log.isInfoEnabled()) {
-                log.info("不能获取改类型的ticket，请调用public Ticket httpTicket(ReqTicket reqTicket) 方法获取", ReflectionToStringBuilder.toString(ticketType, ToStringStyle.MULTI_LINE_STYLE));
+            if (log.isErrorEnabled()) {
+                log.error("不能获取改类型{}的ticket，请调用public Ticket httpTicket(ReqTicket reqTicket) 方法获取", ticketType);
             }
             throw new RuntimeException("不能获取改类型(" + ticketType + ")的ticket");
         }
@@ -186,7 +189,7 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
             if (gap < result.getExpiresIn()) {
                 this.jssapiTicket = result;
                 if (log.isInfoEnabled()) {
-                    log.info(ReflectionToStringBuilder.toString(result, ToStringStyle.MULTI_LINE_STYLE));
+                    log.info("返回ticket:{}",JSON.toJSONString(result, SerializerFeature.PrettyFormat,SerializerFeature.WriteClassName));
                 }
                 return result;
             }
@@ -205,7 +208,7 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
         result.setType(ticketType);
         result.setCreateTime(System.currentTimeMillis());
         if (log.isInfoEnabled()) {
-            log.info(ReflectionToStringBuilder.toString(result, ToStringStyle.MULTI_LINE_STYLE));
+            log.info("返回ticket:{}",JSON.toJSONString(result, SerializerFeature.PrettyFormat,SerializerFeature.WriteClassName));
         }
         if (ticketType == TicketType.JSAPI_TICKET) {
             this.jssapiTicket = result;
@@ -231,7 +234,7 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
 //            new RuntimeException(HTTP_STATUS.ERROR_CODE_40029.getErrmsg());
 //        }
         if (log.isInfoEnabled()) {
-            log.info(ReflectionToStringBuilder.toString(oauth2Token, ToStringStyle.MULTI_LINE_STYLE));
+            log.info("返回oauth2Token信息:{}",JSON.toJSONString(oauth2Token, SerializerFeature.PrettyFormat,SerializerFeature.WriteClassName));
         }
         return oauth2Token;
     }
@@ -254,7 +257,7 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
         qrcode.setBytes(results);
         qrcode.setSceneName(scene);
         if (log.isInfoEnabled()) {
-            log.info(ReflectionToStringBuilder.toString(qrcode, ToStringStyle.MULTI_LINE_STYLE));
+            log.info("返回二维码信息:{}",JSON.toJSONString(qrcode, SerializerFeature.PrettyFormat,SerializerFeature.WriteClassName));
         }
         return qrcode;
     }
@@ -266,7 +269,7 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
         byte[] bytes = HttpClientUtil.httpPost(templateUrl, templateMsg);
         Message message = JSON.parseObject(bytes, Message.class);
         if (log.isInfoEnabled()) {
-            log.info(ReflectionToStringBuilder.toString(message, ToStringStyle.MULTI_LINE_STYLE));
+            log.info("返回模板消息信息:{}",JSON.toJSONString(message, SerializerFeature.PrettyFormat,SerializerFeature.WriteClassName));
         }
         return message;
     }
@@ -281,7 +284,7 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
         byte[] bytes = HttpClientUtil.httpPost(url, req);
         Poi poi = JSON.parseObject(bytes, Poi.class);
         if (log.isInfoEnabled()) {
-            log.info(ReflectionToStringBuilder.toString(poi, ToStringStyle.MULTI_LINE_STYLE));
+            log.info("返回门店信息:{}",JSON.toJSONString(poi, SerializerFeature.PrettyFormat,SerializerFeature.WriteClassName));
         }
         return poi;
     }
@@ -317,14 +320,13 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
 //    }
 
     @Override
-    public byte[] getUserCardList(JSONObject params) {
-        Object openid = params.get("openid");
-        Assert.notNull(openid, "需要查询的用户openid不能为空");
-        String jsonString = params.toString();
+    public UserCard getUserCardList(ReqUserCard userCard) {
+        Utils.validate(userCard);
+        String jsonString = JSON.toJSONString(userCard);
         String token = this.weixinProxy.httpToken().getAccessToken();
         String url = String.format(USER_CARD_LIST_URL, token);
         byte[] bytes = HttpClientUtil.httpPost(url, jsonString);
-        return bytes;
+        return JSON.parseObject(bytes, UserCard.class);
     }
 
     @Override
