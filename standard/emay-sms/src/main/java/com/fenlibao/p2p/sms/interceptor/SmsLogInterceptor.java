@@ -67,20 +67,16 @@ public class SmsLogInterceptor {
         SmsApi target = (SmsApi) joinPoint.getTarget();
         SmsConfig config = target.getSmsConfig();
 
-
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method targetMethod = methodSignature.getMethod();
         Class<?> returnType = targetMethod.getReturnType();
         String thingName = methodSignature.getName();
         Thing thing = targetMethod.getAnnotation(Thing.class);
-        if(thing != null) {
+        if (thing != null) {
             thingName = thing.value().toString();
         }
-
         Object[] args = joinPoint.getArgs();
         String signature = methodSignature.getName();
-
-
         if (signature.matches("send.*")) {
             String content = config.getSign() + (args[1] != null ? args[1].toString() : null);
             args[1] = content;
@@ -91,17 +87,16 @@ public class SmsLogInterceptor {
         signature = methodSignature.toLongString();
         Object returnValue = joinPoint.proceed(args);
         CodeMsg codeMsg = CodeMsg.handCode(returnValue);
-
         Log log = new Log(config.getSoftwareSerialNo(), target.toString(), signature, JSON.toJSONString(args), returnValue != null ? returnValue.toString() : "", codeMsg.getSource(), codeMsg.getErrmsg(), thingName);
         if (SmsLogInterceptor.log.isInfoEnabled()) {
-            SmsLogInterceptor.log.info("发送短信日志记录:{}", JSON.toJSONString(log, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
+            SmsLogInterceptor.log.info("短信sdk操作:{}", JSON.toJSONString(log, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
         }
         logMapper.insertSelective(log);
         publisher.publishEvent(new SmsInvokeEvent(this, target, args, log));
-        if(SmsLogInterceptor.log.isInfoEnabled()) {
-            SmsLogInterceptor.log.info("短信操作结果记录:{}", JSON.toJSONString(codeMsg, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
+        if (SmsLogInterceptor.log.isInfoEnabled()) {
+            SmsLogInterceptor.log.info("短信操作结果记录:errorcode:{},errmsg:{},source:{}", codeMsg.getErrorcode(), codeMsg.getErrmsg(), codeMsg.getSource());
         }
-        if(returnType == Serializable.class) {
+        if (returnType == Serializable.class) {
             return codeMsg;
         }
         return returnValue;

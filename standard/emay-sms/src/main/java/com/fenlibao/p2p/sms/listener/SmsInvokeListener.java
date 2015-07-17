@@ -43,9 +43,8 @@ public class SmsInvokeListener implements ApplicationListener<SmsInvokeEvent> {
 
     @Override
     public void onApplicationEvent(SmsInvokeEvent event) {
-        if(log.isInfoEnabled()) {
+        if (log.isInfoEnabled()) {
             SmsInvokeListener.log.info("短信sdk操作:{}", JSON.toJSONString(event, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
-
         }
         SmsApi smsApi = event.getSmsApi();
         SmsConfig config = smsApi.getSmsConfig();
@@ -56,7 +55,7 @@ public class SmsInvokeListener implements ApplicationListener<SmsInvokeEvent> {
             //注册序列号, //注销
             Sign smsSign = new Sign(config.getSoftwareSerialNo(), config.getPwd(), config.getSpecialNo(), config.getKey(), log.getId());
             signMapper.insertSelective(smsSign);
-            if(SmsInvokeListener.log.isInfoEnabled()) {
+            if (SmsInvokeListener.log.isInfoEnabled()) {
                 SmsInvokeListener.log.info("注册/注销序列号:{}", JSON.toJSONString(smsSign, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
             }
         } else if (thing.equals(SmsThing.REGIST_DETAIL_INFO.toString())) {
@@ -69,27 +68,27 @@ public class SmsInvokeListener implements ApplicationListener<SmsInvokeEvent> {
             String fax = args[5] != null ? args[5].toString() : null;
             String address = args[6] != null ? args[6].toString() : null;
             String postcode = args[7] != null ? args[7].toString() : null;
-            RegisterInfo registerInfo = new RegisterInfo(config.getSoftwareSerialNo(), name,linkMan,phoneNum,mobile,email,fax,address,postcode,log.getId());
+            RegisterInfo registerInfo = new RegisterInfo(config.getSoftwareSerialNo(), name, linkMan, phoneNum, mobile, email, fax, address, postcode, log.getId());
             registerInfoMapper.insertSelective(registerInfo);
-            if(SmsInvokeListener.log.isInfoEnabled()) {
+            if (SmsInvokeListener.log.isInfoEnabled()) {
                 SmsInvokeListener.log.info("注册企业信息:{}", JSON.toJSONString(registerInfo, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
             }
         } else if (thing.equals(SmsThing.CHARGE_UP.toString())) {
             //充值记录
             String cardNo = args[0] != null ? args[0].toString() : null;
-            String cardPass =args[1] != null ? args[1].toString() : null;
-            ChargeLog chargeLog = new ChargeLog(cardNo,cardPass,log.getId());
+            String cardPass = args[1] != null ? args[1].toString() : null;
+            ChargeLog chargeLog = new ChargeLog(cardNo, cardPass, log.getId());
             this.chargeLogMapper.insertSelective(chargeLog);
-            if(SmsInvokeListener.log.isInfoEnabled()) {
+            if (SmsInvokeListener.log.isInfoEnabled()) {
                 SmsInvokeListener.log.info("充值:{}", JSON.toJSONString(chargeLog, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
             }
-        } else if(thing.matches("send.*")) {
+        } else if (thing.matches("send.*")) {
             //发送信息
-            String[] mobiles = args[0] != null ? (String[])args[0] : null;
+            String[] mobiles = args[0] != null ? (String[]) args[0] : null;
             String smsContent = args[1] != null ? args[1].toString() : null;
-            Task task = new Task(System.currentTimeMillis(), SendVariable.Z, Arrays.asList(mobiles).toString(),smsContent,log.getId());
+            Task task = new Task(System.currentTimeMillis(), SendVariable.Z, Arrays.asList(mobiles).toString(), smsContent, log.getId());
             taskMapper.insertSelective(task);
-            if(SmsInvokeListener.log.isInfoEnabled()) {
+            if (SmsInvokeListener.log.isInfoEnabled()) {
                 SmsInvokeListener.log.info("发送短信:{}", JSON.toJSONString(task, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
             }
         }
