@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.fenlibao.p2p.weixin.defines.CodeMsg;
 import com.fenlibao.p2p.weixin.defines.OauthDefines;
+import com.fenlibao.p2p.weixin.message.Status;
 import com.fenlibao.p2p.weixin.message.card.req.ReqBatchCatch;
 import com.fenlibao.p2p.weixin.service.Constants;
 import com.fenlibao.p2p.weixin.service.WxApi;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -67,11 +69,16 @@ public class WinxinController {
 
         ModelAndView modelAndView = new ModelAndView();
         ReqBatchCatch batch = new ReqBatchCatch(0, 10);
+        List<Status> statuses = new ArrayList<>();
+        statuses.add(Status.CARD_STATUS_NOT_VERIFY);
+        statuses.add(Status.CARD_STATUS_VERIFY_OK);
+        batch.setStatusList(statuses);
         List<Map<String, Object>> result = this.wxApi.signature(batch, openid, code);
         if(log.isInfoEnabled()) {
             log.info("获取卡券列表信息：\n{}",JSON.toJSONString(result,SerializerFeature.PrettyFormat));
         }
         modelAndView.addObject("cardList", JSON.toJSON(result));
+
         return result;
     }
 

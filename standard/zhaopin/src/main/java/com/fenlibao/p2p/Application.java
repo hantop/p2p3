@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.util.WebAppRootListener;
 
 import javax.servlet.ServletContext;
@@ -23,6 +24,7 @@ public class Application extends SpringBootServletInitializer {
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
         servletContext.addListener(WebAppRootListener.class);
+        servletContext.addListener(HttpSessionEventPublisher.class);
         super.onStartup(servletContext);
     }
 

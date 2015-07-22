@@ -184,7 +184,7 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
         } else if (ticketType == TicketType.JSAPI_CARD_TICKET) {
             result = this.jssapiCardTicket;
         }
-        if(result == null) {
+        if (result == null) {
             result = this.ticketService.selectLastTicket(ticketType);
         }
         if (result != null && result.getCreateTime() != null) {
@@ -192,7 +192,12 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
             Long lastTokenCreateTime = result.getCreateTime() / 1000;
             Long gap = currentTime - lastTokenCreateTime;
             if (gap < result.getExpiresIn()) {
-                this.jssapiTicket = result;
+
+                if (ticketType == TicketType.JSAPI_TICKET) {
+                    this.jssapiTicket = result;
+                } else if (ticketType == TicketType.JSAPI_CARD_TICKET) {
+                    this.jssapiCardTicket = result;
+                }
                 if (log.isInfoEnabled()) {
                     log.info("返回ticket:{}", JSON.toJSONString(result, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
                 }

@@ -205,9 +205,9 @@ public class WxApiImpl implements WxApi, ApplicationListener<ContextRefreshedEve
     }
     @Override
     public List<Map<String, Object>> signature(ReqBatchCatch reqBatchCatch, String openid, String code) {
-        Card card = this.batchCard(reqBatchCatch);
+        Card card = this.weixinProxy.batchCard(reqBatchCatch);
         List<String> cardsId = Arrays.asList(card.getCardIdList());
-        return signature(cardsId,openid,code);
+        return signature(cardsId, openid, code);
     }
 
     @Override
