@@ -24,10 +24,7 @@ import org.springframework.util.ReflectionUtils;
 
 import javax.inject.Inject;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Administrator on 2015/6/19.
