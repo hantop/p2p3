@@ -55,9 +55,7 @@ public class UserDetailsService implements org.springframework.security.core.use
             user.setAccountNonLocked(true);
             user.setCredentialsNonExpire(true);
             user.setEnabled(true);
-            int flag = this.userMapper.insertSelective(user);
-            if (flag < 0)
-                throw new RuntimeException("保存失败");
+            this.userMapper.insertSelective(user);
             Long userId = user.getId();
             Long roleId = 1L;
             UserRole userRole = new UserRole(userId, roleId);
