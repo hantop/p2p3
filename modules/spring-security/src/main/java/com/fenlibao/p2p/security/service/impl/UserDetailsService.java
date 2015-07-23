@@ -14,6 +14,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.inject.Inject;
@@ -43,6 +45,8 @@ public class UserDetailsService implements org.springframework.security.core.use
         return user;
     }
 
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false,
+            rollbackFor = {java.lang.Exception.class, java.lang.RuntimeException.class})
     public int insertSelective(User user) {
 
         UserDetails userDetails = userMapper.findByUsername(user.getUsername());
@@ -52,6 +56,8 @@ public class UserDetailsService implements org.springframework.security.core.use
             user.setCredentialsNonExpire(true);
             user.setEnabled(true);
             int flag = this.userMapper.insertSelective(user);
+            if (flag < 0)
+                throw new RuntimeException("保存失败");
             Long userId = user.getId();
             Long roleId = 1L;
             UserRole userRole = new UserRole(userId, roleId);
@@ -72,7 +78,7 @@ public class UserDetailsService implements org.springframework.security.core.use
                 ConfigAttribute configAttribute = new Jsr250SecurityConfig(authority);
                 configAttributes.add(configAttribute);
             }
-            requestMap.put(matcher,configAttributes);
+            requestMap.put(matcher, configAttributes);
         }
         return requestMap;
     }
