@@ -1,14 +1,15 @@
 package com.fenlibao.p2p.security.service.impl;
 
-import com.fenlibao.p2p.security.domain.*;
+import com.fenlibao.p2p.security.domain.Regex;
+import com.fenlibao.p2p.security.domain.Role;
+import com.fenlibao.p2p.security.domain.User;
+import com.fenlibao.p2p.security.domain.UserRole;
 import com.fenlibao.p2p.security.error.UserException;
 import com.fenlibao.p2p.security.persistence.RegexMapper;
-import com.fenlibao.p2p.security.persistence.RoleMapper;
 import com.fenlibao.p2p.security.persistence.UserMapper;
 import com.fenlibao.p2p.security.service.UserRoleService;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
-import org.springframework.security.access.annotation.Jsr250SecurityConfig;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -64,18 +65,24 @@ public class UserDetailsService implements org.springframework.security.core.use
         throw new UserException("用户名已经被注册过了");
     }
 
+//    public List<Regex> requestMap() {
+//        Map<RequestMatcher, Collection<ConfigAttribute>> requestMap = new HashMap<>();
+//        List<Regex> regexes = regexMapper.findAll();
+//        return regexes;
+//    }
+
     public Map<RequestMatcher, Collection<ConfigAttribute>> requestMap() {
         Map<RequestMatcher, Collection<ConfigAttribute>> requestMap = new HashMap<>();
         List<Regex> regexes = regexMapper.findAll();
         for (Regex regex : regexes) {
             String url = regex.getRegex();
             RequestMatcher matcher = new AntPathRequestMatcher(url);
-            Collection<ConfigAttribute> configAttributes = new HashSet<>();
+            List<String> authoritys = new ArrayList<>();
             for (Role role : regex.getRoles()) {
                 String authority = role.getAuthority();
-                ConfigAttribute configAttribute = new Jsr250SecurityConfig(authority);
-                configAttributes.add(configAttribute);
+                authoritys.add(authority);
             }
+            Collection<ConfigAttribute> configAttributes = SecurityConfig.createList(authoritys.toArray(new String[]{}));
             requestMap.put(matcher, configAttributes);
         }
         return requestMap;

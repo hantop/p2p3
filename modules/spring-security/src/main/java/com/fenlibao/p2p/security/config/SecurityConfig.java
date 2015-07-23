@@ -92,7 +92,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //
 //
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    protected void configure(final HttpSecurity http) throws Exception {
         http
                 .formLogin().loginPage("/login").usernameParameter("username").passwordParameter("password").loginProcessingUrl("/login_check")
                 .failureUrl("/login?error").and()
@@ -102,27 +102,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
 //                .accessDecisionManager(accessDecisionManager())//.expressionHandler(defaultWebSecurityExpressionHandler())
                 .antMatchers("/login", "/register").permitAll()
-                .antMatchers("/**").hasRole("USER")
-                .anyRequest().authenticated();
-//                .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
-//                    public <O extends FilterSecurityInterceptor> O postProcess(O fsi) {
-//                        fsi.setAccessDecisionManager(accessDecisionManager());
-//                        FilterInvocationSecurityMetadataSource securityMetadataSource = fsi.getSecurityMetadataSource();
-//                        Field field = ReflectionUtils.findField(securityMetadataSource.getClass(),"requestMap");
-//                        field.setAccessible(true);
-//                        Map<RequestMatcher, Collection<ConfigAttribute>> requestMap = (Map<RequestMatcher, Collection<ConfigAttribute>>) ReflectionUtils.getField(field, securityMetadataSource);
-//
-//                        Map<RequestMatcher, Collection<ConfigAttribute>> metadataSources = userDetailsService.requestMap();
-//                        for (Map.Entry<RequestMatcher, Collection<ConfigAttribute>> metadataSource : metadataSources.entrySet()) {
-//                            RequestMatcher requestMatcher = metadataSource.getKey();
-//                            Collection<ConfigAttribute> configAttributes = metadataSource.getValue();
-//                            requestMap.put(requestMatcher,configAttributes);
-//                        }
-//                        fsi.setSecurityMetadataSource(securityMetadataSource);
-//                        fsi.setPublishAuthorizationSuccess(true);
-//                    return fsi;
-//            }
-//        });
+//                .antMatchers("/**").hasRole("USER")
+//                .anyRequest().authenticated();
+                .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
+                    public <O extends FilterSecurityInterceptor> O postProcess(O fsi) {
+                        fsi.setAccessDecisionManager(accessDecisionManager());
+                        FilterInvocationSecurityMetadataSource securityMetadataSource = fsi.getSecurityMetadataSource();
+                        Field field = ReflectionUtils.findField(securityMetadataSource.getClass(), "requestMap");
+                        field.setAccessible(true);
+                        Map<RequestMatcher, Collection<ConfigAttribute>> requestMap = (Map<RequestMatcher, Collection<ConfigAttribute>>) ReflectionUtils.getField(field, securityMetadataSource);
+                        Map<RequestMatcher, Collection<ConfigAttribute>> metadataSources = userDetailsService.requestMap();
+                        requestMap.putAll(metadataSources);
+                        fsi.setSecurityMetadataSource(securityMetadataSource);
+                        fsi.setPublishAuthorizationSuccess(true);
+                        try {
+                            http.authorizeRequests().anyRequest().authenticated();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        return fsi;
+                    }
+                });
 
     }
 
