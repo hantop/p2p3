@@ -14,7 +14,7 @@
                   th:name="${_csrf.parameterName}"
                   th:value="${_csrf.token}"/>
            <div class="form-group col-md-3 col-md-offset-1">
-               <input type="text" name="name" required="required" class="form-control" style="width:100%;" placeholder="输入投放渠道名称"/>
+               <input type="text" name="name" required="required" title="输入投放渠道名称" class="form-control" style="width:100%;" placeholder="输入投放渠道名称"/>
            </div>
            <div class="form-group col-md-2 text-center">
                <select class="form-control" min="0" name="ruleId">
@@ -23,7 +23,7 @@
                </select>
            </div>
            <div class="form-group col-md-3">
-               <input type="url" name="url" required="required" class="form-control" style="width:100%;" placeholder="输入投放简历url"/>
+               <input type="url" name="url" required="required" title="输入投放简历url" class="form-control" style="width:100%;" placeholder="输入投放简历url"/>
            </div>
            <button type="submit" class="btn btn-primary">添加投放渠道</button>
        </form>

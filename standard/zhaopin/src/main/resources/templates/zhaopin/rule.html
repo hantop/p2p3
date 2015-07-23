@@ -26,25 +26,25 @@
                             <div class="form-group">
                                 <label class="col-sm-4 control-label">规则名称</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control" placeholder="规则名称" name="name"/>
+                                    <input type="text" class="form-control" placeholder="规则名称" name="name" required="required" title="请输入规则名称" autocomplete="off" oninvalid="setCustomValidity('必须填写！');" oninput="setCustomValidity('');"/>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-4 control-label">推荐点击佣金</label>
                                 <div class="col-sm-8">
-                                    <input type="number" class="form-control" placeholder="推荐点击佣金" name="recommendSuccess"/>
+                                    <input type="text" class="form-control" placeholder="推荐点击佣金" name="recommendSuccess" required="required" pattern="\d+(\.\d+)?" oninvalid="setCustomValidity('请输入正确的数字');" oninput="setCustomValidity('');" title="请输入推荐点击佣金" autocomplete="off"/>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-4 control-label">试用成功佣金</label>
                                 <div class="col-sm-8">
-                                    <input type="number" class="form-control" placeholder="试用成功佣金" name="trialSuccess"/>
+                                    <input type="number" class="form-control" placeholder="试用成功佣金" name="trialSuccess" required="required" title="请输入试用成功佣金" oninvalid="setCustomValidity('请输入正确的数字');" oninput="setCustomValidity('');" autocomplete="off"/>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-4 control-label">转正成功佣金</label>
                                 <div class="col-sm-8">
-                                    <input type="number" class="form-control" placeholder="转正成功佣金" name="positiveSuccess"/>
+                                    <input type="number" class="form-control" placeholder="转正成功佣金" name="positiveSuccess" required="required" oninvalid="setCustomValidity('请输入正确的数字');" oninput="setCustomValidity('');" title="请输入转正成功佣金金" autocomplete="off"/>
                                 </div>
                             </div>
 
