@@ -11,7 +11,6 @@
     <result column="enabled" property="enabled" jdbcType="BIT" />
     <result column="register_time" property="registerTime" jdbcType="TIMESTAMP" />
   </resultMap>
-
   <resultMap id="AssociationResultMap" type="com.fenlibao.p2p.security.domain.User" extends="BaseResultMap">
     <collection property="authorities" javaType="list" ofType="com.fenlibao.p2p.security.domain.Role" columnPrefix="role_" resultMap="com.fenlibao.p2p.security.persistence.RoleMapper.AssociationResultMap"/>
   </resultMap>
@@ -28,35 +27,35 @@
   </select>
 
   <select id="findByUsername" resultMap="AssociationResultMap" parameterType="java.lang.String" >
-      SELECT
-        user.id,
-        user.username,
-        user.password,
-        user.account_non_expired,
-        user.account_non_locked,
-        user.credentials_non_expire,
-        user.enabled,
-        user.register_time,
-        role.id role_id,
-        role.name role_name,
-        role.authority role_authority,
-        resc.id role_resc_id,
-        resc.url role_resc_url,
-        resc.resc_type role_resc_resc_type
-      FROM
+    SELECT
+      user.id id,
+      user.username,
+      user.password,
+      user.account_non_expired,
+      user.account_non_locked,
+      user.credentials_non_expire,
+      user.enabled,
+      user.register_time,
+      role.id role_id,
+      role.name role_name,
+      role.authority role_authority,
+      resc.id role_resc_id,
+      resc.url role_resc_url,
+      resc.res_type role_resc_resc_type
+    FROM
         sys_user user
-      JOIN sys_user_role user_role ON (user.id = user_role.user_id)
-      JOIN sys_role role ON (user_role.role_id = role.id)
-      JOIN sys_role_resc role_resc ON (role_resc.role_id = role.id)
-      JOIN sys_resc resc ON (resc.id = role_resc.resc_id)
-      WHERE user.username = #{username,jdbcType=VARCHAR}
+    JOIN sys_user_role user_role ON (user.id = user_role.user_id)
+    JOIN sys_role role ON (user_role.role_id = role.id)
+    JOIN sys_role_resc role_resc ON (role_resc.role_id = role.id)
+    JOIN sys_resc resc ON (resc.id = role_resc.resc_id)
+    WHERE user.username = #{username,jdbcType=VARCHAR}
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from sys_user
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.fenlibao.p2p.security.domain.User" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insert" parameterType="com.fenlibao.p2p.security.domain.User" >
     insert into sys_user (id, username, password, 
       account_non_expired, account_non_locked, credentials_non_expire, 
       enabled, register_time)
@@ -64,9 +63,13 @@
       #{accountNonExpired,jdbcType=BIT}, #{accountNonLocked,jdbcType=BIT}, #{credentialsNonExpire,jdbcType=BIT}, 
       #{enabled,jdbcType=BIT}, #{registerTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.fenlibao.p2p.security.domain.User" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insertSelective" parameterType="com.fenlibao.p2p.security.domain.User"  useGeneratedKeys="true"
+          keyProperty="id">
     insert into sys_user
     <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
       <if test="username != null" >
         username,
       </if>
@@ -90,6 +93,9 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
       <if test="username != null" >
         #{username,jdbcType=VARCHAR},
       </if>

@@ -4,10 +4,10 @@
   <resultMap id="BaseResultMap" type="com.fenlibao.p2p.security.domain.Resc" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="url" property="url" jdbcType="VARCHAR" />
-    <result column="resc_type" property="rescType" jdbcType="VARCHAR" />
+    <result column="res_type" property="resType" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, url, resc_type
+    id, url, res_type
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -19,13 +19,13 @@
     delete from sys_resc
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.fenlibao.p2p.security.domain.Resc" useGeneratedKeys="true" keyProperty="id">
-    insert into sys_resc (id, url, resc_type
+  <insert id="insert" parameterType="com.fenlibao.p2p.security.domain.Resc" >
+    insert into sys_resc (id, url, res_type
       )
-    values (#{id,jdbcType=BIGINT}, #{url,jdbcType=VARCHAR}, #{rescType,jdbcType=VARCHAR}
+    values (#{id,jdbcType=BIGINT}, #{url,jdbcType=VARCHAR}, #{resType,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.fenlibao.p2p.security.domain.Resc" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insertSelective" parameterType="com.fenlibao.p2p.security.domain.Resc" >
     insert into sys_resc
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -34,8 +34,8 @@
       <if test="url != null" >
         url,
       </if>
-      <if test="rescType != null" >
-        resc_type,
+      <if test="resType != null" >
+        res_type,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -45,8 +45,8 @@
       <if test="url != null" >
         #{url,jdbcType=VARCHAR},
       </if>
-      <if test="rescType != null" >
-        #{rescType,jdbcType=VARCHAR},
+      <if test="resType != null" >
+        #{resType,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -56,8 +56,8 @@
       <if test="url != null" >
         url = #{url,jdbcType=VARCHAR},
       </if>
-      <if test="rescType != null" >
-        resc_type = #{rescType,jdbcType=VARCHAR},
+      <if test="resType != null" >
+        res_type = #{resType,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -65,7 +65,7 @@
   <update id="updateByPrimaryKey" parameterType="com.fenlibao.p2p.security.domain.Resc" >
     update sys_resc
     set url = #{url,jdbcType=VARCHAR},
-      resc_type = #{rescType,jdbcType=VARCHAR}
+      res_type = #{resType,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

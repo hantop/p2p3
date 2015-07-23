@@ -1,16 +1,60 @@
+/*
+Navicat MySQL Data Transfer
+
+Source Server         : localhost
+Source Server Version : 50624
+Source Host           : localhost:3306
+Source Database       : pms1
+
+Target Server Type    : MYSQL
+Target Server Version : 50624
+File Encoding         : 65001
+
+Date: 2015-07-23 16:29:37
+*/
 
 SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for sys_regex
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_regex`;
+CREATE TABLE `sys_regex` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(300) DEFAULT NULL COMMENT '权限名称',
+  `regex` varchar(300) DEFAULT NULL COMMENT 'ant 的url表达式',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='权限表达式信息,由技术人员管理，使用ant表达式';
+
+-- ----------------------------
+-- Records of sys_regex
+-- ----------------------------
+INSERT INTO `sys_regex` VALUES ('1', '普通用户权限', '/**');
+
+-- ----------------------------
+-- Table structure for sys_regex_role
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_regex_role`;
+CREATE TABLE `sys_regex_role` (
+  `regex_id` bigint(20) DEFAULT NULL COMMENT '权限表达式id',
+  `role_id` bigint(20) DEFAULT NULL COMMENT '角色id'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='权限角色,使用ant表达式配置权限角色之间的关系';
+
+-- ----------------------------
+-- Records of sys_regex_role
+-- ----------------------------
+INSERT INTO `sys_regex_role` VALUES ('1', '2');
 
 -- ----------------------------
 -- Table structure for sys_resc
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_resc`;
 CREATE TABLE `sys_resc` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `url` varchar(500) COLLATE utf8_bin DEFAULT NULL COMMENT '权限url',
-  `resc_type` varchar(300) COLLATE utf8_bin DEFAULT NULL COMMENT '权限名称',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `url` varchar(500) DEFAULT NULL COMMENT '权限url',
+  `res_type` varchar(300) DEFAULT NULL COMMENT '资源类型',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='权限表';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='资源表';
 
 -- ----------------------------
 -- Records of sys_resc
@@ -25,11 +69,11 @@ INSERT INTO `sys_resc` VALUES ('4', 'history/list', '1');
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_role`;
 CREATE TABLE `sys_role` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` varchar(300) COLLATE utf8_bin DEFAULT NULL,
-  `authority` varchar(300) COLLATE utf8_bin DEFAULT NULL COMMENT '角色名称',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(300) DEFAULT NULL COMMENT '角色名称',
+  `authority` varchar(300) DEFAULT NULL COMMENT '角色code',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sys_role
@@ -43,8 +87,8 @@ INSERT INTO `sys_role` VALUES ('2', '普通用户', 'ROLE_USER');
 DROP TABLE IF EXISTS `sys_role_resc`;
 CREATE TABLE `sys_role_resc` (
   `role_id` bigint(20) DEFAULT NULL COMMENT '角色id',
-  `resc_id` bigint(20) DEFAULT NULL COMMENT '权限id'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='角色权限';
+  `resc_id` bigint(20) DEFAULT NULL COMMENT '资源id'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色资源';
 
 -- ----------------------------
 -- Records of sys_role_resc
@@ -62,16 +106,16 @@ INSERT INTO `sys_role_resc` VALUES ('1', '4');
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_user`;
 CREATE TABLE `sys_user` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `username` varchar(30) COLLATE utf8_bin DEFAULT NULL,
-  `password` varchar(300) COLLATE utf8_bin DEFAULT NULL,
-  `account_non_expired` bit(1) DEFAULT b'1' COMMENT '账号是否未过期',
-  `account_non_locked` bit(1) DEFAULT b'1' COMMENT '账号是否未被锁定',
-  `credentials_non_expire` bit(1) DEFAULT b'1' COMMENT '凭证是否为过期',
-  `enabled` bit(1) DEFAULT b'1' COMMENT '账号是否可用',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `username` varchar(30) DEFAULT NULL,
+  `password` varchar(300) DEFAULT NULL,
+  `account_non_expired` bit(1) DEFAULT NULL COMMENT '账号是否未过期',
+  `account_non_locked` bit(1) DEFAULT NULL COMMENT '账号是否未被锁定',
+  `credentials_non_expire` bit(1) DEFAULT NULL COMMENT '凭证是否为过期',
+  `enabled` bit(1) DEFAULT NULL COMMENT '账号是否可用',
   `register_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '注册日期',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='用户表';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='用户表';
 
 -- ----------------------------
 -- Records of sys_user
@@ -86,7 +130,7 @@ DROP TABLE IF EXISTS `sys_user_role`;
 CREATE TABLE `sys_user_role` (
   `user_id` bigint(20) DEFAULT NULL COMMENT '用户id',
   `role_id` bigint(20) DEFAULT NULL COMMENT '角色id'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='用户角色';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户角色';
 
 -- ----------------------------
 -- Records of sys_user_role

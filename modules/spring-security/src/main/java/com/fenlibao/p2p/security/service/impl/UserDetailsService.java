@@ -1,16 +1,23 @@
 package com.fenlibao.p2p.security.service.impl;
 
-import com.fenlibao.p2p.security.domain.User;
-import com.fenlibao.p2p.security.domain.UserRole;
+import com.fenlibao.p2p.security.domain.*;
 import com.fenlibao.p2p.security.error.UserException;
+import com.fenlibao.p2p.security.persistence.RegexMapper;
+import com.fenlibao.p2p.security.persistence.RoleMapper;
 import com.fenlibao.p2p.security.persistence.UserMapper;
 import com.fenlibao.p2p.security.service.UserRoleService;
+import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.access.SecurityConfig;
+import org.springframework.security.access.annotation.Jsr250SecurityConfig;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.inject.Inject;
+import java.util.*;
 
 /**
  * Created by Administrator on 2015/6/11.
@@ -20,6 +27,9 @@ public class UserDetailsService implements org.springframework.security.core.use
 
     @Resource
     private UserMapper userMapper;
+
+    @Inject
+    private RegexMapper regexMapper;
 
     @Inject
     UserRoleService userRoleService;
@@ -48,5 +58,22 @@ public class UserDetailsService implements org.springframework.security.core.use
             return userRoleService.insertSelective(userRole);
         }
         throw new UserException("用户名已经被注册过了");
+    }
+
+    public Map<RequestMatcher, Collection<ConfigAttribute>> requestMap() {
+        Map<RequestMatcher, Collection<ConfigAttribute>> requestMap = new HashMap<>();
+        List<Regex> regexes = regexMapper.findAll();
+        for (Regex regex : regexes) {
+            String url = regex.getRegex();
+            RequestMatcher matcher = new AntPathRequestMatcher(url);
+            Collection<ConfigAttribute> configAttributes = new HashSet<>();
+            for (Role role : regex.getRoles()) {
+                String authority = role.getAuthority();
+                ConfigAttribute configAttribute = new Jsr250SecurityConfig(authority);
+                configAttributes.add(configAttribute);
+            }
+            requestMap.put(matcher,configAttributes);
+        }
+        return requestMap;
     }
 }

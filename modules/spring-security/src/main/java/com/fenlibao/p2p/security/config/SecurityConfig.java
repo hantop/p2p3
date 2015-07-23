@@ -1,39 +1,39 @@
 package com.fenlibao.p2p.security.config;
 
 import com.fenlibao.p2p.security.service.impl.UserDetailsService;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.access.vote.RoleHierarchyVoter;
 import org.springframework.security.access.vote.RoleVoter;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
+import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.util.ReflectionUtils;
 
 import javax.inject.Inject;
-import javax.servlet.ServletContext;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2015/6/19.
  */
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-    private String key;
-    private ServletContext servletContext;
-
-    @Inject
-    private ApplicationEventPublisher eventPublisher;
 
     @Inject
     private UserDetailsService userDetailsService;
@@ -103,20 +103,39 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .deleteCookies("JSESSIONID")
                 .logoutSuccessUrl("/").and()
                 .authorizeRequests()
-                .accessDecisionManager(accessDecisionManager()).expressionHandler(defaultWebSecurityExpressionHandler())
+//                .accessDecisionManager(accessDecisionManager())//.expressionHandler(defaultWebSecurityExpressionHandler())
                 .antMatchers("/login", "/register").permitAll()
                 .antMatchers("/**").hasRole("USER")
-                .antMatchers("/login", "/signup/email", "/logout", "/search", "/").permitAll()
                 .anyRequest().authenticated();
+//                .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
+//                    public <O extends FilterSecurityInterceptor> O postProcess(O fsi) {
+//                        fsi.setAccessDecisionManager(accessDecisionManager());
+//                        FilterInvocationSecurityMetadataSource securityMetadataSource = fsi.getSecurityMetadataSource();
+//                        Field field = ReflectionUtils.findField(securityMetadataSource.getClass(),"requestMap");
+//                        field.setAccessible(true);
+//                        Map<RequestMatcher, Collection<ConfigAttribute>> requestMap = (Map<RequestMatcher, Collection<ConfigAttribute>>) ReflectionUtils.getField(field, securityMetadataSource);
+//
+//                        Map<RequestMatcher, Collection<ConfigAttribute>> metadataSources = userDetailsService.requestMap();
+//                        for (Map.Entry<RequestMatcher, Collection<ConfigAttribute>> metadataSource : metadataSources.entrySet()) {
+//                            RequestMatcher requestMatcher = metadataSource.getKey();
+//                            Collection<ConfigAttribute> configAttributes = metadataSource.getValue();
+//                            requestMap.put(requestMatcher,configAttributes);
+//                        }
+//                        fsi.setSecurityMetadataSource(securityMetadataSource);
+//                        fsi.setPublishAuthorizationSuccess(true);
+//                    return fsi;
+//            }
+//        });
 
     }
 
-    @Bean
-    public DefaultWebSecurityExpressionHandler defaultWebSecurityExpressionHandler() {
-        DefaultWebSecurityExpressionHandler defaultWebSecurityExpressionHandler = new DefaultWebSecurityExpressionHandler();
-        defaultWebSecurityExpressionHandler.setRoleHierarchy(roleHierarchy());
-        return defaultWebSecurityExpressionHandler;
-    }
+
+//    @Bean
+//    public DefaultWebSecurityExpressionHandler defaultWebSecurityExpressionHandler() {
+//        DefaultWebSecurityExpressionHandler defaultWebSecurityExpressionHandler = new DefaultWebSecurityExpressionHandler();
+//        defaultWebSecurityExpressionHandler.setRoleHierarchy(roleHierarchy());
+//        return defaultWebSecurityExpressionHandler;
+//    }
 
 
     /**************************************************************
@@ -132,5 +151,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         affirmativeBased.setAllowIfAllAbstainDecisions(true);
         return affirmativeBased;
     }
-
 }

@@ -6,18 +6,18 @@
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="authority" property="authority" jdbcType="VARCHAR" />
   </resultMap>
-
   <resultMap id="AssociationResultMap" type="com.fenlibao.p2p.security.domain.Role" extends="BaseResultMap">
-    <collection property="rescs" javaType="list" ofType="com.fenlibao.p2p.security.domain.Resc" columnPrefix="resc_" resultMap="com.fenlibao.p2p.security.persistence.RescMapper.BaseResultMap"/>
+    <collection property="rescs" javaType="list" ofType="com.fenlibao.p2p.security.domain.Resc" columnPrefix="resc_"
+                resultMap="com.fenlibao.p2p.security.persistence.RescMapper.BaseResultMap"/>
   </resultMap>
 
-  <insert id="insert" parameterType="com.fenlibao.p2p.security.domain.Role" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insert" parameterType="com.fenlibao.p2p.security.domain.Role" >
     insert into sys_role (id, name, authority
       )
     values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{authority,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.fenlibao.p2p.security.domain.Role" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insertSelective" parameterType="com.fenlibao.p2p.security.domain.Role" >
     insert into sys_role
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
