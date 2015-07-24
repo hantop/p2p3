@@ -1,10 +1,9 @@
 package com.fenlibao.p2p.weixin.config;
 
 import com.fenlibao.p2p.constant.annotation.PropMap;
-import com.fenlibao.p2p.constant.domain.Constant;
-import com.fenlibao.p2p.constant.service.ConstantService;
+import com.fenlibao.p2p.constant.domain.Config;
+import com.fenlibao.p2p.constant.persistence.ConfigMapper;
 import com.fenlibao.p2p.constant.util.Utils;
-import com.fenlibao.p2p.weixin.variable.WxVariable;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Scope;
@@ -22,8 +21,10 @@ import java.util.List;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class WeixinConfig implements ApplicationListener<ContextRefreshedEvent> {
 
+    private static final String TYPE = "WEIXIN";
+
     @Inject
-    private ConstantService constantService;//常量service
+    private ConfigMapper configMapper;//配置信息
 
     @PropMap("WX_APP_ID")
     @NotNull(message = "应用ID不能为空")
@@ -89,9 +90,9 @@ public class WeixinConfig implements ApplicationListener<ContextRefreshedEvent> 
     public void onApplicationEvent(ContextRefreshedEvent event) {
         //防止重复执行。
         if (event.getApplicationContext().getParent() == null) {
-            List<Constant> constants = this.constantService.selectByType(WxVariable.WEIXIN);
+            List<Config> configs = this.configMapper.selectByType(TYPE);
             //获取数据库配置的常量值，初始化配置
-            Utils.setMapValue(constants, this);
+            Utils.setMapValue(configs, this);
         }
     }
 

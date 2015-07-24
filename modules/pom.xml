@@ -15,7 +15,7 @@
     <modules>
         <module>mybatis-config</module>
         <module>spring-security</module>
-        <module>sys-constant</module>
+        <module>sys-config</module>
         <module>weixin</module>
     </modules>
 

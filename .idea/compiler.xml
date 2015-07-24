@@ -26,6 +26,7 @@
         <module name="emay-sms" />
         <module name="mybatis-config" />
         <module name="spring-security" />
+        <module name="sys-config" />
         <module name="sys-constant" />
         <module name="weixin" />
         <module name="zhaopin" />
@@ -39,6 +40,7 @@
       <module name="p2p" target="1.7" />
       <module name="spring-security" target="1.7" />
       <module name="standard" target="1.7" />
+      <module name="sys-config" target="1.7" />
       <module name="sys-constant" target="1.7" />
       <module name="weixin" target="1.7" />
       <module name="zhaopin" target="1.7" />

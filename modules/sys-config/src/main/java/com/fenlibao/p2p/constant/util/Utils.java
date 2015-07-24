@@ -1,7 +1,7 @@
 package com.fenlibao.p2p.constant.util;
 
 import com.fenlibao.p2p.constant.annotation.PropMap;
-import com.fenlibao.p2p.constant.domain.Constant;
+import com.fenlibao.p2p.constant.domain.Config;
 import org.springframework.util.Assert;
 
 import javax.validation.ConstraintViolation;
@@ -30,7 +30,7 @@ public final class Utils {
      * @param constants
      * @param target
      */
-    public static void setMapValue(List<Constant> constants, Object target) {
+    public static void setMapValue(List<Config> constants, Object target) {
 
         Field[] fields = target.getClass().getDeclaredFields();
         for (Field field : fields) {
@@ -39,7 +39,7 @@ public final class Utils {
             if (propMap != null && !"".equals(propMap.value())) {
                 targetKey = propMap.value();
             }
-            for (Constant constant : constants) {
+            for (Config constant : constants) {
                 String key = constant.getKey();
                 if (key.equals(targetKey)) {
                     Object value = constant.getValue();

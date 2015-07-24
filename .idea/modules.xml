@@ -9,7 +9,7 @@
       <module fileurl="file://$PROJECT_DIR$/p2p.iml" filepath="$PROJECT_DIR$/p2p.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/spring-security/spring-security.iml" filepath="$PROJECT_DIR$/modules/spring-security/spring-security.iml" />
       <module fileurl="file://$PROJECT_DIR$/standard/standard.iml" filepath="$PROJECT_DIR$/standard/standard.iml" />
-      <module fileurl="file://$PROJECT_DIR$/modules/sys-constant/sys-constant.iml" filepath="$PROJECT_DIR$/modules/sys-constant/sys-constant.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/sys-config/sys-config.iml" filepath="$PROJECT_DIR$/modules/sys-config/sys-config.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/weixin/weixin.iml" filepath="$PROJECT_DIR$/modules/weixin/weixin.iml" />
       <module fileurl="file://$PROJECT_DIR$/standard/zhaopin/zhaopin.iml" filepath="$PROJECT_DIR$/standard/zhaopin/zhaopin.iml" />
     </modules>

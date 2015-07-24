@@ -5,8 +5,8 @@ import cn.emay.sdk.client.api.MO;
 import cn.emay.sdk.client.api.StatusReport;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.fenlibao.p2p.constant.domain.Constant;
-import com.fenlibao.p2p.constant.service.ConstantService;
+import com.fenlibao.p2p.constant.domain.Config;
+import com.fenlibao.p2p.constant.persistence.ConfigMapper;
 import com.fenlibao.p2p.constant.util.Utils;
 import com.fenlibao.p2p.sms.config.SmsConfig;
 import com.fenlibao.p2p.sms.defines.CodeMsg;
@@ -14,7 +14,6 @@ import com.fenlibao.p2p.sms.domain.Sign;
 import com.fenlibao.p2p.sms.persistence.SignMapper;
 import com.fenlibao.p2p.sms.service.SmsApi;
 import com.fenlibao.p2p.sms.variable.SmsThing;
-import com.fenlibao.p2p.sms.variable.SmsVariable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -36,6 +35,8 @@ import java.util.List;
 @Service("smsApi")
 public class SmsApiImpl implements SmsApi, ApplicationListener<ContextRefreshedEvent>, ApplicationContextAware {
 
+    private static final String TYPE = "SMS";
+
     private final static Logger log = LoggerFactory.getLogger(SmsApiImpl.class);
 
     private ApplicationContext applicationContext;
@@ -43,7 +44,7 @@ public class SmsApiImpl implements SmsApi, ApplicationListener<ContextRefreshedE
     private Client sdkclient;
 
     @Inject
-    private ConstantService constantService;//常量service
+    private ConfigMapper configMapper;//configMapper
 
     @Inject
     private SignMapper signMapper;//初始化注册信息
@@ -54,12 +55,12 @@ public class SmsApiImpl implements SmsApi, ApplicationListener<ContextRefreshedE
     public void onApplicationEvent(ContextRefreshedEvent event) {
         //防止重复执行。
         if (event.getApplicationContext().getParent() == null) {
-            List<Constant> constants = this.constantService.selectByType(SmsVariable.SMS);//获取类型为短信的配置信息
+            List<Config> configs = this.configMapper.selectByType(TYPE);//获取类型为短信的配置信息
             if (smsConfig == null) {
                 smsConfig = new SmsConfig();
             }
             //获取数据库配置的常量值，初始化配置
-            Utils.setMapValue(constants, smsConfig);
+            Utils.setMapValue(configs, smsConfig);
             setSmsConfig(smsConfig);
             if (SmsApiImpl.log.isInfoEnabled()) {
                 log.info("短信配置信息:{}", JSON.toJSONString(smsConfig, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));

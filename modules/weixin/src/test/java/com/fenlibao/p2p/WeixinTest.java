@@ -3,6 +3,8 @@ package com.fenlibao.p2p;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.fenlibao.p2p.constant.domain.Config;
+import com.fenlibao.p2p.constant.persistence.ConfigMapper;
 import com.fenlibao.p2p.weixin.defines.MenuType;
 import com.fenlibao.p2p.weixin.domain.Qrcode;
 import com.fenlibao.p2p.weixin.exception.WeixinException;
@@ -163,5 +165,15 @@ public class WeixinTest {
         List<Button> buttons = Arrays.asList(btn1, btn2);
         WxMsg message = this.wxApi.createMenu(buttons);
         log.info("自定义菜单：{}" ,JSON.toJSONString(message, SerializerFeature.PrettyFormat));
+    }
+
+    @Inject
+    private ConfigMapper configMapper;
+
+
+    @Test
+    public void testConfig() {
+        List<Config> configList = configMapper.findAll();
+        System.out.println(configList);
     }
 }

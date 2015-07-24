@@ -16,8 +16,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.inject.Inject;
@@ -48,8 +46,8 @@ public class UserDetailsService implements org.springframework.security.core.use
         return user;
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = false,
-            rollbackFor = {java.lang.Exception.class, java.lang.RuntimeException.class})
+//    @Transactional(propagation = Propagation.REQUIRED, readOnly = false,
+//            rollbackFor = {java.lang.Exception.class, java.lang.RuntimeException.class})
     public int insertSelective(User user) {
 
         UserDetails userDetails = userMapper.findByUsername(user.getUsername());

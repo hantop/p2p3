@@ -1,8 +1,8 @@
 package com.fenlibao.p2p.zhaopin.service.impl;
 
 import com.fenlibao.p2p.common.page.Page;
-import com.fenlibao.p2p.constant.domain.Constant;
-import com.fenlibao.p2p.constant.service.ConstantService;
+import com.fenlibao.p2p.constant.domain.Config;
+import com.fenlibao.p2p.constant.persistence.ConfigMapper;
 import com.fenlibao.p2p.weixin.domain.Qrcode;
 import com.fenlibao.p2p.weixin.exception.WeixinException;
 import com.fenlibao.p2p.weixin.service.WxApi;
@@ -27,12 +27,12 @@ public class ChannelServiceImpl implements ChannelService, ApplicationListener<C
     private ChannelMapper channelMapper;
 
     @Inject
-    private ConstantService constantService;
+    private ConfigMapper configMapper;
+
+    private Config config;
 
     @Inject
     private WxApi wxApi;
-
-    private Constant constant;
 
     @Override
     public Page<Channel> findPage(Page<Channel> page) {
@@ -67,7 +67,7 @@ public class ChannelServiceImpl implements ChannelService, ApplicationListener<C
         int count = this.channelMapper.insertSelective(record);
         int sceneId = Integer.parseInt(record.getId() + "");
         try {
-            Qrcode qrcode = this.wxApi.getQrLimitScene(sceneId, constant.getValue());
+            Qrcode qrcode = this.wxApi.getQrLimitScene(sceneId, config.getValue());
         } catch (WeixinException e) {
             e.printStackTrace();
         }
@@ -95,7 +95,7 @@ public class ChannelServiceImpl implements ChannelService, ApplicationListener<C
     public Qrcode getQrLimitScene(Integer sceneId) {
         Qrcode qrcode = null;
         try {
-            qrcode = this.wxApi.getQrLimitScene(sceneId, constant.getValue());
+            qrcode = this.wxApi.getQrLimitScene(sceneId, config.getValue());
         } catch (WeixinException e) {
             e.printStackTrace();
         }
@@ -109,6 +109,6 @@ public class ChannelServiceImpl implements ChannelService, ApplicationListener<C
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        this.constant = constantService.selectByKey(SCENE_ZHAOPIN);
+        this.config = configMapper.selectByKey(SCENE_ZHAOPIN);
     }
 }
