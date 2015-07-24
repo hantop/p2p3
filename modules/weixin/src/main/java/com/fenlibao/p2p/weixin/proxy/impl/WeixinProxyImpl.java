@@ -18,6 +18,7 @@ import com.fenlibao.p2p.weixin.message.card.Card;
 import com.fenlibao.p2p.weixin.message.card.UserCard;
 import com.fenlibao.p2p.weixin.message.card.req.ReqBatchCatch;
 import com.fenlibao.p2p.weixin.message.card.req.ReqUserCard;
+import com.fenlibao.p2p.weixin.message.menu.Button;
 import com.fenlibao.p2p.weixin.message.req.ReqTicket;
 import com.fenlibao.p2p.weixin.message.req.White;
 import com.fenlibao.p2p.weixin.message.template.TemplateMsg;
@@ -39,6 +40,9 @@ import org.springframework.util.Assert;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2015/6/10.
@@ -339,7 +343,17 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
         return JSON.parseObject(bytes, Card.class);
     }
 
+    @Override
+    public WxMsg createMenu(List<Button> buttons) {
+        Map<String, List<Button>> btns = new HashMap<>();
+        btns.put("button", buttons);
+        String jsonString = JSON.toJSONString(btns);
 
+        String token = this.weixinProxy.httpToken().getAccessToken();
+        String url = String.format(CREATE_MENU_URL, token);
+        byte[] bytes = HttpClientUtil.httpPost(url, jsonString);
+        return JSON.parseObject(bytes, WxMsg.class);
+    }
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

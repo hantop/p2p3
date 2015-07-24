@@ -130,30 +130,4 @@ public class RelationshipServiceImpl implements RelationshipService {
                 .getPrincipal();
         return userDetails;
     }
-
-//    @Async
-//    @Override
-//    public void onApplicationEvent(OauthEvent event) {
-//        Fans fans = event.getFans();
-//        String state = event.getState();
-//        String[] params = state.split(Constants.separator);
-//        String fromUserName = params[0].split("=")[1];
-//        Long id = Long.parseLong(params[1].split("=")[1]);
-//        String toUserName = fans.getOpenid();
-//
-//        Channel channel = channelService.selectByPrimaryKey(id);
-//
-//        Relationship relationship = this.relationshipMapper.selectByFromUserAndToUser(fromUserName,toUserName);
-//        if(relationship == null && !toUserName.equals(fromUserName)) {//如果是同一个人不形成推荐关系
-//            relationship = new Relationship();
-//            relationship.setFromUserOpenid(fromUserName);
-//            relationship.setToUserOpenid(toUserName);
-//            relationship.setPositiveStatus(false);
-//            relationship.setTryStatus(false);
-//            relationship.setTrialPrice(channel.getRule().getTrialSuccess());
-//            relationship.setPositivePrice(channel.getRule().getPositiveSuccess());
-//            this.insertSelective(relationship);
-//        }
-//
-//    }
 }

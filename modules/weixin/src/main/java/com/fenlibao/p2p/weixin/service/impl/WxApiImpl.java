@@ -70,7 +70,7 @@ public class WxApiImpl implements WxApi, ApplicationListener<ContextRefreshedEve
     @Inject
     private ApplicationEventPublisher publisher;
 
-//    @Inject
+    @Inject
     private MessageHandler messageHandler;
 
 
@@ -83,9 +83,9 @@ public class WxApiImpl implements WxApi, ApplicationListener<ContextRefreshedEve
     public void onApplicationEvent(ContextRefreshedEvent event) {
         //防止重复执行。
         if (event.getApplicationContext().getParent() == null) {
-          if(log.isInfoEnabled()) {
-              log.info("微信配置信息：{}",JSON.toJSONString(weixinConfig, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
-          }
+            if (log.isInfoEnabled()) {
+                log.info("微信配置信息：{}", JSON.toJSONString(weixinConfig, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
+            }
         }
     }
 
@@ -457,12 +457,6 @@ public class WxApiImpl implements WxApi, ApplicationListener<ContextRefreshedEve
     @Override
     public WxMsg createMenu(List<Button> buttons) {
         Utils.validate(buttons);
-        Map<String, List<Button>> btns = new HashMap<>();
-        btns.put("button", buttons);
-        String jsonString = JSON.toJSONString(btns);
-        String token = this.weixinProxy.httpToken().getAccessToken();
-        String url = String.format(CREATE_MENU_URL, token);
-        byte[] bytes = HttpClientUtil.httpPost(url, jsonString);
-        return JSON.parseObject(bytes, WxMsg.class);
+        return this.weixinProxy.createMenu(buttons);
     }
 }

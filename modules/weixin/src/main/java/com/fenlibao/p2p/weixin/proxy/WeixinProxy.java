@@ -15,6 +15,7 @@ import com.fenlibao.p2p.weixin.message.card.Card;
 import com.fenlibao.p2p.weixin.message.card.UserCard;
 import com.fenlibao.p2p.weixin.message.card.req.ReqBatchCatch;
 import com.fenlibao.p2p.weixin.message.card.req.ReqUserCard;
+import com.fenlibao.p2p.weixin.message.menu.Button;
 import com.fenlibao.p2p.weixin.message.req.ReqTicket;
 import com.fenlibao.p2p.weixin.message.req.White;
 import com.fenlibao.p2p.weixin.message.template.TemplateMsg;
@@ -22,6 +23,7 @@ import com.fenlibao.p2p.weixin.service.Constants;
 import com.fenlibao.p2p.weixin.variable.WeiXinThing;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by Administrator on 2015/6/10.
@@ -177,5 +179,12 @@ public interface WeixinProxy extends Constants {
      * @return
      */
     Card batchCard(ReqBatchCatch reqBatchCatch);
+
+    /**
+     * 创建菜单信息
+     * @param buttons
+     * @return
+     */
+    WxMsg createMenu(List<Button> buttons);
 
 }

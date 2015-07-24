@@ -40,7 +40,7 @@ public class WeixinInterceptor {
     @Inject
     private ApplicationEventPublisher publisher;
 
-    @Pointcut("execution (* com.fenlibao.p2p.weixin.proxy.WeixinProxy.http* (..)) ")
+    @Pointcut("execution (* com.fenlibao.p2p.weixin.proxy.WeixinProxy.* (..)) ")
     public void aspect() {
     }
 
