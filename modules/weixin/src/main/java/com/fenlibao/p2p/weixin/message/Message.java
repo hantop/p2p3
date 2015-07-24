@@ -1,5 +1,9 @@
 package com.fenlibao.p2p.weixin.message;
 
+import com.fenlibao.p2p.weixin.message.menu.ScanCodeInfo;
+import com.fenlibao.p2p.weixin.message.menu.SendLocationInfo;
+import com.fenlibao.p2p.weixin.message.menu.SendPicsInfo;
+import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 import java.io.Serializable;
@@ -403,8 +407,46 @@ public class Message implements Serializable {
     private String outerId;//领取场景值，用于领取渠道数据统计。可在生成二维码接口及添加JS API接口中自定义该字段的整型值。
 
 
+    @XStreamAlias("ScanCodeInfo")
+    private ScanCodeInfo scanCodeInfo;//扫描信息
+
+    @XStreamAlias("SendPicsInfo")
+    private SendPicsInfo sendPicsInfo;//发送的位置信息
+
+    @XStreamAlias("SendLocationInfo")
+    private SendLocationInfo sendLocationInfo;//发送的位置信息
+
+    public static void main(String[] args) {
+        Message message = new Message();
+//        Item item = new Item();
+//        item.setPicMd5Sum("5a75aaca956d97be686719218f275c6b");
+//        message.setArticles();
+        SendPicsInfo sendPicsInfo = new SendPicsInfo();
+
+        Item item = new Item();
+        item.setPicMd5Sum("5a75aaca956d97be686719218f275c6b");
+
+        Item item2 = new Item();
+        item2.setPicMd5Sum("5a75aaca956d97be686719218f275c6b");
+        List<Item> items = new ArrayList<>();
+        items.add(item);
+        items.add(item2);
+
+        sendPicsInfo.setPicList(items);
+
+        sendPicsInfo.setCount(1);
+        message.setSendPicsInfo(sendPicsInfo);
+        message.setEvent("click");
+        XStream xStream = new XStream();
+        xStream.autodetectAnnotations(true);
+        xStream.processAnnotations(Message.class);
+        String xml = xStream.toXML(message);
+        System.out.println(xml);
+    }
+
+
     @XStreamAlias("ConsumeSource")
-    private String consumeSource;//核销来源。支持开发者统计API核销（FROM_API）、公众平台核销（FROM_MP）、卡券商户助手核销（FROM_MOBILE_HELPER）（核销员微信号）
+    private String consumeSource;
 
     public String getToUserName() {
         return toUserName;
@@ -748,5 +790,29 @@ public class Message implements Serializable {
 
     public void setMsgID(String msgID) {
         this.msgID = msgID;
+    }
+
+    public ScanCodeInfo getScanCodeInfo() {
+        return scanCodeInfo;
+    }
+
+    public void setScanCodeInfo(ScanCodeInfo scanCodeInfo) {
+        this.scanCodeInfo = scanCodeInfo;
+    }
+
+    public SendPicsInfo getSendPicsInfo() {
+        return sendPicsInfo;
+    }
+
+    public void setSendPicsInfo(SendPicsInfo sendPicsInfo) {
+        this.sendPicsInfo = sendPicsInfo;
+    }
+
+    public SendLocationInfo getSendLocationInfo() {
+        return sendLocationInfo;
+    }
+
+    public void setSendLocationInfo(SendLocationInfo sendLocationInfo) {
+        this.sendLocationInfo = sendLocationInfo;
     }
 }

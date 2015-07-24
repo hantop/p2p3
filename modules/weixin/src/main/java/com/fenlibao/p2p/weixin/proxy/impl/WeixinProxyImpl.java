@@ -332,12 +332,14 @@ public class WeixinProxyImpl implements WeixinProxy, ApplicationListener<Context
     @Override
     public Card batchCard(ReqBatchCatch reqBatchCatch) {
         Utils.validate(reqBatchCatch);
-        String jsonString = reqBatchCatch.toString();
+        String jsonString = JSON.toJSONString(reqBatchCatch);
         String token = this.weixinProxy.httpToken().getAccessToken();
         String url = String.format(BATCH_CARD_URL, token);
         byte[] bytes = HttpClientUtil.httpPost(url, jsonString);
         return JSON.parseObject(bytes, Card.class);
     }
+
+
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

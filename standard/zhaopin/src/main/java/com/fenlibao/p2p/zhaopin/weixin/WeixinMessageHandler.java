@@ -43,8 +43,8 @@ public class WeixinMessageHandler implements MessageHandler,Constants {
          * 用户已关注时,事件KEY值，是一个32位无符号整数，即创建二维码时的二维码scene_id
          */
         String sceneStr = eventKey;
-        if (sceneStr.startsWith(Event.EVENT_KEY_QRSCENE.toString()) && event.equals(Event.EVENT_SUBSCRIBE.toString())) {
-            sceneStr = sceneStr.substring(Event.EVENT_KEY_QRSCENE.toString().length());
+        if (sceneStr.startsWith(Event.KEY_QRSCENE.toString()) && event.equals(Event.SUBSCRIBE.toString())) {
+            sceneStr = sceneStr.substring(Event.KEY_QRSCENE.toString().length());
         }
         int sceneId = Integer.parseInt(sceneStr);
         Channel channel = this.channelService.selectBySceneId(sceneId);

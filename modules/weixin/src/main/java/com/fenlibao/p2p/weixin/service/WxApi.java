@@ -3,14 +3,16 @@ package com.fenlibao.p2p.weixin.service;
 import com.fenlibao.p2p.weixin.config.WeixinConfig;
 import com.fenlibao.p2p.weixin.defines.OauthDefines;
 import com.fenlibao.p2p.weixin.domain.Fans;
-import com.fenlibao.p2p.weixin.message.Message;
 import com.fenlibao.p2p.weixin.domain.Qrcode;
 import com.fenlibao.p2p.weixin.exception.WeixinException;
+import com.fenlibao.p2p.weixin.message.Message;
+import com.fenlibao.p2p.weixin.message.WxMsg;
 import com.fenlibao.p2p.weixin.message.card.Card;
 import com.fenlibao.p2p.weixin.message.card.CardTypeValue;
 import com.fenlibao.p2p.weixin.message.card.UserCard;
 import com.fenlibao.p2p.weixin.message.card.req.ReqBatchCatch;
 import com.fenlibao.p2p.weixin.message.card.req.ReqUserCard;
+import com.fenlibao.p2p.weixin.message.menu.Button;
 import com.fenlibao.p2p.weixin.message.template.TemplateMsg;
 
 import java.io.Serializable;
@@ -221,4 +223,12 @@ public interface WxApi extends Constants {
      * @return
      */
     Card batchCard(ReqBatchCatch reqBatchCatch);
+
+    /**
+     * 自定义菜单创建接口
+     *
+     * @param buttons
+     * @return
+     */
+    WxMsg createMenu(List<Button> buttons);
 }

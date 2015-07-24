@@ -8,6 +8,7 @@ import com.fenlibao.p2p.security.error.UserException;
 import com.fenlibao.p2p.security.persistence.RegexMapper;
 import com.fenlibao.p2p.security.persistence.UserMapper;
 import com.fenlibao.p2p.security.service.UserRoleService;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +26,7 @@ import java.util.*;
 /**
  * Created by Administrator on 2015/6/11.
  */
+@DependsOn("flyway")
 @Service
 public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
 

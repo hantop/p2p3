@@ -70,8 +70,8 @@ public class WinxinController {
         ModelAndView modelAndView = new ModelAndView();
         ReqBatchCatch batch = new ReqBatchCatch(0, 10);
         List<Status> statuses = new ArrayList<>();
-        statuses.add(Status.CARD_STATUS_NOT_VERIFY);
-        statuses.add(Status.CARD_STATUS_VERIFY_OK);
+//        statuses.add(Status.CARD_STATUS_NOT_VERIFY);
+//        statuses.add(Status.CARD_STATUS_VERIFY_OK);
         batch.setStatusList(statuses);
         List<Map<String, Object>> result = this.wxApi.signature(batch, openid, code);
         if(log.isInfoEnabled()) {

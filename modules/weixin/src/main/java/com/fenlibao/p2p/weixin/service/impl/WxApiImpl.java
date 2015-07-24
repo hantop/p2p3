@@ -2,6 +2,8 @@ package com.fenlibao.p2p.weixin.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.fenlibao.p2p.common.http.HttpClientUtil;
+import com.fenlibao.p2p.constant.util.Utils;
 import com.fenlibao.p2p.weixin.config.WeixinConfig;
 import com.fenlibao.p2p.weixin.defines.*;
 import com.fenlibao.p2p.weixin.domain.Fans;
@@ -13,11 +15,13 @@ import com.fenlibao.p2p.weixin.event.MsgEvent;
 import com.fenlibao.p2p.weixin.event.PoiCheckEvent;
 import com.fenlibao.p2p.weixin.exception.WeixinException;
 import com.fenlibao.p2p.weixin.message.Message;
+import com.fenlibao.p2p.weixin.message.WxMsg;
 import com.fenlibao.p2p.weixin.message.card.Card;
 import com.fenlibao.p2p.weixin.message.card.CardTypeValue;
 import com.fenlibao.p2p.weixin.message.card.UserCard;
 import com.fenlibao.p2p.weixin.message.card.req.ReqBatchCatch;
 import com.fenlibao.p2p.weixin.message.card.req.ReqUserCard;
+import com.fenlibao.p2p.weixin.message.menu.Button;
 import com.fenlibao.p2p.weixin.message.req.ReqTicket;
 import com.fenlibao.p2p.weixin.message.template.TemplateMsg;
 import com.fenlibao.p2p.weixin.proxy.WeixinProxy;
@@ -66,12 +70,9 @@ public class WxApiImpl implements WxApi, ApplicationListener<ContextRefreshedEve
     @Inject
     private ApplicationEventPublisher publisher;
 
+//    @Inject
     private MessageHandler messageHandler;
 
-    @Inject
-    public WxApiImpl(MessageHandler messageHandler) {
-        this.messageHandler = messageHandler;
-    }
 
     static {
         xStream.autodetectAnnotations(true);
@@ -80,16 +81,12 @@ public class WxApiImpl implements WxApi, ApplicationListener<ContextRefreshedEve
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-//        //防止重复执行。
-//        if (event.getApplicationContext().getParent() == null) {
-//            String appid = "o5D9Ts8qEfQy73VwwTOeUbG34Sfw";
-//            try {
-//                Fans fans = this.getFans(appid);
-//                System.out.println(fans);
-//            } catch (WeixinException e) {
-//                e.printStackTrace();
-//            }
-//        }
+        //防止重复执行。
+        if (event.getApplicationContext().getParent() == null) {
+          if(log.isInfoEnabled()) {
+              log.info("微信配置信息：{}",JSON.toJSONString(weixinConfig, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
+          }
+        }
     }
 
 
@@ -203,6 +200,7 @@ public class WxApiImpl implements WxApi, ApplicationListener<ContextRefreshedEve
         }
         return ret;
     }
+
     @Override
     public List<Map<String, Object>> signature(ReqBatchCatch reqBatchCatch, String openid, String code) {
         Card card = this.weixinProxy.batchCard(reqBatchCatch);
@@ -391,20 +389,32 @@ public class WxApiImpl implements WxApi, ApplicationListener<ContextRefreshedEve
             if (message.getEvent() != null) {
                 String event = message.getEvent();
                 String eventKey = message.getEventKey();
-                if ((event.equals(Event.EVENT_SCAN.toString())) || (eventKey != null && eventKey.startsWith(Event.EVENT_KEY_QRSCENE.toString()) && event.equals(Event.EVENT_SUBSCRIBE.toString()))) {
+                if ((event.equals(Event.SCAN.toString())) || (eventKey != null && eventKey.startsWith(Event.KEY_QRSCENE.toString()) && event.equals(Event.SUBSCRIBE.toString()))) {
                     /**用户扫描事件*/
                     respMsg = this.messageHandler.scanEvent(message, this, host);
-                } else if (event.equals(Event.EVENT_SUBSCRIBE.toString())) {
+                } else if (event.equals(Event.SUBSCRIBE.toString())) {
                     /**用户关注事件*/
-                } else if (event.equals(Event.EVENT_UNSUBSCRIBE.toString())) {
+                } else if (event.equals(Event.UNSUBSCRIBE.toString())) {
                     /**用户取消关注事件*/
-                } else if (event.equals(Event.EVENT_LOCATION.toString())) {
+                } else if (event.equals(Event.LOCATION.toString())) {
                     /**上报地理位置事件*/
-                } else if (event.equals(Event.EVENT_CLICK)) {
+                } else if (event.equals(Event.CLICK)) {
                     /**用户点击自定义菜单后，微信会把点击事件推送给开发者，请注意，点击菜单弹出子菜单，不会产生上报。*/
-                } else if (event.equals(Event.EVENT_VIEW.toString())) {
+                } else if (event.equals(Event.VIEW.toString())) {
                     /**点击菜单跳转链接时的事件推送*/
-                } else if (event.equals(Event.EVENT_POI_CHECK_NOTIFY.toString())) {
+                } else if (event.equals(Event.SCANCODE_PUSH.toString())) {
+                    /**扫码推事件的事件推送*/
+                } else if (event.equals(Event.SCANCODE_WAITMSG.toString())) {
+                    /**扫码推事件且弹出“消息接收中”提示框的事件推送*/
+                } else if (event.equals(Event.PIC_SYSPHOTO.toString())) {
+                    /**弹出系统拍照发图的事件推送*/
+                } else if (event.equals(Event.PIC_PHOTO_OR_ALBUM.toString())) {
+                    /**弹出拍照或者相册发图的事件推送*/
+                } else if (event.equals(Event.PIC_WEIXIN.toString())) {
+                    /**弹出微信相册发图器的事件推送*/
+                } else if (event.equals(Event.LOCATION_SELECT.toString())) {
+                    /**弹出地理位置选择器的事件推送*/
+                } else if (event.equals(Event.POI_CHECK_NOTIFY.toString())) {
                     /**门店审核事件推送*/
                     publisher.publishEvent(new PoiCheckEvent(this, message));
                 } else if (event.equals(Event.CARD_PASS_CHECK.toString())) {
@@ -413,7 +423,6 @@ public class WxApiImpl implements WxApi, ApplicationListener<ContextRefreshedEve
                     /**卡券未通过审核*/
                 } else if (event.equals(Event.USER_GET_CARD.toString())) {
                     /**领取事件推送*/
-
                 } else if (event.equals(Event.USER_DEL_CARD.toString())) {
                     /**删除事件推送*/
                 } else if (event.equals(Event.USER_CONSUME_CARD.toString())) {
@@ -438,14 +447,22 @@ public class WxApiImpl implements WxApi, ApplicationListener<ContextRefreshedEve
 
     @Override
     public Card batchCard(ReqBatchCatch reqBatchCatch) {
-        if (log.isInfoEnabled()) {
-            log.info("批量查询卡列表:{}",JSON.toJSONString(reqBatchCatch, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
-        }
         Card card = this.weixinProxy.batchCard(reqBatchCatch);
         if (log.isInfoEnabled()) {
-            log.info("获取的卡券列表信息:{}",JSON.toJSONString(card, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
+            log.info("获取的卡券列表信息:{}", JSON.toJSONString(card, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
         }
         return card;
     }
 
+    @Override
+    public WxMsg createMenu(List<Button> buttons) {
+        Utils.validate(buttons);
+        Map<String, List<Button>> btns = new HashMap<>();
+        btns.put("button", buttons);
+        String jsonString = JSON.toJSONString(btns);
+        String token = this.weixinProxy.httpToken().getAccessToken();
+        String url = String.format(CREATE_MENU_URL, token);
+        byte[] bytes = HttpClientUtil.httpPost(url, jsonString);
+        return JSON.parseObject(bytes, WxMsg.class);
+    }
 }

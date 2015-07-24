@@ -62,6 +62,10 @@ public interface Constants {
 
     String MESSAGE_MASS_SEND_URL = "https://api.weixin.qq.com/cgi-bin/message/mass/send?access_token=%s";
 
+    String CREATE_MENU_URL = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=%s"; //自定义菜单创建接口
+
+    String GET_MENU_URL = "https://api.weixin.qq.com/cgi-bin/menu/get?access_token=%s";//自定义菜单查询接口
+
     //微信token
     enum TokeyType {
         ACCESS_TOKEN,//回话tokenn

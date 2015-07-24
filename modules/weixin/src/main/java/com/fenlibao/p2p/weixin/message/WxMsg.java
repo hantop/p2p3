@@ -2,6 +2,7 @@ package com.fenlibao.p2p.weixin.message;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fenlibao.p2p.weixin.defines.CodeMsg;
 
 import java.io.Serializable;
 
@@ -32,6 +33,10 @@ public class WxMsg implements Serializable {
     @JSONField(name = "openid")
     private String openid;
 
+    @JsonProperty("msg")
+    @JSONField(name = "msg")
+    private String msg;
+
     private Long createTime;
 
     public String getId() {
@@ -55,6 +60,8 @@ public class WxMsg implements Serializable {
     }
 
     public void setErrcode(int errcode) {
+        CodeMsg codeMsg = CodeMsg.parse(errcode);
+        this.msg = codeMsg.getErrmsg();
         this.errcode = errcode;
     }
 
@@ -72,6 +79,14 @@ public class WxMsg implements Serializable {
 
     public void setOpenid(String openid) {
         this.openid = openid;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 
     public Long getCreateTime() {

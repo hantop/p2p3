@@ -27,14 +27,14 @@ public enum Event {
      * <Event><![CDATA[subscribe]]></Event>
      * </xml>
      */
-    EVENT_SUBSCRIBE {
+    SUBSCRIBE {
         @Override
         public String toString() {
             return "subscribe";//subscribe(订阅)
         }
 
     },
-    EVENT_UNSUBSCRIBE {
+    UNSUBSCRIBE {
         @Override
         public String toString() {
             return "unsubscribe";//unsubscribe(取消订阅)
@@ -69,7 +69,7 @@ public enum Event {
      * EventKey	事件KEY值，qrscene_为前缀，后面为二维码的参数值
      * Ticket	二维码的ticket，可用来换取二维码图片
      */
-    EVENT_KEY_QRSCENE {
+    KEY_QRSCENE {
         @Override
         public String toString() {
             return "qrscene_";//事件KEY值，qrscene_为前缀，后面为二维码的参数值
@@ -105,76 +105,13 @@ public enum Event {
      * Longitude	地理位置经度
      * Precision	地理位置精度
      */
-    EVENT_LOCATION {
+    LOCATION {
         @Override
         public String toString() {
             return "LOCATION";
         }
     },
 
-    /**
-     * 自定义菜单事件
-     * <p/>
-     * 用户点击自定义菜单后，微信会把点击事件推送给开发者，请注意，点击菜单弹出子菜单，不会产生上报。
-     * <p/>
-     * 点击菜单拉取消息时的事件推送
-     * <p/>
-     * 推送XML数据包示例：
-     * <p/>
-     * <xml>
-     * <ToUserName><![CDATA[toUser]]></ToUserName>
-     * <FromUserName><![CDATA[FromUser]]></FromUserName>
-     * <CreateTime>123456789</CreateTime>
-     * <MsgType><![CDATA[event]]></MsgType>
-     * <Event><![CDATA[CLICK]]></Event>
-     * <EventKey><![CDATA[EVENTKEY]]></EventKey>
-     * </xml>
-     * 参数说明：
-     * <p/>
-     * 参数	描述
-     * ToUserName	开发者微信号
-     * FromUserName	发送方帐号（一个OpenID）
-     * CreateTime	消息创建时间 （整型）
-     * MsgType	消息类型，event
-     * Event	事件类型，CLICK
-     * EventKey	事件KEY值，与自定义菜单接口中KEY值对应
-     */
-    EVENT_CLICK {
-        @Override
-        public String toString() {
-            return "CLICK";
-        }
-    },
-
-    /**
-     * 点击菜单跳转链接时的事件推送
-     * <p/>
-     * 推送XML数据包示例：
-     * <p/>
-     * <xml>
-     * <ToUserName><![CDATA[toUser]]></ToUserName>
-     * <FromUserName><![CDATA[FromUser]]></FromUserName>
-     * <CreateTime>123456789</CreateTime>
-     * <MsgType><![CDATA[event]]></MsgType>
-     * <Event><![CDATA[VIEW]]></Event>
-     * <EventKey><![CDATA[www.qq.com]]></EventKey>
-     * </xml>
-     * 参数说明：
-     * <p/>
-     * 参数	描述
-     * ToUserName	开发者微信号
-     * FromUserName	发送方帐号（一个OpenID）
-     * CreateTime	消息创建时间 （整型）
-     * MsgType	消息类型，event
-     * Event	事件类型，VIEW
-     * EventKey	事件KEY值，设置的跳转URL
-     */
-    EVENT_VIEW {
-        @Override
-        public String toString() {
-            return "VIEW";
-        }
-    },
 
     /**
      * 2. 用户已关注时的事件推送
@@ -201,7 +138,7 @@ public enum Event {
      * EventKey	事件KEY值，是一个32位无符号整数，即创建二维码时的二维码scene_id
      * Ticket	二维码的ticket，可用来换取二维码图片
      */
-    EVENT_SCAN {
+    SCAN {
         @Override
         public String toString() {
             return "SCAN";
@@ -230,7 +167,7 @@ public enum Event {
      * <Msg><![CDATA[xxxxxx]]></Msg>
      * </xml>
      */
-    EVENT_POI_CHECK_NOTIFY {
+    POI_CHECK_NOTIFY {
         @Override
         public String toString() {
             return "poi_check_notify";
@@ -412,5 +349,66 @@ public enum Event {
         public String toString() {
             return "user_enter_session_from_card";
         }
+    },
+    CLICK {
+        @Override
+        public String toString() {
+            return "CLICK";
+        }
+    },
+    VIEW {
+        @Override
+        public String toString() {
+            return "VIEW";
+        }
+    },
+    SCANCODE_PUSH {
+        @Override
+        public String toString() {
+            return "scancode_push";
+        }
+    },
+    SCANCODE_WAITMSG {
+        @Override
+        public String toString() {
+            return "scancode_waitmsg";
+        }
+    },
+    PIC_SYSPHOTO {
+        @Override
+        public String toString() {
+            return "pic_sysphoto";
+        }
+    },
+    PIC_PHOTO_OR_ALBUM {
+        @Override
+        public String toString() {
+            return "pic_photo_or_album";
+        }
+    },
+    PIC_WEIXIN {
+        @Override
+        public String toString() {
+            return "pic_weixin";
+        }
+    },
+    LOCATION_SELECT {
+        @Override
+        public String toString() {
+            return "location_select";
+        }
+    },
+    MEDIA_ID {
+        @Override
+        public String toString() {
+            return "media_id";
+        }
+    },
+    VIEW_LIMITED {
+        @Override
+        public String toString() {
+            return "view_limited";
+        }
     }
+
 }

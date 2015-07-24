@@ -177,4 +177,5 @@ public interface WeixinProxy extends Constants {
      * @return
      */
     Card batchCard(ReqBatchCatch reqBatchCatch);
+
 }
