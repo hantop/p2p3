@@ -9,8 +9,6 @@ import com.fenlibao.p2p.weixin.domain.Log;
 import com.fenlibao.p2p.weixin.event.LogEvent;
 import com.fenlibao.p2p.weixin.exception.WeixinException;
 import com.fenlibao.p2p.weixin.message.WxMsg;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -34,7 +32,6 @@ public class WeixinInterceptor {
 
     @Inject
     private WeixinConfig weixinConfig;
-
 
 
     @Inject
@@ -71,14 +68,12 @@ public class WeixinInterceptor {
         Method targetMethod = methodSignature.getMethod();
         String thingName = methodSignature.getName();
         Thing thing = targetMethod.getAnnotation(Thing.class);
-        if(thing != null) {
+        if (thing != null) {
             thingName = thing.value().toString();
         }
         //访问目标方法的参数：
         Object[] args = joinPoint.getArgs();
         String signature = methodSignature.toLongString();
-
-
 
         Object returnValue = null;
         try {
@@ -87,16 +82,16 @@ public class WeixinInterceptor {
             if (returnValue instanceof WxMsg) {
                 WxMsg message = (WxMsg) returnValue;
                 CodeMsg codeMsg = handleException(message);
-                Log log = new Log(weixinConfig.getAppId(),target.getClass().getName(),signature, JSON.toJSONString(args),String.valueOf(codeMsg.getErrorcode()),codeMsg.getErrmsg(),thingName);
+                Log log = new Log(weixinConfig.getAppId(), target.getClass().getName(), signature, JSON.toJSONString(args), String.valueOf(codeMsg.getErrorcode()), codeMsg.getErrmsg(), thingName);
 
-                if(WeixinInterceptor.log.isInfoEnabled()) {
-                    WeixinInterceptor.log.info("微信执行日志消息:{}", JSON.toJSONString(log, SerializerFeature.PrettyFormat ,SerializerFeature.WriteClassName));
+                if (WeixinInterceptor.log.isInfoEnabled()) {
+                    WeixinInterceptor.log.info("微信执行日志消息:{}", JSON.toJSONString(log, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
                 }
 
-                publisher.publishEvent(new LogEvent(this,log,returnValue));
-                if(codeMsg != CodeMsg.SUCCESS) {
-                    if(WeixinInterceptor.log.isErrorEnabled()) {
-                        WeixinInterceptor.log.info("微信错误消息:errorcode:{},errormsg:{}", codeMsg.getErrorcode(),codeMsg.getErrmsg());
+                publisher.publishEvent(new LogEvent(this, log, returnValue));
+                if (codeMsg != CodeMsg.SUCCESS) {
+                    if (WeixinInterceptor.log.isErrorEnabled()) {
+                        WeixinInterceptor.log.info("微信错误消息:errorcode:{},errormsg:{}", codeMsg.getErrorcode(), codeMsg.getErrmsg());
                     }
                     throw new WeixinException("微信错误消息：" + codeMsg.getErrmsg(), codeMsg.getErrorcode());
                 }
@@ -104,8 +99,8 @@ public class WeixinInterceptor {
         } catch (WeixinException ex) {
             throw ex;
         }
-        if(WeixinInterceptor.log.isInfoEnabled()) {
-            WeixinInterceptor.log.info("微信执行返回信息:{}", JSON.toJSONString(returnValue, SerializerFeature.PrettyFormat ,SerializerFeature.WriteClassName));
+        if (WeixinInterceptor.log.isInfoEnabled()) {
+            WeixinInterceptor.log.info("微信执行返回信息:{}", JSON.toJSONString(returnValue, SerializerFeature.PrettyFormat, SerializerFeature.WriteClassName));
         }
 
         return returnValue;
