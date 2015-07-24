@@ -10,7 +10,7 @@
     <artifactId>sys-config</artifactId>
     <packaging>jar</packaging>
 
-    <name>sys-constant</name>
+    <name>sys-config</name>
     <url>http://maven.apache.org</url>
 
     <properties>

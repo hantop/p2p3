@@ -27,10 +27,10 @@ public final class Utils {
     /**
      * 根据target属性的注解将
      *
-     * @param constants
+     * @param configs
      * @param target
      */
-    public static void setMapValue(List<Config> constants, Object target) {
+    public static void setMapValue(List<Config> configs, Object target) {
 
         Field[] fields = target.getClass().getDeclaredFields();
         for (Field field : fields) {
@@ -39,10 +39,10 @@ public final class Utils {
             if (propMap != null && !"".equals(propMap.value())) {
                 targetKey = propMap.value();
             }
-            for (Config constant : constants) {
-                String key = constant.getKey();
+            for (Config config : configs) {
+                String key = config.getKey();
                 if (key.equals(targetKey)) {
-                    Object value = constant.getValue();
+                    Object value = config.getValue();
                     org.springframework.util.ReflectionUtils.makeAccessible(field);
                     Class clazz = field.getType();
                     if (clazz == Boolean.class) {
