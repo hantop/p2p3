@@ -1,8 +1,8 @@
 package com.fenlibao.p2p.zhaopin.service.impl;
 
 import com.fenlibao.p2p.common.page.Page;
-import com.fenlibao.p2p.constant.domain.Config;
-import com.fenlibao.p2p.constant.persistence.ConfigMapper;
+import com.fenlibao.p2p.config.domain.Config;
+import com.fenlibao.p2p.config.persistence.ConfigMapper;
 import com.fenlibao.p2p.weixin.domain.Qrcode;
 import com.fenlibao.p2p.weixin.exception.WeixinException;
 import com.fenlibao.p2p.weixin.service.WxApi;

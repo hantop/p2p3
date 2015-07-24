@@ -1,6 +1,6 @@
-package com.fenlibao.p2p.constant.persistence;
+package com.fenlibao.p2p.config.persistence;
 
-import com.fenlibao.p2p.constant.domain.Config;
+import com.fenlibao.p2p.config.domain.Config;
 
 import java.util.List;
 

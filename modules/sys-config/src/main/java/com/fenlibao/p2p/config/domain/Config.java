@@ -1,4 +1,4 @@
-package com.fenlibao.p2p.constant.domain;
+package com.fenlibao.p2p.config.domain;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package com.fenlibao.p2p.sms.config;
 
-import com.fenlibao.p2p.constant.annotation.PropMap;
+import com.fenlibao.p2p.config.annotation.PropMap;
 
 import javax.validation.constraints.NotNull;
 

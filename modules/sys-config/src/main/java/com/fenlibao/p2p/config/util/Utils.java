@@ -1,7 +1,7 @@
-package com.fenlibao.p2p.constant.util;
+package com.fenlibao.p2p.config.util;
 
-import com.fenlibao.p2p.constant.annotation.PropMap;
-import com.fenlibao.p2p.constant.domain.Config;
+import com.fenlibao.p2p.config.annotation.PropMap;
+import com.fenlibao.p2p.config.domain.Config;
 import org.springframework.util.Assert;
 
 import javax.validation.ConstraintViolation;

@@ -2,8 +2,7 @@ package com.fenlibao.p2p.weixin.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.fenlibao.p2p.common.http.HttpClientUtil;
-import com.fenlibao.p2p.constant.util.Utils;
+import com.fenlibao.p2p.config.util.Utils;
 import com.fenlibao.p2p.weixin.config.WeixinConfig;
 import com.fenlibao.p2p.weixin.defines.*;
 import com.fenlibao.p2p.weixin.domain.Fans;

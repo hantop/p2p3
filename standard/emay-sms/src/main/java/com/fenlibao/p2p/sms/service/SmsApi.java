@@ -2,10 +2,8 @@ package com.fenlibao.p2p.sms.service;
 
 import cn.emay.sdk.client.api.MO;
 import cn.emay.sdk.client.api.StatusReport;
-import com.fenlibao.p2p.constant.annotation.PropMap;
 import com.fenlibao.p2p.sms.annotation.Thing;
 import com.fenlibao.p2p.sms.config.SmsConfig;
-import com.fenlibao.p2p.sms.defines.CodeMsg;
 import com.fenlibao.p2p.sms.variable.SmsThing;
 
 import java.io.Serializable;

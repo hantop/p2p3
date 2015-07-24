@@ -1,4 +1,4 @@
-package com.fenlibao.p2p.constant.annotation;
+package com.fenlibao.p2p.config.annotation;
 
 import java.lang.annotation.*;
 

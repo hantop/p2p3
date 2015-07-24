@@ -1,9 +1,9 @@
 package com.fenlibao.p2p.weixin.config;
 
-import com.fenlibao.p2p.constant.annotation.PropMap;
-import com.fenlibao.p2p.constant.domain.Config;
-import com.fenlibao.p2p.constant.persistence.ConfigMapper;
-import com.fenlibao.p2p.constant.util.Utils;
+import com.fenlibao.p2p.config.annotation.PropMap;
+import com.fenlibao.p2p.config.domain.Config;
+import com.fenlibao.p2p.config.persistence.ConfigMapper;
+import com.fenlibao.p2p.config.util.Utils;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Scope;

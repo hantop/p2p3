@@ -1,4 +1,4 @@
-package com.fenlibao.p2p.constant.variable;
+package com.fenlibao.p2p.config.variable;
 
 /**
  * Created by Administrator on 2015/6/30.
